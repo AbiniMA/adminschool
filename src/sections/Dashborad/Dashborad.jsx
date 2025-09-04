@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import dashboradcss from './dashborad.module.css'
+import dashboradcss from './Dashborad.module.css'
 import profile from '../../assets/dashboardimgs/profile.png'
 import profile1 from '../../assets/dashboardimgs/profile1.png'
 import profile2 from '../../assets/dashboardimgs/profile2.png'
