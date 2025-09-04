@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./Feemenagement.module.css";
+import styles from "./feemenagement.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
