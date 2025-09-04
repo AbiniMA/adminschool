@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./CourseDetails.module.css";
+import styles from "./courseDetails.module.css";
 import { FaPencilAlt, FaPlus, FaTrash } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"; // ⬅️ New import for the back arrow icon
