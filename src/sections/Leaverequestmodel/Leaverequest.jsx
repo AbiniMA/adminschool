@@ -110,7 +110,7 @@ const LeaveRequest = () => {
     try {
       let res = await getLeaveRequest(limit, offset - 1, date, status, searchText)
       console.log(res.data?.data?.data || [])
-      setList(res.data?.data?.data)
+      setList(res.data?.data?.result)
       settotal(res.data?.data?.totalCount)
 
     } catch (err) {

@@ -69,7 +69,7 @@ export const Dashborad = () => {
     let leavelist = async () => {
         try {
             let res = await getDashboardLeave()
-            setLeaveList(res?.data?.data?.data)
+            setLeaveList(res?.data?.data?.result)
         } catch (err) {
             console.log(err)
         }
@@ -170,24 +170,61 @@ export const Dashborad = () => {
                             </div>
                         </div>
                         <div style={{ height: '400px', overflowY: 'auto', paddingBottom: '60px' }} >
-                            {leaveList.map((leave) => (
-                                <div key={leave._id} className="flex justify-between items-center py-[10px] border-b-[2px] border-b-[#0000001A] border-b-solid">
-                                    <div className="flex items-center">
-                                        <div className='w-[50px] h-[50px] rounded-[50%] overflow-hidden mx-2 border-[3px] border-[#ffff] border-solid'>
-                                            <img src={leave?.userDetails?.profileURL} alt="profile" width={'100%'} height={'100%'} />
+                            {leaveList?.length > 0 ? (
+                                leaveList.map((leave) => (
+                                    <div
+                                        key={leave._id}
+                                        className="flex justify-between items-center py-[10px] border-b-[2px] border-b-[#0000001A] border-b-solid"
+                                    >
+                                        {/* Left section */}
+                                        <div className="flex items-center">
+                                            <div className="w-[50px] h-[50px] rounded-[50%] overflow-hidden mx-2 border-[3px] border-[#fff] border-solid">
+                                                <img
+                                                    src={leave?.userDetails?.profileURL || "/default-avatar.png"}
+                                                    alt="profile"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="mx-2">
+                                                <h6 className="text-[14px]">{leave?.userDetails?.name || "Unknown User"}</h6>
+                                                <p className="text-[12px] font-[400] text-[#888484]">
+                                                    ID: {leave?.userDetails?.studentId || "N/A"}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className='mx-2'>
-                                            <h6 className='text-[14px]'>{leave?.userDetails?.name}</h6>
-                                            <p className='text-[12px] font-[400] text-[#888484]'>ID: {leave?.userDetails?.studentId}</p>
+
+                                        {/* Status button */}
+                                        <div>
+                                            <button
+                                                className="text-[14px] p-[5px] w-[100px] mx-[10px] rounded-lg"
+                                                style={{
+                                                    background:
+                                                        leave?.status === "Rejected"
+                                                            ? "#FFD6D6"
+                                                            : leave?.status === "Created"
+                                                                ? "#D7E9FF"
+                                                                : leave?.status === "Approved"
+                                                                    ? "#C5FFD8"
+                                                                    : "#f1f1f1",
+                                                    color:
+                                                        leave?.status === "Rejected"
+                                                            ? "#F81111"
+                                                            : leave?.status === "Created"
+                                                                ? "#2274D4"
+                                                                : leave?.status === "Approved"
+                                                                    ? "#08792E"
+                                                                    : "#333",
+                                                }}
+                                            >
+                                                {leave?.status}
+                                            </button>
                                         </div>
                                     </div>
-                                    <div > <button className='text-[14px] text-[#2274D4] bg-[#D7E9FF] p-[5px] w-[100px] mx-[10px] rounded-lg ' style={{
-                                        background:  leave?.status === 'Rejected' && '#FFD6D6' || leave?.status === 'Created' && '#D7E9FF' ||  leave?.status === 'Approved' && '#C5FFD8',
-                                        color:  leave?.status === 'Rejected' && '#F81111' ||  leave?.status === 'Created' && '#2274D4' ||  leave?.status === 'Approved' && '#08792E',
+                                ))
+                            ) : (
+                                <p className="text-center text-gray-500 py-4">No leave records found</p>
+                            )}
 
-                                    }}>{leave?.status}</button></div>
-                                </div>
-                            ))}
 
                         </div>
                     </div>
@@ -304,7 +341,7 @@ export const Dashborad = () => {
 
                                             <div>
                                                 <h6 className=' text-[17px] text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] my-1' style={{ textTransform: 'capitalize' }}>{item?.title}</h6>
-                                                <p className='text-[13px] text-[#555]'>
+                                                <p className='text-[13px] text-[#555]' style={{ textTransform: 'capitalize' }}>
                                                     {item?.description}                                            </p>
                                                 <div className='text-[13px] text-[#06752B] px-[10px] bg-[#D1FFC2] rounded inline-block my-2' style={{
                                                     background: item.status === 'upcoming' && '#FFCA96' || item.status === 'ongoing' && '#D7E9FF' || item.status === 'completed' && '#D1FFC2',

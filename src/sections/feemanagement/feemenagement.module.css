@@ -512,8 +512,8 @@
   flex-direction: column;
   gap: 13px;
   margin: auto;
-  padding: 0px 22px;
-  height: 100%;
+  padding: 20px 22px;
+  /* height: 100%; */
 }
 .updatefeepic {
   height: 150px;

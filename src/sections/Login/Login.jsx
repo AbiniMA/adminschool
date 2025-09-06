@@ -77,8 +77,6 @@ const Login = ({ setLoginUser }) => {
   };
 
 
-
-
   return (
     <>
 
@@ -96,8 +94,7 @@ const Login = ({ setLoginUser }) => {
                 </div>
                 <div className={styles.para}>
                   <p>
-                    Lorem ipsum dolor sit amet consectetur. Proin feugiat nulla
-                    sed vitae varius bibendum blandit pharetra quam.
+                   Empowering growth through learning and technology, creating a future driven by knowledge and innovation.
                   </p>
                 </div>
               </div>

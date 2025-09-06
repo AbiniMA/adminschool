@@ -5,7 +5,16 @@
   padding: 30px;
   font-family: "Poppins", sans-serif;
 }
-
+.inputfield{
+    width: 100%;
+  height: 40px;
+  margin-top: 5px;
+  border-radius: 7px;
+  outline: none;
+  border: none;
+  background-color: #f2f2f2;
+  padding-left: 15px;
+}
 .header {
   text-align: center;
   position: relative;

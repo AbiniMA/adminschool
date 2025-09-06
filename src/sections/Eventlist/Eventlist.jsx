@@ -178,11 +178,11 @@ const Eventlist = () => {
 
                                                     </div>
                                                 </div>
-                                                <p className="font-[600] text-[18px] my-2">{item.title}</p>
+                                                <p className="font-[600] text-[18px] my-2">{item.title?.replace(/\b\w/g, (char) => char.toUpperCase())}</p>
                                                 <p
                                                     title={item.description} className={`text-[14px] text-[#000] h-[41px] font-[400] my-3 ${styles['ellipsis-2']}`}
                                                 >
-                                                    {item.description}
+                                                    {item.description?.replace(/\b\w/g, (char) => char.toUpperCase())}
                                                 </p>
                                                 <p className="text-[14px] text-[#000] font-[500]  pb-3">
                                                     Date : {item.date.split('T')[0]}, {item.day}
@@ -214,7 +214,7 @@ const Eventlist = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="flex justify-center h-[400px] items-center w-full my-auto">
+                                    <div className="flex justify-center h-[400px] items-center w-full my-auto flex-col text-gray-500 font-semibold">
                                         <img src={nodata} alt="No Data" className="w-[200px] h-[200px]" />
                                         <p>No Data Found</p>
 

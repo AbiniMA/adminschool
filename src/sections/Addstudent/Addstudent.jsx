@@ -206,6 +206,8 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
         }
     };
 
+    const [mes, setMes] = useState('')
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const newErrors = validation();
@@ -225,6 +227,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
 
                 toast.error(err?.response?.data?.message)
                 setLoading(false)
+                setMes(err?.response?.data?.message)
 
             }
         }
@@ -404,12 +407,9 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                             </div>
                             <div className={styles.student_dob}>
                                 <div className={styles.datepicker_wrapper}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <div>
-                                            <div >
-                                                <label htmlFor="date">D.O.B<span className={styles.important}>*</span></label>
-
-                                            </div>
+                                            
 
                                             <DatePicker
                                                 open={open}
@@ -458,7 +458,13 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                                                 <p className={styles.error}>{Errors.student_dob}</p>
                                             </div>
                                         </div>
-                                    </LocalizationProvider>
+                                    </LocalizationProvider> */}
+                                    <div >
+                                        <label htmlFor="date">D.O.B<span className={styles.important}>*</span></label>
+
+                                    </div>
+
+                                    <input type="date" className={styles.inputfield} value={Formdata.student_dob} onChange={(e) => { setFormdata({ ...Formdata, student_dob: e.target.value }), setErrors({ ...Errors, student_dob: '' }) }} />
                                 </div>
                             </div>
                             <div className={styles.student_qualification}>
@@ -560,7 +566,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                                 </div>
                             </div>
                         </div>
-
+                        <p className={styles.error}>{mes}</p>
                         <div className={styles.submit_button}>
                             <input type="submit" value={loading ? "Loading..." : "Add Student"} style={{ cursor: "pointer" }} className={styles.submit} onClick={handleSubmit} />
                         </div>

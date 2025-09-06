@@ -19,7 +19,7 @@ import { IoMdPerson } from "react-icons/io";
 import { RiFileList2Fill } from "react-icons/ri";
 import { PiFlagPennantFill } from "react-icons/pi";
 import { RiSettings5Fill } from "react-icons/ri";
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Addstudent from '../sections/Addstudent/Addstudent'
 import Modal from 'react-modal';
 import { FaMoneyBill } from "react-icons/fa";
@@ -92,9 +92,10 @@ const Header = ({ setLoginUser }) => {
           <div className={styles.navbar_close} onClick={handleCloseNavbar}><IoMdClose /></div>
           <div className={styles.navbar_content}>
             <div className={styles.logo}>
-              <img src={logo} alt="logo" height={"100%"} width={"100%"} style={{
+            <Link  to='/dashboard'>
+            <img src={logo} alt="logo" height={"100%"} width={"100%"} style={{
                 filter: 'brightness(0) saturate(100%) invert(100%)'
-              }} />
+              }} /></Link>
             </div>
             <div className={styles.main_navigation}>
               <div className={styles.navigation}>
@@ -102,15 +103,15 @@ const Header = ({ setLoginUser }) => {
                   <button className={`${styles.dashboard_button} ${location.pathname == '/dashboard' ? styles.navactive : ''}`} onClick={() => navigate('/dashboard')}> {location.pathname == '/dashboard' ? <IoPieChart className={styles.filled_chart_icon} /> : <IoPieChartOutline className={styles.outline_chart_icon} />}Dashboard</button>
                 </div>
                 <div className={styles.students}>
-                  <button className={`${styles.students_button}  ${location.pathname == '/students' ? styles.navactive : ''} ${location.pathname.startsWith('/students/studentview') ? styles.navactive : ''}`} onClick={() => navigate('/students')}>{location.pathname == '/students' ? <IoMdPerson className={styles.filled_person_icon} /> : <BsPerson className={styles.outline_person_icon} />}Students</button>
+                  <button className={`${styles.students_button}  ${location.pathname == '/students' ? styles.navactive : ''} ${location.pathname.startsWith('/students/studentview') ? styles.navactive : ''}`} onClick={() => navigate('/students')}>{location.pathname == '/students' || location.pathname.startsWith('/students/studentview') ? <IoMdPerson className={styles.filled_person_icon} /> : <BsPerson className={styles.outline_person_icon} />}Students</button>
                 </div>
                 <div className={styles.fees}>
                   <button className={`${styles.fees_button} ${location.pathname == '/fees' ? styles.navactive : ''}`} onClick={() => navigate('/fees')}>{location.pathname == '/fees' ? <FaMoneyBill /> : <LiaMoneyBillSolid className={styles.outline_fee_icon} />
                   }Fee Management</button>
                 </div>
                 <div className={styles.attendance}>
-                  <button className={`${styles.attendance_button} ${location.pathname == '/attendence' ? styles.navactive : ''}`} onClick={() => navigate('/attendence')}>
-                    {location.pathname == '/attendence' ? <RiFileList2Fill className={styles.filled_list_icon} />
+                  <button className={`${styles.attendance_button} ${location.pathname == '/attendence' || location.pathname.startsWith('/attendence/leaverequest') ? styles.navactive : ''}`} onClick={() => navigate('/attendence')}>
+                    {location.pathname == '/attendence' || location.pathname.startsWith('/attendence/leaverequest')  ? <RiFileList2Fill className={styles.filled_list_icon} />
                       :
                       <RiFileList2Line className={styles.outline_list_icon} />}Attendance</button>
                 </div>
