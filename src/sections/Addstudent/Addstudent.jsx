@@ -208,6 +208,28 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
 
     const [mes, setMes] = useState('')
 
+    const [toastQueue, setToastQueue] = useState([]);
+    const [toastActive, setToastActive] = useState(false);
+
+    const showToast = (message, type = "error") => {
+        setToastQueue((prev) => [...prev, { message, type }]);
+    };
+
+    useEffect(() => {
+        if (!toastActive && toastQueue.length > 0) {
+            const { message, type } = toastQueue[0];
+
+            toast[type](message, {
+                autoClose: 2000,
+                onOpen: () => setToastActive(true),
+                onClose: () => {
+                    setToastActive(false);
+                    setToastQueue((prev) => prev.slice(1)); // remove first toast after close
+                },
+            });
+        }
+    }, [toastActive, toastQueue]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const newErrors = validation();
@@ -223,13 +245,12 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                 if (onStudentAdded) onStudentAdded();
 
             } catch (err) {
-                console.log(err.response?.data.message)
-
-                toast.error(err?.response?.data?.message)
-                setLoading(false)
-                setMes(err?.response?.data?.message)
-
+                console.log(err.response?.data.message);
+                showToast(err?.response?.data?.message, "error");
+                setLoading(false);
+                setMes(err?.response?.data?.message);
             }
+
         }
     }
 
@@ -238,6 +259,8 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
 
         getBatchname()
     }, []);
+
+
 
 
     let getBatchnameid = async (id) => {
@@ -573,10 +596,14 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                     </div>
                 </form>
             </div>
-            <div className="add-student-toast-wrapper">
-                <ToastContainer position="bottom-center" />
+            <div className={styles.toastWrapper}>
+                <ToastContainer
+                    position="bottom-center"
+                    newestOnTop
+                    className={styles.customContainer}
+                />
             </div>
-           
+
 
 
         </>

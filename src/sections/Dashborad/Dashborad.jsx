@@ -28,8 +28,10 @@ export const Dashborad = () => {
     const [todayAttendance, setToday] = useState()
     const [date, setDate] = useState('')
     const [open, setOpen] = useState(false)
-    const [status, setStatus] = useState('ongoing');
-    const [leavestatus, setLeaveStatus] = useState('Approved');
+    const [status, setStatus] = useState('');
+    const [leavestatus, setLeaveStatus] = useState('');
+   
+const todayDate = new Date().toISOString().split("T")[0];
 
 
     const [Attendance, setAttendance] = useState([])
@@ -56,6 +58,7 @@ export const Dashborad = () => {
         }
     }
     const [studentData, setStudentData] = useState(null);
+
 
     let countStudent = async () => {
         try {
@@ -210,7 +213,7 @@ export const Dashborad = () => {
                     <div className={dashboradcss.dashcard} style={{ height: '420px', overflowY: 'hidden' }} >
                         <div className="flex justify-between items-center mx-2 mb-[20px]">
                             <div><h4 className=' text-lg font-normal'>Leave Request</h4></div>
-                            <div style={{ width: '130px', }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <FormControl
                                     variant="outlined"
                                     size="small"
@@ -236,11 +239,15 @@ export const Dashborad = () => {
                                             border: 'none'
                                         }}
                                     >
+                                        <MenuItem value="">All</MenuItem>
+
                                         <MenuItem value="Approved">Approved</MenuItem>
                                         <MenuItem value="Rejected">Rejected</MenuItem>
 
                                     </Select>
                                 </FormControl>
+                                <div><Link to={`/attendence/leaverequest/${todayDate }`}><img src={resizeicon} alt="resizeicon" /></Link></div>
+
                             </div>
                         </div>
                         <div style={{ height: '400px', overflowY: 'auto', paddingBottom: '60px' }} >
@@ -377,7 +384,7 @@ export const Dashborad = () => {
                             <div className='flex justify-between '>
                                 <div style={{ color: 'green', fontSize: '14px' }}>No Of Student Present: {Attendance.fetchCount}</div>
 
-                                <div style={{ color: 'red', fontSize: '14px' }}>No Of Student Absent: {Attendance.leaveRequestCount}</div>
+                                <div style={{ color: 'red', fontSize: '14px' }}>No Of Student Absent: {Attendance.leaveApproved}</div>
                             </div>
                         </div>
 
@@ -385,7 +392,7 @@ export const Dashborad = () => {
                     <div className={`${dashboradcss.dashcard} row-span-3`} style={{ height: '741px', overflowY: 'hidden' }}>
                         <div className="flex justify-between items-center mx-2 mb-[20px]">
                             <div><h4 className=' text-lg font-normal'>Events</h4></div>
-                            <div style={{ width: '130px', }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <FormControl
                                     variant="outlined"
                                     size="small"
@@ -411,42 +418,55 @@ export const Dashborad = () => {
                                             border: 'none'
                                         }}
                                     >
+                                        <MenuItem value="">All</MenuItem>
+
                                         <MenuItem value="upcoming">Upcoming</MenuItem>
                                         <MenuItem value="ongoing">Ongoing</MenuItem>
-
+                                        <MenuItem value="completed">Completed</MenuItem>
 
                                     </Select>
                                 </FormControl>
+                                <div><Link to='/events'><img src={resizeicon} alt="resizeicon" /></Link></div>
+
                             </div>
+
                         </div>
                         <div style={{ height: '680px', overflowY: 'scroll', paddingBottom: '20px' }}>
-                            {eventList.map((item) => {
-                                const { day, month, year } = formatDate(item.date);
-                                return (
-                                    <div key={item._id} className="flex justify-around items-center py-[10px] border-b-[2px] border-b-[#0000001A] border-b-solid">
-                                        <div className="flex items-center w-[70%]">
+                            {eventList?.length > 0 ? (
+                                eventList.map((item) => {
+                                    const { day, month, year } = formatDate(item.date);
+                                    return (
+                                        <div key={item._id} className="flex justify-around items-center py-[10px] border-b-[2px] border-b-[#0000001A] border-b-solid">
+                                            <div className="flex items-center w-[70%]">
 
+                                                <div>
+                                                    <h6 className=' text-[17px] text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] my-1' style={{ textTransform: 'capitalize' }}>{item?.title}</h6>
+                                                    <p className='text-[13px] text-[#555]' style={{ textTransform: 'capitalize' }}>
+                                                        {item?.description}                                            </p>
+                                                    <div className='text-[13px] text-[#06752B] px-[10px] bg-[#D1FFC2] rounded inline-block my-2' style={{
+                                                        background: item.status === 'upcoming' && '#FFCA96' || item.status === 'ongoing' && '#D7E9FF' || item.status === 'completed' && '#D1FFC2',
+                                                        color: item.status === 'upcoming' && '#8D4600' || item.status === 'ongoing' && '#2274D4' || item.status === 'completed' && '#06752B',
+
+                                                    }}>{item?.status}</div>
+                                                </div>
+                                            </div>
                                             <div>
-                                                <h6 className=' text-[17px] text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] my-1' style={{ textTransform: 'capitalize' }}>{item?.title}</h6>
-                                                <p className='text-[13px] text-[#555]' style={{ textTransform: 'capitalize' }}>
-                                                    {item?.description}                                            </p>
-                                                <div className='text-[13px] text-[#06752B] px-[10px] bg-[#D1FFC2] rounded inline-block my-2' style={{
-                                                    background: item.status === 'upcoming' && '#FFCA96' || item.status === 'ongoing' && '#D7E9FF' || item.status === 'completed' && '#D1FFC2',
-                                                    color: item.status === 'upcoming' && '#8D4600' || item.status === 'ongoing' && '#2274D4' || item.status === 'completed' && '#06752B',
+                                                <div className='bg-[#D9D9D9] px-[5px] py-[5px]  rounded-lg text-center'>
+                                                    <h5 className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[600]'>{day}</h5>
+                                                    <p className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[600] text-[13px]'>{month} {year}</p>
+                                                    <p className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530]  text-[12px]'>{item?.time}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            ) : (
+                                <div>
+                                    <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
+                                    <p className="text-center text-gray-500 font-semibold">No Data Found</p>
+                                </div>
 
-                                                }}>{item?.status}</div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className='bg-[#D9D9D9] px-[5px] py-[5px]  rounded-lg text-center'>
-                                                <h5 className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[600]'>{day}</h5>
-                                                <p className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[600] text-[13px]'>{month} {year}</p>
-                                                <p className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530]  text-[12px]'>{item?.time}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                            )}
                         </div>
 
                     </div>
@@ -456,7 +476,7 @@ export const Dashborad = () => {
                             <div><Link to='/students'><img src={resizeicon} alt="resizeicon" /></Link></div>
                         </div>
 
-                        <div class="overflow-x-auto " style={{ height: '300px', overflowY: 'scroll', paddingBottom: '100px' }}>
+                        <div class="overflow-x-auto " style={{ height: '300px', overflowY: 'scroll', paddingBottom: '60px' }}>
                             <table class="min-w-full text-sm text-left rounded-[10px] overflow-hidden">
                                 <thead class="bg-[#ffff]">
                                     <tr >

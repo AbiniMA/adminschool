@@ -446,14 +446,17 @@ const Attandance = () => {
 
 
                   <tr key={item._id}>
-                    <td style={{color:item?.onLeave&&"red"}}>{item.userDetails?.name}</td>
-                    <td style={{color:item?.onLeave&&"red"}}>{item.userDetails?.studentId}</td>
-                    <td style={{color:item?.onLeave&&"red"}}>{item.userDetails?.mobileNo}</td>
-                    <td style={{color:item?.onLeave&&"red"}}>{item.courseDetails?.courseName}</td>
-                    <td style={{color:item?.onLeave&&"red"}}>{item.date?.split("T")[0]}</td>
-                    
-                    <td>{item?.onLeave ?<p style={{ color: "red" }}>Leave</p> : formatTime(item?.inTime) }</td>
-                    <td  >{item.outTime ? formatTime(item?.outTime) : <p style={{ color: "red", background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p>}</td>
+                    <td style={{ color: item?.onLeave && "red" }}>{item.userDetails?.name}</td>
+                    <td style={{ color: item?.onLeave && "red" }}>{item.userDetails?.studentId}</td>
+                    <td style={{ color: item?.onLeave && "red" }}>{item.userDetails?.mobileNo}</td>
+                    <td style={{ color: item?.onLeave && "red" }}>{item.courseDetails?.courseName}</td>
+                    <td style={{ color: item?.onLeave && "red" }}>{item.date?.split("T")[0]}</td>
+
+                    <td>{item?.onLeave ? <p style={{ color: "red" }}>Leave</p> : formatTime(item?.inTime)}</td>
+                    <td  >
+                      {item?.onLeave ? '' :  item.outTime ? formatTime(item?.outTime) : <p style={{ background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p> 
+                      }
+                    </td>
                   </tr>
                 ))
 
@@ -471,7 +474,6 @@ const Attandance = () => {
         </table>
       </div>
 
-
       {totalpages > 1 &&
         <ThemeProvider theme={theme}>
           <div style={{ marginLeft: "auto" }}>
@@ -487,12 +489,6 @@ const Attandance = () => {
           </div>
         </ThemeProvider>
       }
-
-
-
-
-
-
 
     </div>
   );

@@ -231,17 +231,17 @@ export const calcfee = (courseId, batchId, semester, searchText) => {
 // dashboard
 
 export const getDashboardUser = () => {
-  return apiService.get(`/user?limit=4&inStatus=ongoing`);
+  return apiService.get(`/user?limit=3&inStatus=ongoing`);
 };
 
 export const getDashboardEvents = (status) => {
-  return apiService.get(`/event?&status=${status}`);
+  return apiService.get(`/event?status=${status}&limit=6`);
 };
 
 export const getDashboardLeave = (status) => {
     const today = new Date().toISOString().split("T")[0];
 
-  return apiService.get(`/leave?status=${status}&date=${today}`);
+  return apiService.get(`/leave?status=${status}&date=${today}&limit=5`);
 };
 
 export const studentCount = () => {

@@ -58,7 +58,7 @@ const LeaveRequest = () => {
   const [updatestatus, setUpdatestatus] = useState('')
   const [loading, setLoading] = useState(false)
   const adminId = localStorage.getItem('userId')
-  const [reason,setReason] = useState('')
+  const [reason, setReason] = useState('')
   useEffect(() => {
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
@@ -129,20 +129,36 @@ const LeaveRequest = () => {
     setUpdate(true)
     try {
       let res = await getLeaveRequestById(id)
-      setData(res.data?.data?.result[0] )
+      setData(res.data?.data?.result[0])
     } catch (err) {
       console.log(err)
     }
 
   }
 
-  const handleUpdateClick = async (id, status, adminId,reason) => {
+  const [reasonerror, setReasonerror] = useState('')
+
+  const validation = () => {
+    if (reason.trim() === '') {
+      setReasonerror('Reason is required');
+      return false; // ❌ invalid
+    }
+    setReasonerror('');
+    return true; // ✅ valid
+  };
+
+
+  const handleUpdateClick = async (id, status, adminId, reason) => {
+    if (!validation()) {
+      return; // stop execution if reason is empty
+    }
+
     try {
-      let res = await updateLeaveRequest(id, status, adminId,reason)
-      // setData(res.data?.data || {})
+      let res = await updateLeaveRequest(id, status, adminId, reason)
       setUpdatestatus(status)
       setUpdate(false)
       getleavelist()
+      setReason('')
 
     }
     catch (err) {
@@ -162,6 +178,31 @@ const LeaveRequest = () => {
       timeZone: "UTC",
     });
   };
+
+
+
+  const formatTimehours = (decimalHours) => {
+    if (!decimalHours) return "0 minutes"; // handle null/undefined/0 safely
+
+    const totalMinutes = Math.round(decimalHours * 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    let parts = [];
+
+    if (hours > 0) {
+      parts.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
+    }
+    if (minutes > 0) {
+      parts.push(`${minutes} ${minutes === 1 ? "minute" : "minutes"}`);
+    }
+
+    return parts.join(" ") || "0 minutes";
+  };
+
+
+
+
   return (
     <>
       <div className={styles.container}>
@@ -325,7 +366,11 @@ const LeaveRequest = () => {
                           <td>{item?.userDetails?.name}</td>
                           <td>{item?.userDetails?.studentId}</td>
                           <td>{item?.userDetails?.mobileNo}</td>
-                          <td>{item?.noOfDays || '-'}</td>
+                          {item.isPermission ?
+                            <td>{formatTimehours(item?.permissionTime)}</td> :
+                            <td>{item?.noOfDays} {item?.noOfDays > 1 ? 'days' : 'day'}</td>
+
+                          }
                           {item.isPermission ?
                             <td>{formatTime(item?.startTime)}</td>
                             :
@@ -416,7 +461,7 @@ const LeaveRequest = () => {
           <div className={styles.leavereq}>
             <div className={styles.reqhead}>
               <p>Leave Request</p>
-              <MdClose className={styles.closeIcon} onClick={() => setUpdate(false)} />
+              <MdClose className={styles.closeIcon} onClick={() => { setUpdate(false), setData({}), setReason(''), setReasonerror('') }} />
             </div>
             <div className={styles.div}>
               <div className={styles.profile}>
@@ -444,17 +489,17 @@ const LeaveRequest = () => {
                 </div>
                 <div className={styles.grid2}>
                   <label for="">From</label>
-                  {data?.isPermission ? <input  style={{ color: "black" }} disabled className={styles.dateinput} value={formatTime(data?.startTime)}
+                  {data?.isPermission ? <input style={{ color: "black" }} disabled className={styles.dateinput} value={formatTime(data?.startTime)}
                   /> :
-                    <input  style={{ color: "black" }} disabled className={styles.dateinput} value={data?.fromDate ? data.fromDate.slice(0, 10) : ""}
+                    <input style={{ color: "black" }} disabled className={styles.dateinput} value={data?.fromDate ? data.fromDate.slice(0, 10) : ""}
                     />}
 
                 </div>
                 <div className={styles.grid2}>
                   <label for="">To</label>
-                  {data?.isPermission ? <input  style={{ color: "black" }} disabled className={styles.dateinput} value={formatTime(data?.endTime)}
+                  {data?.isPermission ? <input style={{ color: "black" }} disabled className={styles.dateinput} value={formatTime(data?.endTime)}
                   /> :
-                    <input  style={{ color: "black" }} disabled className={styles.dateinput} value={data?.toDate ? data.toDate.slice(0, 10) : ""}
+                    <input style={{ color: "black" }} disabled className={styles.dateinput} value={data?.toDate ? data.toDate.slice(0, 10) : ""}
                     />
                   }
                 </div>
@@ -473,18 +518,20 @@ const LeaveRequest = () => {
               </div>
               <div className={styles.gridss}>
                 <div className={styles.grid3}>
-                  <label>Reason</label>
+                  <label>Reason <span style={{ color: "red" }}>*</span></label>
                   <textarea
                     placeholder="Enter Reason"
                     className={styles.description}
                     value={reason}
-                    onChange={(e) => setReason(e.target.value)}
+                    onChange={(e) => { setReason(e.target.value), setReasonerror('') }}
                   ></textarea>
+                  {reasonerror && <p style={{ color: "red", fontSize: "12px" }}>{reasonerror}</p>}
+
                 </div>
               </div>
               <div className={styles.gridsss}>
-                <button className={styles.rejectBtn} onClick={() => handleUpdateClick(data?._id, 'Rejected', adminId,reason)}>Reject</button>
-                <button className={styles.acceptBtn} onClick={() => handleUpdateClick(data?._id, 'Approved', adminId,reason)}>Accept</button>
+                <button className={styles.rejectBtn} onClick={() => handleUpdateClick(data?._id, 'Rejected', adminId, reason)}>Reject</button>
+                <button className={styles.acceptBtn} onClick={() => handleUpdateClick(data?._id, 'Approved', adminId, reason)}>Accept</button>
               </div>
             </div>
           </div>
