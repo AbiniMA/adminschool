@@ -5,7 +5,9 @@ body {
   margin: 0;
   padding: 0;
 }
-
+.ant-modal .ant-modal-close{
+  color:black !important;
+}
 .headtitle {
   font-size: 20px !important;
   color: #000000;

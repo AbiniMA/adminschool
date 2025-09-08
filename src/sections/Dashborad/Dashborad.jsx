@@ -250,7 +250,7 @@ const todayDate = new Date().toISOString().split("T")[0];
 
                             </div>
                         </div>
-                        <div style={{ height: '400px', overflowY: 'auto', paddingBottom: '60px' }} >
+                        <div style={{ height: '400px', overflowY: 'auto', paddingBottom: '40px' }} >
                             {leaveList?.length > 0 ? (
                                 leaveList.map((leave) => (
                                     <div
@@ -499,7 +499,7 @@ const todayDate = new Date().toISOString().split("T")[0];
                                             <td class="px-4 py-3">{item?.mobileNo}</td>
                                             <td class="px-4 py-3">{item?.courseDetails?.courseName}</td>
                                             <td class="px-4 py-3">{item?.batchDetails?.batchName}</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium" style={item?.inStatus === 'ongoing' ? { color: 'blue' } : ''}>{item.inStatus}</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium" style={item?.inStatus === 'ongoing' ? { color: '#1D4ED8' } : ''}>{item.inStatus}</td>
                                         </tr>
                                     ))}
 

@@ -1,4 +1,3 @@
-
 .modalTitle {
   text-align: center;
   font-size: 22px;
@@ -6,12 +5,10 @@
   margin-bottom: 10px;
 }
 
-
 .required {
   color: red;
   font-weight: bold;
 }
-
 
 .rowOneGrid {
   display: grid;
@@ -19,7 +16,6 @@
   gap: 16px;
   margin-bottom: 16px;
 }
-
 
 .rowTwoGrid {
   display: grid;
@@ -33,9 +29,8 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden; 
+  overflow-x: hidden;
 }
-
 
 .rowThreeGrid {
   display: grid;
@@ -44,13 +39,11 @@
   margin-bottom: 16px;
 }
 
-
 .formGroup {
   display: flex;
   flex-direction: column;
-
-  font-family: "poppins",sans-serif;
-  
+  margin-top: 10px !important;
+  font-family: "poppins", sans-serif;
 }
 
 .formGroup label {
@@ -58,10 +51,11 @@
   font-weight: 400;
   margin-bottom: 6px;
   color: #222;
+  margin-top: 9px;
 }
 
 .formGroup input {
- background-color: #F2F2F2;
+  background-color: #f2f2f2;
   padding: 14px 12px;
   font-size: 14px;
   font-weight: 500;
@@ -86,14 +80,11 @@
 .submitBtn:hover {
   opacity: 0.9;
 }
-.errorDiv{
+.errorDiv {
   color: red;
   font-size: 0.6rem;
-  padding: 7px ;
+  /* padding: 7px ; */
 }
-
-
-
 
 @media (max-width: 768px) {
   .rowOneGrid,

@@ -147,12 +147,13 @@ const LeaveRequest = () => {
     return true; // ✅ valid
   };
 
+  const [idloading, setIdlloading] = useState(false)
 
   const handleUpdateClick = async (id, status, adminId, reason) => {
     if (!validation()) {
       return; // stop execution if reason is empty
     }
-
+    setIdlloading(true)
     try {
       let res = await updateLeaveRequest(id, status, adminId, reason)
       setUpdatestatus(status)
@@ -163,6 +164,8 @@ const LeaveRequest = () => {
     }
     catch (err) {
       console.log(err)
+    } finally {
+      setIdlloading(false)
     }
   }
   const formatTime = (dateString) => {
@@ -182,7 +185,7 @@ const LeaveRequest = () => {
 
 
   const formatTimehours = (decimalHours) => {
-    if (!decimalHours) return "0 minutes"; // handle null/undefined/0 safely
+    if (!decimalHours) return "0 mins"; // handle null/undefined/0 safely
 
     const totalMinutes = Math.round(decimalHours * 60);
     const hours = Math.floor(totalMinutes / 60);
@@ -194,10 +197,10 @@ const LeaveRequest = () => {
       parts.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
     }
     if (minutes > 0) {
-      parts.push(`${minutes} ${minutes === 1 ? "minute" : "minutes"}`);
+      parts.push(`${minutes} ${minutes === 1 ? "min" : "mins"}`);
     }
 
-    return parts.join(" ") || "0 minutes";
+    return parts.join(" ") || "0 mins";
   };
 
 
@@ -473,11 +476,11 @@ const LeaveRequest = () => {
               <div className={styles.grid}>
                 <div className={styles.grid1}>
                   <label for="">Student Name</label>
-                  <input type="text" placeholder="Enter student name" value={data?.userDetails?.name} disabled />
+                  <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="Enter student name" value={data?.userDetails?.name} disabled />
                 </div>
                 <div className={styles.grid1}>
                   <label for="">Phone Number</label>
-                  <input type="tel" placeholder="Enter phone number" value={data?.userDetails?.mobileNo} disabled />
+                  <input type="tel" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="Enter phone number" value={data?.userDetails?.mobileNo} disabled />
                 </div>
               </div>
               <div className={styles.grids}>
@@ -485,21 +488,21 @@ const LeaveRequest = () => {
                   <label for="">
                     No of Days <sup style={{ color: "red" }}>*</sup>
                   </label>
-                  <input type="text" placeholder="no of days" value={data?.noOfDays} disabled />
+                  <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="no of days" value={data?.noOfDays} disabled />
                 </div>
                 <div className={styles.grid2}>
                   <label for="">From</label>
-                  {data?.isPermission ? <input style={{ color: "black" }} disabled className={styles.dateinput} value={formatTime(data?.startTime)}
+                  {data?.isPermission ? <input disabled className={styles.dateinput} value={formatTime(data?.startTime)}
                   /> :
-                    <input style={{ color: "black" }} disabled className={styles.dateinput} value={data?.fromDate ? data.fromDate.slice(0, 10) : ""}
+                    <input style={{ color: 'grey', cursor: 'not-allowed' }} disabled className={styles.dateinput} value={data?.fromDate ? data.fromDate.slice(0, 10) : ""}
                     />}
 
                 </div>
                 <div className={styles.grid2}>
                   <label for="">To</label>
-                  {data?.isPermission ? <input style={{ color: "black" }} disabled className={styles.dateinput} value={formatTime(data?.endTime)}
+                  {data?.isPermission ? <input style={{ color: 'grey', cursor: 'not-allowed' }} disabled className={styles.dateinput} value={formatTime(data?.endTime)}
                   /> :
-                    <input style={{ color: "black" }} disabled className={styles.dateinput} value={data?.toDate ? data.toDate.slice(0, 10) : ""}
+                    <input style={{ color: 'grey', cursor: 'not-allowed' }} disabled className={styles.dateinput} value={data?.toDate ? data.toDate.slice(0, 10) : ""}
                     />
                   }
                 </div>
@@ -509,7 +512,7 @@ const LeaveRequest = () => {
                   <label>Description</label>
                   <textarea
                     disabled
-
+                    style={{ color: 'grey', cursor: 'not-allowed' }}
                     placeholder="Enter description"
                     className={styles.description}
                     value={data?.discription}
@@ -530,7 +533,7 @@ const LeaveRequest = () => {
                 </div>
               </div>
               <div className={styles.gridsss}>
-                <button className={styles.rejectBtn} onClick={() => handleUpdateClick(data?._id, 'Rejected', adminId, reason)}>Reject</button>
+                <button className={styles.rejectBtn} onClick={() => handleUpdateClick(data?._id, 'Rejected', adminId, reason)}>  Reject</button>
                 <button className={styles.acceptBtn} onClick={() => handleUpdateClick(data?._id, 'Approved', adminId, reason)}>Accept</button>
               </div>
             </div>

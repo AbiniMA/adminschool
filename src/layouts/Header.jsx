@@ -116,8 +116,8 @@ const Header = ({ setLoginUser }) => {
                       <RiFileList2Line className={styles.outline_list_icon} />}Attendance</button>
                 </div>
                 <div className={styles.attendance}>
-                  <button className={`${styles.attendance_button} ${location.pathname == '/course' ? styles.navactive : ''}`} onClick={() => navigate('/course')}>
-                    {location.pathname == '/course' ? <RiFileList2Fill className={styles.filled_list_icon} /> : <RiFileList2Line className={styles.outline_list_icon} />}
+                  <button className={`${styles.attendance_button} ${location.pathname == '/course'|| location.pathname.startsWith('/course/coursedetails') ? styles.navactive : ''}`} onClick={() => navigate('/course')}>
+                    {location.pathname == '/course' || location.pathname.startsWith('/course/coursedetails') ? <RiFileList2Fill className={styles.filled_list_icon} /> : <RiFileList2Line className={styles.outline_list_icon} />}
 
 
                     Course</button>

@@ -42,12 +42,14 @@ const Login = ({ setLoginUser }) => {
     }
     return newErrors
   }
+  const [loading, setLoading] = useState(false);
   const handleClick = async (e) => {
     e.preventDefault();
 
     let validation = Validation();
 
     if (Object.keys(validation).length === 0) {
+      setLoading(true)
       try {
         const res = await LoginUser(email, password);
         console.log('hkokoioj')
@@ -72,6 +74,8 @@ const Login = ({ setLoginUser }) => {
       } catch (err) {
         console.error("Login failed:", err);
         toast.error(err?.response?.data?.message)
+      }finally{
+        setLoading(false)
       }
     }
   };
@@ -159,7 +163,7 @@ const Login = ({ setLoginUser }) => {
 
                 {/* Submit Button */}
                 <div className={styles.formDivBtn}>
-                  <button type="submit">Sign in</button>
+                  <button type="submit">{loading?'Signing in...':"Sign in"}</button>
                 </div>
               </form>
             </div>

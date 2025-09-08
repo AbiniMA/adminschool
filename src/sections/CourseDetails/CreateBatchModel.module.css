@@ -66,6 +66,7 @@
   flex-direction: column;
   font-family: "Poppins", sans-serif;
   min-width: 250px;
+  margin-top: 10px;
 }
 
 .formGroup label {
@@ -84,7 +85,6 @@
   border-radius: 8px;
   outline: none;
   color: #000;
-  margin-bottom: 4px; /* Space before error message */
 }
 
 /* Error message styling */
@@ -106,7 +106,7 @@
 }
 
 .submitBtn {
-  background: linear-gradient(to right, #1e3c72, #2a5298);
+  background: linear-gradient(to bottom, #144196, #061530);
   color: white;
   padding: 10px 30px;
   font-size: 15px;

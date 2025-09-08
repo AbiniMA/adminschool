@@ -24,12 +24,13 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
 
   // Validation functions
   const validateCourseName = (value) => {
-    if (value && !/^[A-Za-z\s/]+$/.test(value)) {
-      return "Course name can contain only letters, spaces, and '/'";
-    }
-    if (submitted && !value.trim()) {
+    if (!value.trim()) {
       return "Course name required";
     }
+    else if (value && !/^[A-Za-z\s/]+$/.test(value)) {
+      return "Course name can contain only letters, spaces, and '/'";
+    }
+
     return "";
   };
 
@@ -77,7 +78,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
     setSubmitted(true);
 
     // Validate fields
-    const nameErr = validateCourseName(courseName);
+    const nameErr = validateCourseName(courseName, "Course Name");
     const durationErr = validateNumber(duration, "Duration");
     const semErr = validateNumber(noOfSem, "No of Semester");
     const adErr = validateNumber(admissionFee, "Admission Fee");
@@ -122,7 +123,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
         duration,
         noOfSem,
         admissionFee,
-         firstsemFee: firstSemFee,
+        firstsemFee: firstSemFee,
         secondSemFee,
       };
 
@@ -182,7 +183,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
           {/* Row 1 */}
           <div className={styles.rowOneGrid}>
             <div className={styles.formGroup}>
-              <label>Course Name</label>
+              <label>Course Name<span className={styles.required}>*</span></label>
               <input
                 type="text"
                 placeholder="Enter Course Name"
@@ -194,7 +195,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
               </div>
             </div>
             <div className={styles.formGroup}>
-              <label>Duration (in year)</label>
+              <label>Duration (in year)<span className={styles.required}>*</span></label>
               <input
                 type="text"
                 placeholder="Enter Duration"
@@ -206,7 +207,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
               </div>
             </div>
             <div className={styles.formGroup}>
-              <label>No. of Semester</label>
+              <label>No. of Semester<span className={styles.required}>*</span></label>
               <input
                 type="text"
                 placeholder="Enter no of Semester"

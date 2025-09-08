@@ -155,7 +155,7 @@ const Eventlist = () => {
                     </div>
                 </div>
                 <div className='mt-4'>
-                    <div className='h-[460px]  overflow-x-auto py-[0px]'>
+                    <div className='h-[470px]  overflow-x-auto py-[0px]'>
                         {loading ? (
                             <div className='text-center'><Loader /></div>
                         ) : (
@@ -214,11 +214,11 @@ const Eventlist = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="flex justify-center h-[400px] items-center w-full my-auto flex-col text-gray-500 font-semibold">
-                                        <img src={nodata} alt="No Data" className="w-[200px] h-[200px]" />
-                                        <p>No Data Found</p>
+                                        <div className="flex justify-center h-[400px] items-center w-full my-auto flex-col text-gray-500 font-semibold">
+                                            <img src={nodata} alt="No Data" className="w-[200px] h-[200px]" />
+                                            <p>No Data Found</p>
 
-                                    </div>
+                                        </div>
                                 )}
                             </>
                         )}

@@ -53,6 +53,8 @@ export const postCourseBatch = (data) => {
 export const updateCourseBatch = (id, editdata) => {
   return apiService.put(`/batch/${id}`, editdata);
 };
+
+
 // get batch by courseId
 export const getCourseBatchByCourseId = (courseId, limit, offset) => {
   return apiService.get(
@@ -145,6 +147,7 @@ export const updateEvent = (formdata, id) => {
     description: formdata.description,
     date: formdata.date,
     time: formdata.time,
+    eventType: formdata.eventType
   };
   return apiService.put(`/event/${id}`, data);
 };

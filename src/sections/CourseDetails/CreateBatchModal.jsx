@@ -113,12 +113,12 @@ const CreateBatchModal = ({
   };
 
 
-
   const handleSubmit = async () => {
     const newErrors = validate();
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) return;
+    setIsLoading(true);
     try {
 
         const formattedCourseName = formData.batchName
@@ -171,6 +171,8 @@ const CreateBatchModal = ({
       onClose();
     } catch (err) {
       console.error("Error creating batch:", err);
+    }finally{
+      setIsLoading(false);
     }
 
   };

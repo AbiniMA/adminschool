@@ -7,6 +7,9 @@ import { getCourse } from "../../api/Serviceapi";
 import { useNavigate } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import LocaleProvider from "antd/es/locale";
+import Loader from "../../component/loader/Loader";
+import nodata from '../../assets/nodata.jpg'
 
 const theme = createTheme({
   components: {
@@ -31,7 +34,7 @@ const theme = createTheme({
 });
 
 const CourseTable = () => {
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(7);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1); // page number
@@ -44,8 +47,8 @@ const CourseTable = () => {
   const handlePageChange = (event, value) => {
     setTableData([]);
     setPage(value);
-    fetchCourse(value); // fetch data for selected page
-    // console, log('value', value)
+    fetchCourse(value);
+
   };
   useEffect(() => {
     const totalPages = Math.ceil(totalItems / limit);
@@ -61,12 +64,12 @@ const CourseTable = () => {
     try {
       setLoading(true);
       // correct offset calculation
-    const offset = (page - 1); // ✅ calculate properly
-    console.log("Sending to API => limit:", limit, "offset:", offset);
+      const offset = (page - 1); // ✅ calculate properly
+      console.log("Sending to API => limit:", limit, "offset:", offset);
       const res = await getCourse(limit, offset);
 
       setTableData(res?.data?.data?.data || []);
-      console.log('course in the table',res?.data?.data?.data);
+      console.log('course in the table', res?.data?.data?.data);
       setTotalItems(res?.data?.data?.totalCount);
       setStudentTotalCount(res?.data?.data?.studentTotalCount);
 
@@ -84,7 +87,7 @@ const CourseTable = () => {
 
   useEffect(() => {
     fetchCourse();
-  }, [page,limit]);
+  }, [page, limit]);
 
   // const handlePageChange = (_event_, value) => {
   //   setTableData([]); // reset to avoid flicker
@@ -124,7 +127,7 @@ const CourseTable = () => {
           {loading ? (
             <tr>
               <td colSpan="7" style={{ textAlign: "center" }}>
-                Loading ...
+                <Loader />
               </td>
             </tr>
           ) : tableData.length > 0 ? (
@@ -141,8 +144,9 @@ const CourseTable = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>
-                No data available
+              <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold">
+                <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
+                <p>No Data Found</p>
               </td>
             </tr>
           )}
@@ -152,7 +156,7 @@ const CourseTable = () => {
       {/* ✅ Pagination Section */}
       {totalPages > 1 && (
         <ThemeProvider theme={theme}>
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-end mt-4">
             <Pagination
               count={totalPages}
               page={page}

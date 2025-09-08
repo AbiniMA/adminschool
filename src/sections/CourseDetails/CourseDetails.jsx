@@ -3,7 +3,9 @@ import styles from "./courseDetails.module.css";
 import { FaPencilAlt, FaPlus, FaTrash } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"; // ⬅️ New import for the back arrow icon
-
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import nodata from '../../assets/nodata.jpg'
+import Skeleton from '@mui/material/Skeleton';
 import { useParams, useNavigate } from "react-router-dom"; // ⬅️ useNavigate is already here
 import {
   getCourseById,
@@ -16,6 +18,8 @@ import EditCourseModal from "./EditCourseModel";
 import CreateBatchModal from "./CreateBatchModal";
 import Pagination from "@mui/material/Pagination";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Loader from "../../component/loader/Loader";
+import Modal from 'react-modal';
 
 const theme = createTheme({
   components: {
@@ -54,8 +58,8 @@ const CourseDetails = () => {
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [totalstudent, settotalstudent] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [courseloading, setCourseLoading] = useState(false);
 
-  // ⬅️ Add the goBack function
   const goBack = () => {
     navigate(-1);
   };
@@ -63,7 +67,7 @@ const CourseDetails = () => {
   const handlePageChange = (event, value) => {
     setBatches([]);
     setPage(value);
-    fetchCourse(value);
+    fetchBatch(value);
   };
 
   useEffect(() => {
@@ -73,12 +77,15 @@ const CourseDetails = () => {
 
   // Fetch course details
   const fetchCourse = async () => {
+    setCourseLoading(true);
     try {
       const res = await getCourseById(id);
       setFormData(res.data.data.data || []);
       settotalstudent(res.data.data.studentTotalCount);
     } catch (err) {
       console.error("Error fetching course:", err);
+    } finally {
+      setCourseLoading(false);
     }
   };
   useEffect(() => {
@@ -99,6 +106,7 @@ const CourseDetails = () => {
       setLoading(false);
     }
   };
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   useEffect(() => {
     fetchBatch();
@@ -106,7 +114,7 @@ const CourseDetails = () => {
 
   const handleEdit = () => {
     formData.map((ele) => {
-      if (ele.studentCount <= 0) {
+      if (ele.studentCount >= 0) {
         setEditTable(true);
       } else return;
     });
@@ -128,6 +136,9 @@ const CourseDetails = () => {
     }
   };
 
+  const [delid, setId] = useState([])
+
+
   return (
     <div className={styles.container}>
       {/* ⬅️ Updated Header */}
@@ -142,7 +153,7 @@ const CourseDetails = () => {
       <div className={styles.diplomatable}>
         <div className={styles.tablehead}>
           <p className={styles.tableheadpara}>
-            {formData.length > 0 ? formData[0].courseName : "Loading..."}
+            {formData.length > 0 ? formData[0].courseName : <Skeleton variant="text" width={80} height={40} />}
           </p>
           <div className={styles.tableheadicon} onClick={handleEdit}>
             <FaPencilAlt className={styles.tableheadiconsvg} /> Edit
@@ -162,19 +173,33 @@ const CourseDetails = () => {
                 <th>Sem 2 Fee</th>
               </tr>
             </thead>
-            <tbody>
-              {formData.map((course) => (
-                <tr key={course._id}>
-                  <td>{course.duration}</td>
-                  <td>{course.noOfSem}</td>
-                  <td>{totalstudent}</td>
-                  <td>{course.studentCount}</td>
-                  <td>{course.admissionFee}</td>
-                  <td>{course.firstsemFee}</td>
-                  <td>{course.secondSemFee}</td>
-                </tr>
-              ))}
-            </tbody>
+            {courseloading ?
+              <tr >
+                <td><Skeleton variant="text" width={80} height={25} /></td>
+                <td><Skeleton variant="text" width={80} height={25} /></td>
+                <td><Skeleton variant="text" width={80} height={25} /></td>
+                <td><Skeleton variant="text" width={80} height={25} /></td>
+                <td><Skeleton variant="text" width={80} height={25} /></td>
+                <td><Skeleton variant="text" width={80} height={25} /></td>
+                <td><Skeleton variant="text" width={80} height={25} /></td>
+              </tr>
+              :
+              <tbody>
+                {formData.map((course) => (
+                  <tr key={course._id}>
+                    <td>{course.duration}</td>
+                    <td>{course.noOfSem}</td>
+                    <td>{totalstudent}</td>
+                    <td>{course.studentCount}</td>
+                    <td>{course.admissionFee}</td>
+                    <td>{course.firstsemFee}</td>
+                    <td>{course.secondSemFee}</td>
+                  </tr>
+                ))}
+              </tbody>
+
+            }
+
           </table>
         </div>
         <EditCourseModal
@@ -191,13 +216,14 @@ const CourseDetails = () => {
         <div className={styles.cardcreate}>
           <p className={styles.header}>Batches</p>
           <div className={styles.createbtn} onClick={() => setShowModal(true)}>
-            <FaPlus className={styles.createbtnicon} /> Create Batch
+            <FontAwesomeIcon icon={faPlus} />
+            Create Batch
           </div>
         </div>
 
         <div className={styles.cards}>
           {loading ? (
-            <div className={styles.loadingText}>Loading ...</div>
+            <div className={'col-span-4'}><Loader /></div>
           ) : batches.length > 0 ? (
             batches.map((batch) => {
               const isComplete = new Date(batch.endDate) < new Date();
@@ -231,16 +257,16 @@ const CourseDetails = () => {
                       </div>
                       <div
                         className={styles.iconsectionsvg}
-                        onClick={() => handleDeleteCards(batch)}
+                        // onClick={() => handleDeleteCards(batch._id)}
+                        onClick={() => { setDeleteOpen(true), setId(batch) }}
                       >
                         <FaTrash color="red" />
                       </div>
                     </div>
 
                     <div
-                      className={`${styles.tableheadstatus} ${
-                        isComplete ? styles.complete : styles.ongoing
-                      }`}
+                      className={`${styles.tableheadstatus} ${isComplete ? styles.complete : styles.ongoing
+                        }`}
                     >
                       {isComplete ? "Complete" : "Ongoing"}
                     </div>
@@ -249,13 +275,16 @@ const CourseDetails = () => {
               );
             })
           ) : (
-            <p className={styles.nobatch}>No batch available</p>
-          )}
+            <div className="flex justify-center col-span-4 h-[200px] items-center w-full my-auto flex-col text-gray-500 font-semibold">
+              <img src={nodata} alt="No Data" className="w-[200px] h-[200px]" />
+              <p>No Data Found</p>
+
+            </div>)}
         </div>
 
         {totalPages > 1 && (
           <ThemeProvider theme={theme}>
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-end mt-4">
               <Pagination
                 count={totalPages}
                 page={page}
@@ -288,7 +317,50 @@ const CourseDetails = () => {
         batchData={selectedBatch}
         onBatchCreated={fetchBatch}
       />
+
+
+
+      <Modal
+        isOpen={deleteOpen}
+        onRequestClose={() => setDeleteOpen(true)}
+        contentLabel="Delete Student"
+        style={{
+          overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgb(21 21 21 / 81%)', // gray overlay
+            zIndex: 1000,
+          },
+          content: {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            padding: '3rem',
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            width: 'max-content',
+            height: 'max-content',
+            overflow: 'auto',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            zIndex: 1001,
+          },
+        }}
+      >
+        {/* <Addstudent closeModal={() => setIsOpen(false)} onStudentAdded={getuserlist} /> */}
+        <p className={styles.popmessage}>Are you sure you want to delete this batch</p>
+        <div className='flex gap-4 justify-center mt-10'>
+          <button onClick={() => { setDeleteOpen(false), handleDeleteCards(delid) }}
+            className={styles.popyes} >Yes</button>
+          <button className={styles.popno} onClick={() => setDeleteOpen(false)}>No</button>
+        </div>
+      </Modal>
     </div>
+
+
   );
 };
 

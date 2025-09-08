@@ -352,7 +352,7 @@ const Studentdetails = () => {
                                         <h2 className='text-[22px] font-[500] text-center md:text-left'>{user?.name?.replace(/\b\w/g, (char) => char.toUpperCase())}</h2>
                                         <div>
                                             <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] px-[40px] p-2 '><EditOutlinedIcon className="text-[#144196]" sx={{ fontSize: '14px', cursor: 'pointer' }} /> Edit</div>
-                                
+
 
                                         </div>
                                     </div>
@@ -420,13 +420,14 @@ const Studentdetails = () => {
                                             <div>
                                                 <div className='text-[#00000080]'>Check-in</div>
                                                 <p className='font-[500]'>
-                                                    {item.inTime ? new Date(item.inTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : "-"}
+                                                    {item?.onLeave ? 'Leave' : item.inTime ? new Date(item.inTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : "-"}
+
                                                 </p>
                                             </div>
                                             <div>
                                                 <div className='text-[#00000080]'>Check-out</div>
                                                 <p className='font-[500]'>
-                                                    {item.outTime ? new Date(item.outTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : "-"}
+                                                    {item?.onLeave ? '' : item.outTime ? new Date(item.outTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : "-"}
                                                 </p>
                                             </div>
                                         </div>

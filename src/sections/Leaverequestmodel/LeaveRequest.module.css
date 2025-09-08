@@ -296,6 +296,7 @@
   border: none;
   border-radius: 5px;
   outline: none;
+  
 }
 .grids {
   display: grid;
@@ -316,6 +317,7 @@
   border: none;
   border-radius: 5px;
   outline: none;
+  width: 100%;
 }
 .dateinput {
   color: grey;

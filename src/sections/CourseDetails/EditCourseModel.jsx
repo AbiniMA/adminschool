@@ -43,7 +43,7 @@ const EditCourseModal = ({ visible, onCancel, onUpdate, formData,id }) => {
     if (!courseName.trim()) {
       setcoursenameerror(" course name required");
       hasError = true;
-    } else if(!/^[A-Za-z\s]+$/.test(courseName)){
+    } else if(!/^[A-Za-z\s/]+$/.test(courseName)){
       setcoursenameerror("Course name must contain only alphabets");
       hasError = true;
     }

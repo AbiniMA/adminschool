@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import defaultimg from '../../../src/assets/profile.png'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { grey } from '@mui/material/colors';
 const UpdateStudent = ({ closeModal, id, onSuccess }) => {
     const [user, setUser] = useState([])
     const [file, setFileName] = useState('');
@@ -418,7 +419,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                         </div>
                         <div className={styles.student_id}>
                             <label htmlFor="id">ID</label>
-                            <input className={styles.input_field} disabled onChange={(e) => setFormdata({ ...Formdata, student_id: e.target.value })} value={Formdata.student_id} id='id' type="text" placeholder='0245687' />
+                            <input className={styles.input_field} style={{color:'grey',cursor:'not-allowed'}} disabled onChange={(e) => setFormdata({ ...Formdata, student_id: e.target.value })} value={Formdata.student_id} id='id' type="text" placeholder='0245687' />
                             {/* <p>{Errors.student_id}</p> */}
                         </div>
                     </div>
@@ -640,7 +641,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                     </div>
 
                     <div className={styles.submit_button}>
-                        <input type="submit" value="Update Student" className={styles.submit} onClick={handleSubmit} />
+                        <input type="submit" value={loading ? "Updating..." : "Update Student"} className={styles.submit} onClick={handleSubmit} />
                     </div>
                 </div>
             </form>
