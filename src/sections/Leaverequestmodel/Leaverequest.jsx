@@ -54,10 +54,11 @@ const LeaveRequest = () => {
   const [offset, setoffset] = useState(1);
   const [status, setStatus] = useState('')
   const [update, setUpdate] = useState(false)
-  const [data, setData] = useState({})
+  const [data, setData] = useState([])
   const [updatestatus, setUpdatestatus] = useState('')
   const [loading, setLoading] = useState(false)
-
+  const adminId = localStorage.getItem('userId')
+  const [reason,setReason] = useState('')
   useEffect(() => {
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
@@ -109,7 +110,6 @@ const LeaveRequest = () => {
     setLoading(true)
     try {
       let res = await getLeaveRequest(limit, offset - 1, date, status, searchText)
-      console.log(res.data?.data?.data || [])
       setList(res.data?.data?.result)
       settotal(res.data?.data?.totalCount)
 
@@ -129,19 +129,16 @@ const LeaveRequest = () => {
     setUpdate(true)
     try {
       let res = await getLeaveRequestById(id)
-      setData(res.data?.data || {})
-
-
-
+      setData(res.data?.data?.result[0] )
     } catch (err) {
       console.log(err)
     }
 
   }
 
-  const handleUpdateClick = async (id, status) => {
+  const handleUpdateClick = async (id, status, adminId,reason) => {
     try {
-      let res = await updateLeaveRequest(id, status)
+      let res = await updateLeaveRequest(id, status, adminId,reason)
       // setData(res.data?.data || {})
       setUpdatestatus(status)
       setUpdate(false)
@@ -152,6 +149,19 @@ const LeaveRequest = () => {
       console.log(err)
     }
   }
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Invalid Date";
+    }
+    return date.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      // second: "numeric",
+      hour12: true,
+      timeZone: "UTC",
+    });
+  };
   return (
     <>
       <div className={styles.container}>
@@ -297,8 +307,8 @@ const LeaveRequest = () => {
                 <th>ID No</th>
                 <th>Mobile</th>
                 <th>No of Days</th>
-                <th>From Date</th>
-                <th>To Date</th>
+                <th>From</th>
+                <th>To</th>
                 <th>Status</th>
               </tr>
               {loading ?
@@ -315,13 +325,21 @@ const LeaveRequest = () => {
                           <td>{item?.userDetails?.name}</td>
                           <td>{item?.userDetails?.studentId}</td>
                           <td>{item?.userDetails?.mobileNo}</td>
-                          <td>{item?.noOfDays}</td>
-                          <td>{item?.fromDate?.split("T")[0]}</td>
-                          <td>{item?.toDate?.split("T")[0]}</td>
+                          <td>{item?.noOfDays || '-'}</td>
+                          {item.isPermission ?
+                            <td>{formatTime(item?.startTime)}</td>
+                            :
+                            <td>{item?.fromDate?.split("T")[0]}</td>
+                          }
+                          {item.isPermission ?
+                            <td>{formatTime(item?.endTime)}</td>
+                            :
+                            <td>{item?.toDate?.split("T")[0]}</td>
+                          }
                           <td className={styles.green} style={{
                             color: item.status === 'Approved' && 'green' || item.status === 'Created' && '#144196' || item.status === 'Rejected' && 'red',
                             cursor: item?.status == 'Created' && 'pointer'
-                          }} onClick={() => item?.status == 'Created' && handlegetbyClick(item._id)}>{item?.status == 'Created' ? <div><FontAwesomeIcon
+                          }} onClick={() => item?.status == 'Created' && handlegetbyClick(item?._id)}>{item?.status == 'Created' ? <div><FontAwesomeIcon
                             icon={faEye}
                             style={{ marginRight: "5px" }}
                             className={styles.viewIcon}
@@ -333,7 +351,7 @@ const LeaveRequest = () => {
                       <tr >
                         <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold " style={{ border: "none" }}>
                           <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
-                          <p className="text-center">No Data Found</p>
+                          <p className="text-center ">No Data Found</p>
                         </td>
                       </tr>
 
@@ -361,11 +379,6 @@ const LeaveRequest = () => {
           </ThemeProvider>
         }
       </div>
-
-
-
-
-
 
       <Modal
         isOpen={update}
@@ -409,17 +422,17 @@ const LeaveRequest = () => {
               <div className={styles.profile}>
                 <p>Profile</p>
                 <div className={styles.profilediv}>
-                  <img src={data?.profileURL} alt="" />
+                  <img src={data?.userDetails?.profileURL} alt="" />
                 </div>
               </div>
               <div className={styles.grid}>
                 <div className={styles.grid1}>
                   <label for="">Student Name</label>
-                  <input type="text" placeholder="Enter student name" value={data?.name} disabled />
+                  <input type="text" placeholder="Enter student name" value={data?.userDetails?.name} disabled />
                 </div>
                 <div className={styles.grid1}>
                   <label for="">Phone Number</label>
-                  <input type="tel" placeholder="Enter phone number" value={data?.mobileNo} disabled />
+                  <input type="tel" placeholder="Enter phone number" value={data?.userDetails?.mobileNo} disabled />
                 </div>
               </div>
               <div className={styles.grids}>
@@ -430,14 +443,20 @@ const LeaveRequest = () => {
                   <input type="text" placeholder="no of days" value={data?.noOfDays} disabled />
                 </div>
                 <div className={styles.grid2}>
-                  <label for="">Start Date</label>
-                  <input type="date" style={{ color: "black" }} disabled className={styles.dateinput} value={data?.fromDate ? data.fromDate.slice(0, 10) : ""}
-                  />
+                  <label for="">From</label>
+                  {data?.isPermission ? <input  style={{ color: "black" }} disabled className={styles.dateinput} value={formatTime(data?.startTime)}
+                  /> :
+                    <input  style={{ color: "black" }} disabled className={styles.dateinput} value={data?.fromDate ? data.fromDate.slice(0, 10) : ""}
+                    />}
+
                 </div>
                 <div className={styles.grid2}>
-                  <label for="">End Date</label>
-                  <input type="date" style={{ color: "black" }} disabled className={styles.dateinput} value={data?.toDate ? data.toDate.slice(0, 10) : ""}
-                  />
+                  <label for="">To</label>
+                  {data?.isPermission ? <input  style={{ color: "black" }} disabled className={styles.dateinput} value={formatTime(data?.endTime)}
+                  /> :
+                    <input  style={{ color: "black" }} disabled className={styles.dateinput} value={data?.toDate ? data.toDate.slice(0, 10) : ""}
+                    />
+                  }
                 </div>
               </div>
               <div className={styles.gridss}>
@@ -448,13 +467,24 @@ const LeaveRequest = () => {
 
                     placeholder="Enter description"
                     className={styles.description}
-                    value={data?.description}
+                    value={data?.discription}
+                  ></textarea>
+                </div>
+              </div>
+              <div className={styles.gridss}>
+                <div className={styles.grid3}>
+                  <label>Reason</label>
+                  <textarea
+                    placeholder="Enter Reason"
+                    className={styles.description}
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
                   ></textarea>
                 </div>
               </div>
               <div className={styles.gridsss}>
-                <button className={styles.rejectBtn} onClick={() => handleUpdateClick(data._id, 'Rejected')}>Reject</button>
-                <button  className={styles.acceptBtn} onClick={() => handleUpdateClick(data._id, 'Approved')}>Accept</button>
+                <button className={styles.rejectBtn} onClick={() => handleUpdateClick(data?._id, 'Rejected', adminId,reason)}>Reject</button>
+                <button className={styles.acceptBtn} onClick={() => handleUpdateClick(data?._id, 'Approved', adminId,reason)}>Accept</button>
               </div>
             </div>
           </div>

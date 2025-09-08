@@ -15,6 +15,13 @@ body {
 ::-webkit-scrollbar {
   display: none;
 }
+.add-student-toast-wrapper 
+  .Toastify__toast-container--bottom-center {
+    bottom: auto; /* reset */
+    top: 100%; /* position below wrapper */
+    left: 50%;
+    transform: translate(-50%, 10px); /* adjust vertical distance */
+  }
 
 img {
   width: 100% !important;

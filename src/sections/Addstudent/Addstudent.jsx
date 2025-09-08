@@ -566,14 +566,18 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                                 </div>
                             </div>
                         </div>
-                        <p className={styles.error}>{mes}</p>
+                        {/* <p className={styles.error}>{mes}</p> */}
                         <div className={styles.submit_button}>
                             <input type="submit" value={loading ? "Loading..." : "Add Student"} style={{ cursor: "pointer" }} className={styles.submit} onClick={handleSubmit} />
                         </div>
                     </div>
                 </form>
             </div>
-            <ToastContainer />
+            <div className="add-student-toast-wrapper">
+                <ToastContainer position="bottom-center" />
+            </div>
+           
+
 
         </>
     )

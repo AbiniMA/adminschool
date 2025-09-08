@@ -12,32 +12,40 @@ import {
     CircularProgressbarWithChildren,
     buildStyles
 } from 'react-circular-progressbar';
+import nodata from '../../assets/trans.png'
 import 'react-circular-progressbar/dist/styles.css';
 import { Link } from 'react-router-dom'
-import { getDashboardEvents, getDashboardLeave, getDashboardUser } from '../../api/Serviceapi'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { getAttendancerate, getDashboardAttendencerate, getDashboardEvents, getDashboardLeave, getDashboardUser, getTodayrate, studentCount } from '../../api/Serviceapi'
 export const Dashborad = () => {
     const [days, setdays] = useState('this_week');
     const [studentList, setStudentList] = useState([])
     const [eventList, setEventList] = useState([])
     const [leaveList, setLeaveList] = useState([])
+    const [todayAttendance, setToday] = useState()
+    const [date, setDate] = useState('')
+    const [open, setOpen] = useState(false)
+    const [status, setStatus] = useState('ongoing');
+    const [leavestatus, setLeaveStatus] = useState('Approved');
 
 
-    const percentage = 75;
-
-    const handleChange = (event) => {
-        setdays(event.target.value);
-    };
+    const [Attendance, setAttendance] = useState([])
 
     useEffect(() => {
         studentlist()
     }, [])
     useEffect(() => {
         eventlist()
-    }, [])
+    }, [status])
     useEffect(() => {
         leavelist()
+    }, [leavestatus])
+    useEffect(() => {
+        countStudent()
     }, [])
-
     let studentlist = async () => {
         try {
             let res = await getDashboardUser()
@@ -47,6 +55,30 @@ export const Dashborad = () => {
             console.log(err)
         }
     }
+    const [studentData, setStudentData] = useState(null);
+
+    let countStudent = async () => {
+        try {
+            let res = await studentCount();
+            setStudentData(res?.data?.data?.[0]); // since your API returns array inside data
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
+        setDate(formattedDate);
+    }, []);
+
+    useEffect(() => {
+        countStudent();
+    }, []);
+
+    useEffect(() => {
+        attendanceRate();
+    }, []);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -56,10 +88,13 @@ export const Dashborad = () => {
         return { day, month, year };
     };
 
+    const statusChange = (event) => {
+        setStatus(event.target.value);
+    }
 
     let eventlist = async () => {
         try {
-            let res = await getDashboardEvents()
+            let res = await getDashboardEvents(status)
             setEventList(res?.data?.data?.data)
         } catch (err) {
             console.log(err)
@@ -68,12 +103,49 @@ export const Dashborad = () => {
 
     let leavelist = async () => {
         try {
-            let res = await getDashboardLeave()
+            let res = await getDashboardLeave(leavestatus)
             setLeaveList(res?.data?.data?.result)
         } catch (err) {
             console.log(err)
         }
     }
+
+    let attendanceRate = async () => {
+        try {
+            let res = await getTodayrate()
+            setToday(res?.data?.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        if (!date) return;
+
+        attendanceDashboradRate()
+    }, [date])
+
+    let attendanceDashboradRate = async () => {
+        try {
+            let res = await getDashboardAttendencerate(date)
+            setAttendance(res?.data?.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+    });
+    const weekday = today.toLocaleDateString("en-GB", { weekday: "long" });
+    const displayDate = `${formattedDate}, ${weekday}`;
+
+    const handleLeaveStatusChange = (e) => {
+        setLeaveStatus(e.target.value)
+    }
+
 
     return (
         <>
@@ -88,17 +160,18 @@ export const Dashborad = () => {
                             <div><p className=' text-lg font-normal'>Total Students</p></div>
                             <div className={dashboradcss.profileicon}><img src={profileicon} alt="" width={'100%'} /></div>
                         </div>
-                        <div className={dashboradcss.dashcount}>262</div>
+                        <div className={dashboradcss.dashcount}>{studentData?.totalStudents ?? 0}</div>
                         <div class="flex justify-between items-center">
 
                             <div className={dashboradcss.avatars}>
-                                <img src={profile} alt="profile" width={'100%'} />
-                                <img src={profile1} alt="profile" width={'100%'} />
-                                <img src={profile2} alt="profile" width={'100%'} />
-                                <img src={profile3} alt="profile" width={'100%'} />
+                                {studentData?.userDetails?.slice(0, 4).map((user, i) => (
+                                    <img key={i} src={user.profileURL} alt={user.name} width={'100%'} />
+                                ))}
                             </div>
 
-                            <div className={dashboradcss.avatar_text}>Aurelia, Finn, Zara +258 others</div>
+                            <div className={dashboradcss.avatar_text}>
+                                {studentData?.userDetails?.[0]?.name}, {studentData?.userDetails?.[1]?.name}, {studentData?.userDetails?.[2]?.name} +{(studentData?.totalStudents || 0) - 3} others
+                            </div>
                         </div>
                     </div>
                     <div className={dashboradcss.dashcard}>
@@ -106,32 +179,33 @@ export const Dashborad = () => {
                             <div><p className=' text-lg font-normal'>Active Students</p></div>
                             <div className={dashboradcss.profileicon}><img src={profileicon} alt="" width={'100%'} /></div>
                         </div>
-                        <div className={dashboradcss.dashcount}>42</div>
+                        <div className={dashboradcss.dashcount}>      {studentData?.activeStudents ?? 0}
+                        </div>
                         <div class="flex justify-between items-center">
 
                             <div className={dashboradcss.avatars}>
-                                <img src={profile} alt="profile" width={'100%'} />
-                                <img src={profile1} alt="profile" width={'100%'} />
-                                <img src={profile2} alt="profile" width={'100%'} />
-                                <img src={profile3} alt="profile" width={'100%'} />
+                                {studentData?.userDetails?.slice(0, 4).map((user, i) => (
+                                    <img key={i} src={user.profileURL} alt={user.name} width={'100%'} />
+                                ))}
                             </div>
 
-                            <div className={dashboradcss.avatar_text}>Aurelia, Finn, Zara +258 others</div>
+                            <div className={dashboradcss.avatar_text}>
+                                {studentData?.userDetails?.[0]?.name}, {studentData?.userDetails?.[1]?.name}, {studentData?.userDetails?.[2]?.name} +{(studentData?.activeStudents || 0) - 3} others
+                            </div>
                         </div>
                     </div>
                     <div className={dashboradcss.dashcard} >
                         <div className="flex justify-between items-center">
-                            <div><p className=' text-lg font-normal'>Attendance rate</p><p className={dashboradcss.dashdate}>30/05/2025,Firday</p></div>
+                            <div><p className=' text-lg font-normal'>Attendance rate</p><p className={dashboradcss.dashdate}>{displayDate}</p></div>
                             <div className={dashboradcss.profileicon}><img src={profileicon} alt="" width={'100%'} /></div>
                         </div>
                         <div class="flex justify-between items-center pt-[20px]">
-                            <div className={dashboradcss.dashcount}>95%</div>
-                            <div className={dashboradcss.avatar_text}>ViewDetails</div>
+                            <div className={dashboradcss.dashcount}>{todayAttendance?.attendanceRate}</div>
+                            <Link to='/attendence'><div className={dashboradcss.avatar_text}>ViewDetails</div></Link>
                         </div>
                     </div>
 
                 </div>
-
                 <div class="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 ">
                     <div className={dashboradcss.dashcard} style={{ height: '420px', overflowY: 'hidden' }} >
                         <div className="flex justify-between items-center mx-2 mb-[20px]">
@@ -148,8 +222,8 @@ export const Dashborad = () => {
                                     }}
                                 >
                                     <Select
-                                        value={days}
-                                        onChange={handleChange}
+                                        value={leavestatus}
+                                        onChange={handleLeaveStatusChange}
                                         displayEmpty
                                         IconComponent={KeyboardArrowDownIcon}
                                         sx={{
@@ -162,9 +236,9 @@ export const Dashborad = () => {
                                             border: 'none'
                                         }}
                                     >
-                                        <MenuItem value="this_week">This week</MenuItem>
-                                        <MenuItem value="last_week">Last week</MenuItem>
-                                        <MenuItem value="this_month">This month</MenuItem>
+                                        <MenuItem value="Approved">Approved</MenuItem>
+                                        <MenuItem value="Rejected">Rejected</MenuItem>
+
                                     </Select>
                                 </FormControl>
                             </div>
@@ -222,7 +296,10 @@ export const Dashborad = () => {
                                     </div>
                                 ))
                             ) : (
-                                <p className="text-center text-gray-500 py-4">No leave records found</p>
+                                <div>
+                                    <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
+                                    <p className="text-center text-gray-500 font-semibold">No Data Found</p>
+                                </div>
                             )}
 
 
@@ -232,43 +309,52 @@ export const Dashborad = () => {
                         <div className='flex justify-between flex-col h-100'>
                             <div className="flex justify-between items-center mb-[20px] mx-2">
                                 <div><h4 className=' text-lg font-normal'>Attendance Rate</h4></div>
-                                <div style={{ width: '130px', }}>
-                                    <FormControl
-                                        variant="outlined"
-                                        size="small"
-                                        sx={{
-                                            minWidth: 120,
-                                            backgroundColor: '#ffffff', // match the image background
-                                            borderRadius: '6px',
-                                            border: 'none'
-                                        }}
-                                    >
-                                        <Select
-                                            value={days}
-                                            onChange={handleChange}
-                                            displayEmpty
-                                            IconComponent={KeyboardArrowDownIcon}
-                                            sx={{
-                                                '& .MuiOutlinedInput-notchedOutline': {
-                                                    border: 'none',
-                                                },
-                                                fontSize: '14px',
-                                                padding: '4px 10px',
-                                                height: '36px',
-                                                border: 'none'
+                                <div style={{ width: '150px', }}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                            value={date ? dayjs(date, "YYYY-MM-DD") : null}   // keep ISO date format for binding
+                                            onChange={(newValue) => {
+                                                if (newValue) {
+                                                    const formatted = dayjs(newValue).format("YYYY-MM-DD"); // match <input type="date">
+                                                    setDate(formatted);
+                                                } else {
+                                                    setDate("");
+                                                }
                                             }}
-                                        >
-                                            <MenuItem value="this_week">02/06/2025</MenuItem>
-                                            <MenuItem value="last_week">03/06/2025</MenuItem>
-                                            <MenuItem value="this_month">04/06/2025</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                            format="DD/MM/YYYY"
+                                            slotProps={{
+                                                textField: {
+                                                    fullWidth: true,
+                                                    placeholder: 'DD/MM/YYYY',
+                                                    onClick: () => setOpen(true),
+                                                    error: Boolean(Error?.DateofBrith),
+                                                    sx: {
+                                                        '& .MuiPickersOutlinedInput-root': {
+                                                            height: '35px',
+                                                            outline: 'none',
+                                                            backgroundColor: ' #f2f2f2'
+                                                        },
+                                                        '& fieldset': {
+                                                            border: 'none', // removes the default outline
+                                                        },
+                                                        '&:hover fieldset': {
+                                                            border: 'none',
+                                                            outline: 'none'
+                                                        },
+                                                        '& .MuiPickersOutlinedInput-root.Mui-focused .MuiPickersOutlinedInput-notchedOutline': {
+                                                            border: 'none'
+                                                        }
+                                                    },
+                                                },
+                                            }}
+                                        />
+                                    </LocalizationProvider>
                                 </div>
                             </div>
 
                             <div style={{ width: 200, height: 200, margin: 'auto', display: 'block' }}>
                                 <CircularProgressbarWithChildren
-                                    value={percentage}
+                                    value={parseFloat(Attendance.attendanceRate)}
                                     styles={buildStyles({
                                         pathColor: 'url(#gradient)',
                                         trailColor: '#eee',
@@ -284,14 +370,14 @@ export const Dashborad = () => {
                                             </linearGradient>
                                         </defs>
                                     </svg>
-                                    <div style={{ fontSize: 24, fontWeight: 'bold' }}>{percentage}%</div>
+                                    <div style={{ fontSize: 24, fontWeight: 'bold' }}>{Attendance.attendanceRate}</div>
                                 </CircularProgressbarWithChildren>
                             </div>
 
                             <div className='flex justify-between '>
-                                <div style={{ color: 'green', fontSize: '14px' }}>No Of Student Present: 28</div>
+                                <div style={{ color: 'green', fontSize: '14px' }}>No Of Student Present: {Attendance.fetchCount}</div>
 
-                                <div style={{ color: 'red', fontSize: '14px' }}>No Of Student Absent: 7</div>
+                                <div style={{ color: 'red', fontSize: '14px' }}>No Of Student Absent: {Attendance.leaveRequestCount}</div>
                             </div>
                         </div>
 
@@ -311,8 +397,8 @@ export const Dashborad = () => {
                                     }}
                                 >
                                     <Select
-                                        value={days}
-                                        onChange={handleChange}
+                                        value={status}
+                                        onChange={statusChange}
                                         displayEmpty
                                         IconComponent={KeyboardArrowDownIcon}
                                         sx={{
@@ -325,9 +411,10 @@ export const Dashborad = () => {
                                             border: 'none'
                                         }}
                                     >
-                                        <MenuItem value="this_week">This week</MenuItem>
-                                        <MenuItem value="last_week">Last week</MenuItem>
-                                        <MenuItem value="this_month">This month</MenuItem>
+                                        <MenuItem value="upcoming">Upcoming</MenuItem>
+                                        <MenuItem value="ongoing">Ongoing</MenuItem>
+
+
                                     </Select>
                                 </FormControl>
                             </div>
@@ -392,7 +479,7 @@ export const Dashborad = () => {
                                             <td class="px-4 py-3">{item?.mobileNo}</td>
                                             <td class="px-4 py-3">{item?.courseDetails?.courseName}</td>
                                             <td class="px-4 py-3">{item?.batchDetails?.batchName}</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium">{item.inStatus}</td>
+                                            <td class="px-4 py-3 text-green-500 font-medium" style={item?.inStatus === 'ongoing' ? { color: 'blue' } : ''}>{item.inStatus}</td>
                                         </tr>
                                     ))}
 
@@ -404,8 +491,6 @@ export const Dashborad = () => {
 
                     </div>
                 </div>
-
-
             </div>
         </>
 

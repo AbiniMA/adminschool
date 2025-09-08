@@ -335,7 +335,7 @@
 }
 .description {
   width: 100%;
-  height: 100px;
+  height: 50px;
   padding: 10px;
   resize: none; /* prevents manual resizing */
   overflow: auto; /* enables scroll when content overflows */

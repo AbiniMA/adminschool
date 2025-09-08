@@ -615,6 +615,7 @@
   padding: 0 35px;
   border-radius: 9px;
   border: none;
+  cursor: pointer;
 }
 .updatefeehead {
   display: flex;

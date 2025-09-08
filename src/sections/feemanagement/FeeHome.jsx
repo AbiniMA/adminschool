@@ -219,6 +219,8 @@ const FeeHome = () => {
 
 
   function updateFee() {
+    setEntername(''),
+      setSearchList([])
     setShowDiv(true);
   }
   function closeUpdateFee() {
@@ -248,6 +250,7 @@ const FeeHome = () => {
         };
       });
       setStudentFormData(initialData);
+
     } catch (err) {
       console.log(err);
     } finally {
@@ -338,751 +341,755 @@ const FeeHome = () => {
     const isSemValid = semValidation(studentId, formData.updatesemester || "");
     const isPayValid = payValidation(studentId, formData.payment || "");
     return isFeeValid && isSemValid && isPayValid;
-}
-
-
-const handleInputChange = (studentId, field, value) => {
-  setStudentFormData((prev) => ({
-    ...prev,
-    [studentId]: {
-      ...prev[studentId],
-      [field]: value,
-    },
-  }));
-};
-
-const update = async (student) => {
-  const formData = studentFormData[student._id] || {};
-
-  if (!validateStudentForm(student._id, formData)) {
-    console.log("Validation failed for student:", student._id);
-    return;
   }
 
-  try {
-    const data = {
-      name: student.name,
-      email: student.email,
-      courseId: student.courseDetails?._id,
-      batchId: student.batchDetails?._id,
-      paidAmount: formData.feeamountField,
-      noOfsem: formData.updatesemester,
-      modeOfPayment: formData.payment,
-      userId: student._id,
-    };
 
-    await createFee(data);
-    console.log("Fee updated:", data);
-
-    // Reset only this student's form
-    setStudentFormData(prev => ({
+  const handleInputChange = (studentId, field, value) => {
+    setStudentFormData((prev) => ({
       ...prev,
-      [student._id]: { updatesemester: "", feeamountField: "", payment: "" }
+      [studentId]: {
+        ...prev[studentId],
+        [field]: value,
+      },
     }));
-  setShowDiv(false)
-    getfeelist();
-  } catch (err) {
-    console.error(err);
+  };
+
+  const update = async (student) => {
+    const formData = studentFormData[student._id] || {};
+
+    if (!validateStudentForm(student._id, formData)) {
+      console.log("Validation failed for student:", student._id);
+      return;
+    }
+
+    try {
+      const data = {
+        name: student.name,
+        email: student.email,
+        courseId: student.courseDetails?._id,
+        batchId: student.batchDetails?._id,
+        paidAmount: formData.feeamountField,
+        noOfsem: formData.updatesemester,
+        modeOfPayment: formData.payment,
+        userId: student._id,
+      };
+
+      await createFee(data);
+      console.log("Fee updated:", data);
+
+      // Reset only this student's form
+      setStudentFormData(prev => ({
+        ...prev,
+        [student._id]: { updatesemester: "", feeamountField: "", payment: "" }
+      }));
+      setEntername('')
+      setShowDiv(false)
+      getfeelist();
+      setStudentFormData({});
+      setStudentErrors({});
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
+
+  const handlefeedetailsid = (id) => {
+    setShowDiv2(true);
+
   }
-};
+
+  const [feeStatus, setFeeStatus] = useState('Request Sent')
+
+  const [calc, setCalc] = useState([])
+
+  useEffect(() => {
+    calculation()
+  }, [courseId, batchId, semester, searchText])
+
+  const [calloading, setCallodading] = useState(false)
+  let calculation = async () => {
+    setCallodading(true)
+    try {
+      let res = await calcfee(courseId, batchId, semester, searchText)
+      setCalc(res.data?.data[0])
+      console.log('hjjj', res.data?.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setCallodading(false)
+    }
 
 
-
-const handlefeedetailsid = (id) => {
-  setShowDiv2(true);
-
-}
-
-const [feeStatus, setFeeStatus] = useState('Request Sent')
-
-const [calc, setCalc] = useState([])
-
-useEffect(() => {
-  calculation()
-}, [courseId, batchId, semester, searchText])
-
-const [calloading, setCallodading] = useState(false)
-let calculation = async () => {
-  setCallodading(true)
-  try {
-    let res = await calcfee(courseId, batchId, semester, searchText)
-    setCalc(res.data?.data[0])
-    console.log('hjjj', res.data?.data)
-  } catch (error) {
-    console.log(error)
-  } finally {
-    setCallodading(false)
   }
 
-
-}
-
-return (
-  <div className={styles.container}>
-    <div className={styles.feemanagement}>
-      <div className={styles.feehead}>
-        <div className={styles.feetitle}>
-          <p>Fee Management</p>
-        </div>
-        <div className={styles.feeform}>
-          <div className={styles.formselect1}>
-            <div className={styles.selectWrapper}>
-              <FormControl
-                variant="outlined"
-                size="small"
-                sx={{
-                  minWidth: '100%',
-                  backgroundColor: '#F6F6F6', // match the image background
-                  borderRadius: '6px',
-                  border: 'none'
-                }}
-              >
-                <Select
-                  value={courseId}
-                  onChange={handlecourseChange}
-                  displayEmpty
-                  IconComponent={KeyboardArrowDownIcon}
-                  sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      border: 'none',
-                    },
-                    fontSize: '14px',
-                    padding: '4px 10px',
-                    height: '36px',
-                    border: 'none'
-                  }}
-                >
-                  <MenuItem value="">All</MenuItem>
-                  {course.map((item, index) => {
-                    return (
-                      <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
-                    )
-                  })}
-                </Select>
-
-              </FormControl>
-            </div>
+  return (
+    <div className={styles.container}>
+      <div className={styles.feemanagement}>
+        <div className={styles.feehead}>
+          <div className={styles.feetitle}>
+            <p>Fee Management</p>
           </div>
-          <div className={styles.formselect2}>
-            <div className={styles.selectWrapper}>
-              <FormControl
-                variant="outlined"
-                size="small"
-                sx={{
-                  minWidth: '100%',
-                  backgroundColor: '#F6F6F6', // match the image background
-                  borderRadius: '6px',
-                  border: 'none',
-
-                }}
-              >
-                <Select
-                  value={batchId}
-                  onChange={handleChange}
-                  displayEmpty
-                  IconComponent={KeyboardArrowDownIcon}
+          <div className={styles.feeform}>
+            <div className={styles.formselect1}>
+              <div className={styles.selectWrapper}>
+                <FormControl
+                  variant="outlined"
+                  size="small"
                   sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      border: 'none',
-                    },
-                    fontSize: '14px',
-                    padding: '4px 10px',
-                    height: '36px',
-                    border: 'none'
-                  }}
-                  disabled={!courseId}
-                // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
-                >
-                  <MenuItem value="">All</MenuItem>
-                  {Array.isArray(batch) &&
-                    batch.map((item, index) => (
-                      <MenuItem value={item._id} key={index}>
-                        {item.batchName}
-                      </MenuItem>
-                    ))}
-                </Select>
-
-              </FormControl>
-            </div>
-          </div>
-          <div className={styles.formselect3}>
-            <div className={styles.selectWrapper}>
-              <FormControl
-                variant="outlined"
-                size="small"
-                sx={{
-                  minWidth: '100%',
-                  backgroundColor: '#F6F6F6', // match the image background
-                  borderRadius: '6px',
-                  border: 'none'
-                }}
-              >
-                <Select
-                  value={semester}
-                  onChange={handlesemChange}
-                  displayEmpty
-                  IconComponent={KeyboardArrowDownIcon}
-                  sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      border: 'none',
-                    },
-                    fontSize: '14px',
-                    padding: '4px 10px',
-                    height: '36px',
-                    border: 'none',
-
-                  }}
-                >
-                  <MenuItem value="">All</MenuItem>
-                  <MenuItem value="1st">Semester 1</MenuItem>
-
-                  <MenuItem value="2nd">Semester 2</MenuItem>
-
-
-                </Select>
-
-              </FormControl>
-            </div>
-          </div>
-          <div >
-            <div style={{ width: '190px' }}>
-              <TextField
-                variant="outlined"
-                size="small"
-                placeholder="Search here"
-                value={searchText}
-                onChange={handleSearchChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BiSearchAlt style={{ fontSize: 18, color: '#555' }} />
-
-                    </InputAdornment>
-                  ),
-                  endAdornment: searchText && (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleClearSearch} edge="end">
-                        <CloseIcon style={{ fontSize: 18 }} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                  style: {
-                    backgroundColor: '#F6F6F6',
+                    minWidth: '100%',
+                    backgroundColor: '#F6F6F6', // match the image background
                     borderRadius: '6px',
-                    height: '36px',
-                    fontSize: '14px',
-                    padding: '4px 10px'
-                  },
-                  notched: false
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  }}
+                >
+                  <Select
+                    value={courseId}
+                    onChange={handlecourseChange}
+                    displayEmpty
+                    IconComponent={KeyboardArrowDownIcon}
+                    sx={{
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      fontSize: '14px',
+                      padding: '4px 10px',
+                      height: '36px',
+                      border: 'none'
+                    }}
+                  >
+                    <MenuItem value="">All</MenuItem>
+                    {course.map((item, index) => {
+                      return (
+                        <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
+                      )
+                    })}
+                  </Select>
+
+                </FormControl>
+              </div>
+            </div>
+            <div className={styles.formselect2}>
+              <div className={styles.selectWrapper}>
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    minWidth: '100%',
+                    backgroundColor: '#F6F6F6', // match the image background
+                    borderRadius: '6px',
                     border: 'none',
-                  },
-                  minWidth: 120,
-                }}
-              />
+
+                  }}
+                >
+                  <Select
+                    value={batchId}
+                    onChange={handleChange}
+                    displayEmpty
+                    IconComponent={KeyboardArrowDownIcon}
+                    sx={{
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      fontSize: '14px',
+                      padding: '4px 10px',
+                      height: '36px',
+                      border: 'none'
+                    }}
+                    disabled={!courseId}
+                  // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
+                  >
+                    <MenuItem value="">All</MenuItem>
+                    {Array.isArray(batch) &&
+                      batch.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.batchName}
+                        </MenuItem>
+                      ))}
+                  </Select>
+
+                </FormControl>
+              </div>
+            </div>
+            <div className={styles.formselect3}>
+              <div className={styles.selectWrapper}>
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    minWidth: '100%',
+                    backgroundColor: '#F6F6F6', // match the image background
+                    borderRadius: '6px',
+                    border: 'none'
+                  }}
+                >
+                  <Select
+                    value={semester}
+                    onChange={handlesemChange}
+                    displayEmpty
+                    IconComponent={KeyboardArrowDownIcon}
+                    sx={{
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      fontSize: '14px',
+                      padding: '4px 10px',
+                      height: '36px',
+                      border: 'none',
+
+                    }}
+                  >
+                    <MenuItem value="">All</MenuItem>
+                    <MenuItem value="1st">Semester 1</MenuItem>
+
+                    <MenuItem value="2nd">Semester 2</MenuItem>
+
+
+                  </Select>
+
+                </FormControl>
+              </div>
+            </div>
+            <div >
+              <div style={{ width: '190px' }}>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  placeholder="Search here"
+                  value={searchText}
+                  onChange={handleSearchChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <BiSearchAlt style={{ fontSize: 18, color: '#555' }} />
+
+                      </InputAdornment>
+                    ),
+                    endAdornment: searchText && (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleClearSearch} edge="end">
+                          <CloseIcon style={{ fontSize: 18 }} />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                    style: {
+                      backgroundColor: '#F6F6F6',
+                      borderRadius: '6px',
+                      height: '36px',
+                      fontSize: '14px',
+                      padding: '4px 10px'
+                    },
+                    notched: false
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: 'none',
+                    },
+                    minWidth: 120,
+                  }}
+                />
+              </div>
+            </div>
+            <div className={styles.formbtn}>
+              <button onClick={updateFee}>
+                {" "}
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "16px",
+                    transform: "translateY(-50%)",
+                  }}
+                />
+                Update Fee
+              </button>
             </div>
           </div>
-          <div className={styles.formbtn}>
-            <button onClick={updateFee}>
-              {" "}
-              <FontAwesomeIcon
-                icon={faPlus}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "16px",
-                  transform: "translateY(-50%)",
-                }}
-              />
-              Update Fee
-            </button>
-          </div>
         </div>
-      </div>
-      {calloading ?
-        <div className={styles.feeamount}>
-          <div className={styles.feeamt}>
-            <Skeleton variant="text" width={120} height={20} />
-            <Skeleton variant="text" width={80} height={40} />
-          </div>
-          <div className={styles.feeamt}>
-            <Skeleton variant="text" width={120} height={20} />
-            <Skeleton variant="text" width={80} height={40} />
-          </div>
-          <div className={styles.feeamt}>
-            <Skeleton variant="text" width={120} height={20} />
-            <Skeleton variant="text" width={80} height={40} />
-          </div>
-        </div>
-        :
-        calc && (
+        {calloading ?
           <div className={styles.feeamount}>
             <div className={styles.feeamt}>
-              <div className={styles.feeamthead}>
-                <p className={styles.amtText}>Total Fee Amount</p>
-              </div>
-              <div className={styles.feeamtamount}>
-                <p className={styles.amtValue}>{calc?.totalFee}</p>
-              </div>
+              <Skeleton variant="text" width={120} height={20} />
+              <Skeleton variant="text" width={80} height={40} />
             </div>
             <div className={styles.feeamt}>
-              <div className={styles.feeamthead}>
-                <p className={styles.amtText}>Collected Fee Amount</p>
-              </div>
-              <div className={styles.feeamtamount}>
-                <p className={styles.amtValue}>{calc?.paidFee}</p>
-              </div>
+              <Skeleton variant="text" width={120} height={20} />
+              <Skeleton variant="text" width={80} height={40} />
             </div>
             <div className={styles.feeamt}>
-              <div className={styles.feeamthead}>
-                <p className={styles.amtText}>Pending Fee Amount</p>
+              <Skeleton variant="text" width={120} height={20} />
+              <Skeleton variant="text" width={80} height={40} />
+            </div>
+          </div>
+          :
+          calc && (
+            <div className={styles.feeamount}>
+              <div className={styles.feeamt}>
+                <div className={styles.feeamthead}>
+                  <p className={styles.amtText}>Total Fee Amount</p>
+                </div>
+                <div className={styles.feeamtamount}>
+                  <p className={styles.amtValue}>{calc?.totalFee}</p>
+                </div>
               </div>
-              <div className={styles.feeamtamount}>
-                <p className={styles.amtValue}>{calc?.pendingFee}</p>
+              <div className={styles.feeamt}>
+                <div className={styles.feeamthead}>
+                  <p className={styles.amtText}>Collected Fee Amount</p>
+                </div>
+                <div className={styles.feeamtamount}>
+                  <p className={styles.amtValue}>{calc?.paidFee}</p>
+                </div>
+              </div>
+              <div className={styles.feeamt}>
+                <div className={styles.feeamthead}>
+                  <p className={styles.amtText}>Pending Fee Amount</p>
+                </div>
+                <div className={styles.feeamtamount}>
+                  <p className={styles.amtValue}>{calc?.pendingFee}</p>
+                </div>
               </div>
             </div>
+          )}
+
+        <div className={styles.feetable}>
+          <table className={styles.tabledetails}>
+            <thead>
+              <tr>
+                <th>Fee ID</th>
+                <th>Name</th>
+                <th>ID No</th>
+                <th>Mobile</th>
+                <th>Course</th>
+                <th>Total Fees</th>
+                <th>Pending Fees</th>
+                <th>Payment Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            {loading ?
+              <tr>
+                <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold" style={{ border: "none" }}>
+                  <Loader />
+                </td>
+              </tr>
+              :
+              <tbody>
+                {
+                  list.length > 0 ?
+                    list.map((item) => (
+                      <tr key={item._id}>
+                        <td>{item.receiptId}</td>
+                        <td>{item.userDetails?.name}</td>
+                        <td>{item.userDetails?.studentId}</td>
+                        <td>{item.userDetails?.mobileNo}</td>
+                        <td>{item.courseName}</td>
+                        <td>{item.userDetails?.totalFee}</td>
+                        <td style={{ color: item.userDetails?.pendingFee === 0 ? "green" : "red" }}>{item.userDetails?.pendingFee === 0 ? 'Completed' : item.userDetails?.pendingFee}</td>
+                        <td style={{ color: item.userDetails?.pendingFee === 0 ? "green" : "red" }}>{item.paymentDate?.split("T")[0]}</td>
+                        <td
+                          className={styles.viewBtn}
+                          onClick={() => { item.userDetails?.pendingFee === 0 && handlecompleted(item._id) }}
+                        >
+                          {item.userDetails?.pendingFee === 0 ? <div>
+                            <FontAwesomeIcon
+                              icon={faEye}
+                              style={{ marginRight: "5px" }}
+                              className={styles.viewIcon}
+                            />
+                            <span className={styles.viewText}>View</span>
+                          </div>
+                            :
+                            <p style={{
+                              color: feeStatus === "Requested Fee"
+                                ? "blue" : 'red'
+
+
+                            }} onClick={() => (setShowModal(true))}>{feeStatus}</p>
+                          }
+                        </td>
+                      </tr>
+                    ))
+                    :
+                    <tr >
+                      <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold " style={{ border: "none" }}>
+                        <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
+                        <p className="text-center">No Data Found</p>
+                      </td>
+                    </tr>
+                }
+
+
+              </tbody>
+            }
+          </table>
+        </div>
+
+
+
+        {totalpages > 1 &&
+          <ThemeProvider theme={theme}>
+            <div style={{ marginLeft: "auto", marginTop: "20px" }}>
+              <Pagination
+
+                count={totalpages}
+                page={offset}
+                onChange={handlePageChange}
+                showFirstButton
+                showLastButton
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              />
+            </div>
+          </ThemeProvider>
+        }
+
+
+
+
+        {/* modal view starts */}
+        <ModalView viewOpen={openView} id={id} viewClose={() => setOpenView(false)}>
+          <div className={styles.viewHead1}>
+            <div className={styles.h1}>Fee Details</div>
+            <div className={styles.h1}>
+              <FontAwesomeIcon
+                cursor={"pointer"}
+                icon={faTimes}
+                onClick={() => { setOpenView(false) }}
+              />
+            </div>
+          </div>
+        </ModalView>
+        {/* modal view ends */}
+
+        {/* req send starts */}
+        <Modal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          sendReqColor={sendReqColor}
+          setReqSendColor={setReqSendColor}
+          status={setFeeStatus}
+        ></Modal>
+        {/* req send end */}
+
+        {/* showdiv  start */}
+        {showDiv && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              backgroundColor: "rgba(0, 0, 0,0.4)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 9999,
+
+            }}>
+            {/* <div className={styles.updatefeediv}> */}
+            <div className={styles.updatefee}>
+              <div className={styles.updatefeehead}>
+                <div className={styles.updatefeetitle}>
+                  <p>Update Fee</p>
+                </div>
+                <div className={styles.updatefeetitle}>
+                  <FontAwesomeIcon icon={faTimes} cursor={"pointer"} onClick={closeUpdateFee} />
+                </div>
+              </div>
+              <form className={styles.updatefeeinput}>
+                <div className={styles.updatefeeinputlabel}>
+                  <label htmlFor="">
+                    Select Student ID <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                </div>
+                <div className={styles.updatefeeinputinput}>
+                  <div className={styles.searchdiv}>
+                    <input
+                      type="text"
+                      placeholder="Enter Student ID"
+                      value={enterName}
+                      onChange={(e) => {
+                        // studentNameValidation(e.target.value);
+                        setShowDivError('')
+                        setEntername(e.target.value);
+                      }}
+                    />
+                    {enterName &&
+                      <p style={{ cursor: "pointer" }} onClick={handleClearSearchList} className={styles.closesearch}>
+                        <CloseIcon style={{ fontSize: 18 }} />
+                      </p>
+                    }
+                  </div>
+
+                  <button onClick={(e) => updateFee2(e)}>
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      style={{ marginRight: "8px" }}
+                    />
+                    Search
+                  </button>
+                </div>
+              </form>
+              <div className={styles.errorinput}>
+                <p
+                  style={{
+                    color: "red",
+                    fontSize: "11px",
+                    fontFamily: '"Poppins", sans-serif',
+                  }}
+                >
+                  {showDivError}
+                </p>
+              </div>
+
+              {searchloading ? (
+                <Loader />
+              ) : (
+                <div>
+                  {searchlist.length > 0 ? (
+                    searchlist.map((student) => {
+                      const formData = studentFormData[student._id] || {};
+                      return (
+                        <div key={student._id} className={styles.updatefeedata}>
+                          {/* Profile */}
+                          <div>
+                            <p style={{ marginTop: "10px" }}>Profile</p>
+                            <div className={styles.updatefeepic}>
+                              <img src={student?.profileURL} alt="" />
+                            </div>
+                          </div>
+
+                          {/* Name & Email */}
+                          <div className={styles.nameemaildiv}>
+                            <div className={styles.namediv}>
+                              <label className={styles.updatefeeinputlabel}>Student name</label>
+                              <input
+                                type="text"
+                                value={student?.name}
+                                disabled
+                                style={{
+                                  cursor: "not-allowed",
+                                  backgroundColor: "#6a6a6a18",
+                                  color: "#848282ff",
+                                }}
+                              />
+                            </div>
+                            {/* <p className={styles.stderror1}>{nameError}</p> */}
+
+                            <div className={styles.namediv}>
+                              <label className={styles.updatefeeinputlabel}>E-mail</label>
+                              <input
+                                type="text"
+
+                                value={student?.email}
+                                disabled
+                                style={{
+                                  cursor: "not-allowed",
+                                  backgroundColor: "#6a6a6a18",
+                                  color: "#848282ff",
+                                }}
+                              />
+                            </div>
+                          </div>
+                          {/* <p className={styles.stderror1}>{emailError}</p> */}
+
+                          {/* Course & Batch */}
+                          <div className={styles.nameemaildiv1}>
+                            <div className={styles.namediv1}>
+                              <label className={styles.updatefeeinputlabel}>
+                                Course <sup style={{ color: "red" }}>*</sup>
+                              </label>
+                              <select
+                                className={styles.select_field}
+                                value={student?.courseDetails?._id}
+                                disabled
+                                style={{
+                                  cursor: "not-allowed",
+                                  backgroundColor: "#6a6a6a18",
+                                  color: "#848282ff",
+                                }}
+                              >
+                                <option value="">Select a course</option>
+                                {course.map((c) => (
+                                  <option key={c._id} value={c._id}>
+                                    {c.courseName}
+                                  </option>
+                                ))}
+                              </select>
+                              {/* <p className={styles.stderror1}>{courseError}</p> */}
+
+                            </div>
+                            <div className={styles.namediv1}>
+                              <label className={styles.updatefeeinputlabel}>Batch</label>
+                              <select
+                                className={styles.select_field}
+                                value={student?.batchDetails?._id}
+                                disabled
+                                style={{
+                                  cursor: "not-allowed",
+                                  backgroundColor: "#6a6a6a18",
+                                  color: "#848282ff",
+                                }}
+                              >
+                                <option value="">Select a batch</option>
+                                {Array.isArray(batch) &&
+                                  batch.map((b) => (
+                                    <option key={b._id} value={b._id}>
+                                      {b.batchName}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                          </div>
+
+                          {/* Semester, Fee, Payment */}
+                          <div className={styles.nameemaildiv1}>
+                            <div className={styles.namediv2}>
+                              <label className={styles.updatefeeinputlabel}>
+                                Select Semester <sup style={{ color: "red" }}>*</sup>
+                              </label>
+                              <FormControl
+                                variant="outlined"
+                                size="small"
+                                sx={{
+                                  minWidth: "100%",
+                                  backgroundColor: "#F6F6F6",
+                                  borderRadius: "6px",
+                                  border: 'none'
+                                }}
+                              >
+                                <Select
+                                  value={formData.updatesemester}
+                                  onChange={(e) => {
+                                    handleInputChange(
+                                      student._id,
+                                      "updatesemester",
+                                      e.target.value
+                                    ), semValidation(student._id, e.target.value);
+                                  }}
+                                  displayEmpty
+                                  IconComponent={KeyboardArrowDownIcon}
+                                  sx={{
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                      border: 'none',
+                                    },
+                                    fontSize: '14px',
+                                    padding: '4px 10px',
+                                    height: '43px',
+                                    border: 'none',
+
+                                  }}
+
+                                >
+                                  <MenuItem value="">All</MenuItem>
+                                  <MenuItem value="1st">Semester 1</MenuItem>
+                                  <MenuItem value="2nd">Semester 2</MenuItem>
+                                </Select>
+                              </FormControl>
+
+                              <p className={styles.stderror1}>{studentErrors[student._id]?.semError}</p>
+
+                            </div>
+
+                            <div className={styles.namediv}>
+                              <label className={styles.updatefeeinputlabel}>
+                                Enter Fee Amount <sup style={{ color: "red" }}>*</sup>
+                              </label>
+                              <input
+                                type="text"
+                                placeholder="Enter Fee amount"
+                                value={formData.feeamountField}
+                                onChange={(e) => {
+                                  handleInputChange(
+                                    student._id,
+                                    "feeamountField",
+                                    e.target.value
+                                  ), feeamountValidation(student._id, e.target.value);
+                                }
+                                }
+                              />
+                              <p className={styles.stderror1}>{studentErrors[student._id]?.feeamountError}</p>
+
+                            </div>
+
+                            <div className={styles.namediv2}>
+                              <label className={styles.updatefeeinputlabel}>
+                                Mode of Payment <sup style={{ color: "red" }}>*</sup>
+                              </label>
+                              <FormControl
+                                variant="outlined"
+                                size="small"
+                                sx={{
+                                  minWidth: "100%",
+                                  backgroundColor: "#F6F6F6",
+                                  borderRadius: "6px",
+                                  border: 'none'
+                                }}
+                              >
+                                <Select
+                                  value={formData.payment}
+                                  onChange={(e) => {
+                                    handleInputChange(
+                                      student._id,
+                                      "payment",
+                                      e.target.value
+                                    ),
+                                      payValidation(student._id, e.target.value);
+                                  }
+                                  }
+                                  displayEmpty
+                                  IconComponent={KeyboardArrowDownIcon}
+                                  sx={{
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                      border: 'none',
+                                    },
+                                    fontSize: '14px',
+                                    padding: '4px 10px',
+                                    height: '43px',
+                                    border: 'none',
+
+                                  }}
+
+                                >
+                                  <MenuItem value="">All</MenuItem>
+                                  <MenuItem value="Online">Online</MenuItem>
+                                  <MenuItem value="Cash">Cash</MenuItem>
+                                </Select>
+                              </FormControl>
+                              <p className={styles.stderror1}>{studentErrors[student._id]?.payError}</p>
+
+                            </div>
+                          </div>
+
+                          {/* Update Button */}
+                          <div className={styles.updatefeebtn} >
+                            <button onClick={() => update(student)}>Update</button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className={styles.updatefeesearch}>
+                      <div className={styles.img}>
+                        <img src={magnification} alt="" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+
+
           </div>
         )}
 
-      <div className={styles.feetable}>
-        <table className={styles.tabledetails}>
-          <thead>
-            <tr>
-              <th>Fee ID</th>
-              <th>Name</th>
-              <th>ID No</th>
-              <th>Mobile</th>
-              <th>Course</th>
-              <th>Total Fees</th>
-              <th>Pending Fees</th>
-              <th>Payment Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          {loading ?
-            <tr>
-              <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold" style={{ border: "none" }}>
-                <Loader />
-              </td>
-            </tr>
-            :
-            <tbody>
-              {
-                list.length > 0 ?
-                  list.map((item) => (
-                    <tr key={item._id}>
-                      <td>{item.receiptId}</td>
-                      <td>{item.userDetails?.name}</td>
-                      <td>{item.userDetails?.studentId}</td>
-                      <td>{item.userDetails?.mobileNo}</td>
-                      <td>{item.courseName}</td>
-                      <td>{item.userDetails?.totalFee}</td>
-                      <td style={{ color: item.userDetails?.pendingFee === 0 ? "green" : "red" }}>{item.userDetails?.pendingFee === 0 ? 'Completed' : item.userDetails?.pendingFee}</td>
-                      <td style={{ color: item.userDetails?.pendingFee === 0 ? "green" : "red" }}>{item.paymentDate?.split("T")[0]}</td>
-                      <td
-                        className={styles.viewBtn}
-                        onClick={() => { item.userDetails?.pendingFee === 0 && handlecompleted(item._id) }}
-                      >
-                        {item.userDetails?.pendingFee === 0 ? <div>
-                          <FontAwesomeIcon
-                            icon={faEye}
-                            style={{ marginRight: "5px" }}
-                            className={styles.viewIcon}
-                          />
-                          <span className={styles.viewText}>View</span>
-                        </div>
-                          :
-                          <p style={{
-                            color: feeStatus === "Requested Fee"
-                              ? "blue" : 'red'
 
-
-                          }} onClick={() => (setShowModal(true))}>{feeStatus}</p>
-                        }
-                      </td>
-                    </tr>
-                  ))
-                  :
-                  <tr >
-                    <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold " style={{ border: "none" }}>
-                      <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
-                      <p className="text-center">No Data Found</p>
-                    </td>
-                  </tr>
-              }
-
-
-            </tbody>
-          }
-        </table>
       </div>
-
-
-
-      {totalpages > 1 &&
-        <ThemeProvider theme={theme}>
-          <div style={{ marginLeft: "auto", marginTop: "20px" }}>
-            <Pagination
-
-              count={totalpages}
-              page={offset}
-              onChange={handlePageChange}
-              showFirstButton
-              showLastButton
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            />
-          </div>
-        </ThemeProvider>
-      }
-
-
-
-
-      {/* modal view starts */}
-      <ModalView viewOpen={openView} id={id} viewClose={() => setOpenView(false)}>
-        <div className={styles.viewHead1}>
-          <div className={styles.h1}>Fee Details</div>
-          <div className={styles.h1}>
-            <FontAwesomeIcon
-              cursor={"pointer"}
-              icon={faTimes}
-              onClick={() => { setOpenView(false) }}
-            />
-          </div>
-        </div>
-      </ModalView>
-      {/* modal view ends */}
-
-      {/* req send starts */}
-      <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        sendReqColor={sendReqColor}
-        setReqSendColor={setReqSendColor}
-        status={setFeeStatus}
-      ></Modal>
-      {/* req send end */}
-
-      {/* showdiv  start */}
-      {showDiv && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0, 0, 0,0.4)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-
-          }}>
-          {/* <div className={styles.updatefeediv}> */}
-          <div className={styles.updatefee}>
-            <div className={styles.updatefeehead}>
-              <div className={styles.updatefeetitle}>
-                <p>Update Fee</p>
-              </div>
-              <div className={styles.updatefeetitle}>
-                <FontAwesomeIcon icon={faTimes} cursor={"pointer"} onClick={closeUpdateFee} />
-              </div>
-            </div>
-            <form className={styles.updatefeeinput}>
-              <div className={styles.updatefeeinputlabel}>
-                <label htmlFor="">
-                  Select Student ID <sup style={{ color: "red" }}>*</sup>
-                </label>
-              </div>
-              <div className={styles.updatefeeinputinput}>
-                <div className={styles.searchdiv}>
-                  <input
-                    type="text"
-                    placeholder="Enter Student ID"
-                    value={enterName}
-                    onChange={(e) => {
-                      // studentNameValidation(e.target.value);
-                      setShowDivError('')
-                      setEntername(e.target.value);
-                    }}
-                  />
-                  {enterName &&
-                    <p style={{ cursor: "pointer" }} onClick={handleClearSearchList} className={styles.closesearch}>
-                      <CloseIcon style={{ fontSize: 18 }} />
-                    </p>
-                  }
-                </div>
-
-                <button onClick={(e) => updateFee2(e)}>
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    style={{ marginRight: "8px" }}
-                  />
-                  Search
-                </button>
-              </div>
-            </form>
-            <div className={styles.errorinput}>
-              <p
-                style={{
-                  color: "red",
-                  fontSize: "11px",
-                  fontFamily: '"Poppins", sans-serif',
-                }}
-              >
-                {showDivError}
-              </p>
-            </div>
-
-            {searchloading ? (
-              <Loader />
-            ) : (
-              <div>
-                {searchlist.length > 0 ? (
-                  searchlist.map((student) => {
-                    const formData = studentFormData[student._id] || {};
-                    return (
-                      <div key={student._id} className={styles.updatefeedata}>
-                        {/* Profile */}
-                        <div>
-                          <p style={{ marginTop: "10px" }}>Profile</p>
-                          <div className={styles.updatefeepic}>
-                            <img src={student?.profileURL} alt="" />
-                          </div>
-                        </div>
-
-                        {/* Name & Email */}
-                        <div className={styles.nameemaildiv}>
-                          <div className={styles.namediv}>
-                            <label className={styles.updatefeeinputlabel}>Student name</label>
-                            <input
-                              type="text"
-                              value={student?.name}
-                              disabled
-                              style={{
-                                cursor: "not-allowed",
-                                backgroundColor: "#6a6a6a18",
-                                color: "#848282ff",
-                              }}
-                            />
-                          </div>
-                          {/* <p className={styles.stderror1}>{nameError}</p> */}
-
-                          <div className={styles.namediv}>
-                            <label className={styles.updatefeeinputlabel}>E-mail</label>
-                            <input
-                              type="text"
-
-                              value={student?.email}
-                              disabled
-                              style={{
-                                cursor: "not-allowed",
-                                backgroundColor: "#6a6a6a18",
-                                color: "#848282ff",
-                              }}
-                            />
-                          </div>
-                        </div>
-                        {/* <p className={styles.stderror1}>{emailError}</p> */}
-
-                        {/* Course & Batch */}
-                        <div className={styles.nameemaildiv1}>
-                          <div className={styles.namediv1}>
-                            <label className={styles.updatefeeinputlabel}>
-                              Course <sup style={{ color: "red" }}>*</sup>
-                            </label>
-                            <select
-                              className={styles.select_field}
-                              value={student?.courseDetails?._id}
-                              disabled
-                              style={{
-                                cursor: "not-allowed",
-                                backgroundColor: "#6a6a6a18",
-                                color: "#848282ff",
-                              }}
-                            >
-                              <option value="">Select a course</option>
-                              {course.map((c) => (
-                                <option key={c._id} value={c._id}>
-                                  {c.courseName}
-                                </option>
-                              ))}
-                            </select>
-                            {/* <p className={styles.stderror1}>{courseError}</p> */}
-
-                          </div>
-                          <div className={styles.namediv1}>
-                            <label className={styles.updatefeeinputlabel}>Batch</label>
-                            <select
-                              className={styles.select_field}
-                              value={student?.batchDetails?._id}
-                              disabled
-                              style={{
-                                cursor: "not-allowed",
-                                backgroundColor: "#6a6a6a18",
-                                color: "#848282ff",
-                              }}
-                            >
-                              <option value="">Select a batch</option>
-                              {Array.isArray(batch) &&
-                                batch.map((b) => (
-                                  <option key={b._id} value={b._id}>
-                                    {b.batchName}
-                                  </option>
-                                ))}
-                            </select>
-                          </div>
-                        </div>
-
-                        {/* Semester, Fee, Payment */}
-                        <div className={styles.nameemaildiv1}>
-                          <div className={styles.namediv2}>
-                            <label className={styles.updatefeeinputlabel}>
-                              Select Semester <sup style={{ color: "red" }}>*</sup>
-                            </label>
-                            <FormControl
-                              variant="outlined"
-                              size="small"
-                              sx={{
-                                minWidth: "100%",
-                                backgroundColor: "#F6F6F6",
-                                borderRadius: "6px",
-                                border: 'none'
-                              }}
-                            >
-                              <Select
-                                value={formData.updatesemester}
-                                onChange={(e) => {
-                                  handleInputChange(
-                                    student._id,
-                                    "updatesemester",
-                                    e.target.value
-                                  ), semValidation(student._id, e.target.value);
-                                }}
-                                displayEmpty
-                                IconComponent={KeyboardArrowDownIcon}
-                                sx={{
-                                  '& .MuiOutlinedInput-notchedOutline': {
-                                    border: 'none',
-                                  },
-                                  fontSize: '14px',
-                                  padding: '4px 10px',
-                                  height: '43px',
-                                  border: 'none',
-
-                                }}
-
-                              >
-                                <MenuItem value="">All</MenuItem>
-                                <MenuItem value="1st">Semester 1</MenuItem>
-                                <MenuItem value="2nd">Semester 2</MenuItem>
-                              </Select>
-                            </FormControl>
-
-                            <p className={styles.stderror1}>{studentErrors[student._id]?.semError}</p>
-
-                          </div>
-
-                          <div className={styles.namediv}>
-                            <label className={styles.updatefeeinputlabel}>
-                              Enter Fee Amount <sup style={{ color: "red" }}>*</sup>
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="Enter Fee amount"
-                              value={formData.feeamountField}
-                              onChange={(e) => {
-                                handleInputChange(
-                                  student._id,
-                                  "feeamountField",
-                                  e.target.value
-                                ), feeamountValidation(student._id, e.target.value);
-                              }
-                              }
-                            />
-                            <p className={styles.stderror1}>{studentErrors[student._id]?.feeamountError}</p>
-
-                          </div>
-
-                          <div className={styles.namediv2}>
-                            <label className={styles.updatefeeinputlabel}>
-                              Mode of Payment <sup style={{ color: "red" }}>*</sup>
-                            </label>
-                            <FormControl
-                              variant="outlined"
-                              size="small"
-                              sx={{
-                                minWidth: "100%",
-                                backgroundColor: "#F6F6F6",
-                                borderRadius: "6px",
-                                border: 'none'
-                              }}
-                            >
-                              <Select
-                                value={formData.payment}
-                                onChange={(e) => {
-                                  handleInputChange(
-                                    student._id,
-                                    "payment",
-                                    e.target.value
-                                  ),
-                                    payValidation(student._id, e.target.value);
-                                }
-                                }
-                                displayEmpty
-                                IconComponent={KeyboardArrowDownIcon}
-                                sx={{
-                                  '& .MuiOutlinedInput-notchedOutline': {
-                                    border: 'none',
-                                  },
-                                  fontSize: '14px',
-                                  padding: '4px 10px',
-                                  height: '43px',
-                                  border: 'none',
-
-                                }}
-
-                              >
-                                <MenuItem value="">All</MenuItem>
-                                <MenuItem value="Online">Online</MenuItem>
-                                <MenuItem value="Cash">Cash</MenuItem>
-                              </Select>
-                            </FormControl>
-                            <p className={styles.stderror1}>{studentErrors[student._id]?.payError}</p>
-
-                          </div>
-                        </div>
-
-                        {/* Update Button */}
-                        <div className={styles.updatefeebtn} cursor="pointer">
-                          <button onClick={() => update(student)}>Update</button>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className={styles.updatefeesearch}>
-                    <div className={styles.img}>
-                      <img src={magnification} alt="" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-
-
-        </div>
-      )}
-
-
     </div>
-  </div>
-)
+  )
 }
 
 export default FeeHome

@@ -3,12 +3,13 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import profile from '../../assets/dashboardimgs/profile.png';
 import Import from '../../assets/dashboardimgs/Import.png';
 import { Form, useParams } from 'react-router-dom';
-import { getUserId, updateUser } from '../../api/Serviceapi'
+import { getAttendanceStudentList, getStudentAttendencemonth, getUserId, updateUser } from '../../api/Serviceapi'
 import Modal from 'react-modal';
 import UpdateStudent from '../../component/updatestudent/UpdateStudent';
 import styles from './Studentdetails.module.css';
 import { IoMdArrowRoundBack } from "react-icons/io";
 import Skeleton from '@mui/material/Skeleton';
+import nodata from '../../assets/trans.png'
 
 
 const Studentdetails = () => {
@@ -16,12 +17,22 @@ const Studentdetails = () => {
     const [user, setUser] = useState([])
     const [fileUrl, setFileUrl] = useState('');
     const [certificateUrl, setCertificateUrl] = useState('');
+    const [totalcount, setTotalcount] = useState(null)
+    const [studentattendance, setAttendance] = useState({})
 
 
     useEffect(() => {
 
         getUserById(id);
     }, [id]);
+
+    useEffect(() => {
+        attdancemonth()
+    }, [])
+
+    useEffect(() => {
+        attendancelist()
+    }, [])
 
 
     const [loading, setLoading] = useState(false);
@@ -46,19 +57,25 @@ const Studentdetails = () => {
     };
 
     const [isOpen, setIsOpen] = useState(false);
-    const handleaadharDownload = () => {
-        if (fileUrl) {
-            const link = document.createElement('a');
-            link.href = fileUrl;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else {
-            console.warn('File URL not available for download.');
+    let attdancemonth = async () => {
+        try {
+            let res = await getStudentAttendencemonth(id)
+            setTotalcount(res?.data?.data)
+            console.log(res?.data?.data)
+        } catch (err) {
+            console.log(err)
         }
-    };
+    }
+
+    let attendancelist = async () => {
+        try {
+            let res = await getAttendanceStudentList(id)
+            setAttendance(res?.data?.data?.data || [])
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
 
     const handleDownload = async (fileUrl) => {
         try {
@@ -128,7 +145,14 @@ const Studentdetails = () => {
                                     <div class="flex justify-between items-center pb-[10px]">
                                         <Skeleton variant="text" width={80} height={40} />
 
-                                        <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] px-[40px] p-2 '><EditOutlinedIcon className="text-[#144196]" sx={{ fontSize: '14px', cursor: 'pointer' }} /> Edit</div>
+                                        <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-transparent bg-clip-text bg-gradient-to-b 
+                                        from-[#144196] to-[#061530] font-[500] px-[40px] p-2 '>
+                                            <EditOutlinedIcon className="text-[#144196]" sx={{ fontSize: '14px', cursor: 'pointer' }} /> Edit
+
+
+                                        </div>
+
+
 
                                     </div>
 
@@ -326,9 +350,11 @@ const Studentdetails = () => {
                                 <div className='w-[85%]'>
                                     <div class="flex justify-between items-center pb-[10px]">
                                         <h2 className='text-[22px] font-[500] text-center md:text-left'>{user?.name?.replace(/\b\w/g, (char) => char.toUpperCase())}</h2>
+                                        <div>
+                                            <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] px-[40px] p-2 '><EditOutlinedIcon className="text-[#144196]" sx={{ fontSize: '14px', cursor: 'pointer' }} /> Edit</div>
+                                
 
-                                        <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] px-[40px] p-2 '><EditOutlinedIcon className="text-[#144196]" sx={{ fontSize: '14px', cursor: 'pointer' }} /> Edit</div>
-
+                                        </div>
                                     </div>
 
                                     <div className='grid grid-cols-2 lg:grid-cols-7 md:grid-cols-3 sm:grid-cols-2 text-[14px]'>
@@ -371,72 +397,49 @@ const Studentdetails = () => {
                                     <h4 className='text-[16px] font-medium'>Attendance Details</h4>
                                     {/* <div className='text-white  bg-gradient-to-b from-[#144196] to-[#061530] text-[12px] px-[40px] p-2 rounded-lg'>Make Absent</div> */}
                                 </div>
-                                <div className='grid grid-cols-2 lg:grid-cols-2 md:grid-cols-2 gap-2'>
-                                    <div className='bg-white rounded-[10px] px-[20px] py-[10px] mt-5'>
-                                        <p className='text-[#F81111] text-[12px]'>No: Of Days Absents</p>
-                                        <p className='text-[#F81111] text-[28px] font-[600]'>08</p>
+                                {totalcount && (
+                                    <div className='grid grid-cols-2 lg:grid-cols-2 md:grid-cols-2 gap-2'>
+                                        <div className='bg-white rounded-[10px] px-[20px] py-[10px] mt-5'>
+                                            <p className='text-[#F81111] text-[12px]'>No: Of Days Absents this month</p>
+                                            <p className='text-[#F81111] text-[28px] font-[600]'>{totalcount?.total?.currentMonth || 0}</p>
+                                        </div>
+                                        <div className='bg-white rounded-[10px] px-[20px] py-[10px] mt-5 '>
+                                            <p className='text-[#F81111] text-[12px]'>No: Of Days Absents last month</p>
+                                            <p className='text-[#F81111] text-[28px] font-[600]'>{totalcount?.total?.prevMonth || 0}</p>
+                                        </div>
                                     </div>
-                                    <div className='bg-white rounded-[10px] px-[20px] py-[10px] mt-5 '>
-                                        <p className='text-[#F81111] text-[12px]'>No: Of Days Absents</p>
-                                        <p className='text-[#F81111] text-[28px] font-[600]'>08</p>
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-3  text-[12px] bg-white rounded-[10px] px-[20px] py-[10px] my-5  '>
+                                )
+                                }
+                                {studentattendance.length > 0 ?
+                                    studentattendance.map((item, index) => (
+                                        <div key={index} className='grid grid-cols-3 text-[12px] bg-white rounded-[10px] px-[20px] py-[10px] my-5'>
+                                            <div>
+                                                <div className='text-[#00000080]'>Date</div>
+                                                <p className='font-[500]'>{new Date(item.date).toLocaleDateString()}</p>
+                                            </div>
+                                            <div>
+                                                <div className='text-[#00000080]'>Check-in</div>
+                                                <p className='font-[500]'>
+                                                    {item.inTime ? new Date(item.inTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : "-"}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <div className='text-[#00000080]'>Check-out</div>
+                                                <p className='font-[500]'>
+                                                    {item.outTime ? new Date(item.outTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : "-"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))
+                                    :
                                     <div>
-                                        <div className='text-[#00000080]'>Date</div>
-                                        <p className='font-[500]'>02.06.2025</p>
+                                        <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto mt-[30px]' />
+                                        <p className="text-center text-[#00000080] font-semibold">No Data Found</p>
+
                                     </div>
-                                    <div>
-                                        <div className='text-[#00000080]'>Check-in</div>
-                                        <p className='font-[500]'>10:00 AM</p>
-                                    </div>
-                                    <div>
-                                        <div className='text-[#00000080]'>Check-out</div>
-                                        <p className='font-[500]'>04:00 AM</p>
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-3  text-[12px] bg-white rounded-[10px] px-[20px] py-[10px] my-5  '>
-                                    <div>
-                                        <div className='text-[#00000080]'>Date</div>
-                                        <p className='font-[500]'>02.06.2025</p>
-                                    </div>
-                                    <div>
-                                        <div className='text-[#00000080]'>Check-in</div>
-                                        <p className='font-[500]'>10:00 AM</p>
-                                    </div>
-                                    <div>
-                                        <div className='text-[#00000080]'>Check-out</div>
-                                        <p className='font-[500]'>04:00 AM</p>
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-3  text-[12px] bg-white rounded-[10px] px-[20px] py-[10px] my-5  '>
-                                    <div>
-                                        <div className='text-[#00000080]'>Date</div>
-                                        <p className='font-[500]'>02.06.2025</p>
-                                    </div>
-                                    <div>
-                                        <div className='text-[#00000080]'>Check-in</div>
-                                        <p className='font-[500]'>10:00 AM</p>
-                                    </div>
-                                    <div>
-                                        <div className='text-[#00000080]'>Check-out</div>
-                                        <p className='font-[500]'>04:00 AM</p>
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-3  text-[12px] bg-white rounded-[10px] px-[20px] py-[10px] my-5  '>
-                                    <div>
-                                        <div className='text-[#00000080]'>Date</div>
-                                        <p className='font-[500]'>02.06.2025</p>
-                                    </div>
-                                    <div>
-                                        <div className='text-[#00000080]'>Check-in</div>
-                                        <p className='font-[500]'>10:00 AM</p>
-                                    </div>
-                                    <div>
-                                        <div className='text-[#00000080]'>Check-out</div>
-                                        <p className='font-[500]'>04:00 AM</p>
-                                    </div>
-                                </div>
+                                }
+
+
                             </div>
                             <div>
                                 <div className='bg-[#F8F8F8] px-[20px] py-[10px] rounded-[10px] '>

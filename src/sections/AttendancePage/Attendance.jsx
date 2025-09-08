@@ -152,7 +152,6 @@ const Attandance = () => {
 
   useEffect(() => {
     if (!date) return;
-
     getAttendanceList()
   }, [offset, searchText, courseId, batchId, date])
   let getAttendanceList = async () => {
@@ -447,19 +446,15 @@ const Attandance = () => {
 
 
                   <tr key={item._id}>
-                    <td>{item.userDetails?.name}</td>
-                    <td>{item.userDetails?.studentId}</td>
-                    <td>{item.userDetails?.mobileNo}</td>
-                    <td>{item.courseDetails?.courseName}</td>
-                    <td>{item.date?.split("T")[0]}</td>
-
-                    <td>{item?.inTime ? formatTime(item?.inTime) : <p style={{ color: "red" }}>--:--</p>}</td>
-
-
-                    <td>{item.outTime ? formatTime(item?.outTime) : <p style={{ color: "red" }}>--:--</p>}</td>
-                    <td >{item.inTime ? '' : <p style={{ color: "red !important", fontWeight: "500" }}>Absent</p>}</td>
+                    <td style={{color:item?.onLeave&&"red"}}>{item.userDetails?.name}</td>
+                    <td style={{color:item?.onLeave&&"red"}}>{item.userDetails?.studentId}</td>
+                    <td style={{color:item?.onLeave&&"red"}}>{item.userDetails?.mobileNo}</td>
+                    <td style={{color:item?.onLeave&&"red"}}>{item.courseDetails?.courseName}</td>
+                    <td style={{color:item?.onLeave&&"red"}}>{item.date?.split("T")[0]}</td>
+                    
+                    <td>{item?.onLeave ?<p style={{ color: "red" }}>Leave</p> : formatTime(item?.inTime) }</td>
+                    <td  >{item.outTime ? formatTime(item?.outTime) : <p style={{ color: "red", background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p>}</td>
                   </tr>
-
                 ))
 
                 :

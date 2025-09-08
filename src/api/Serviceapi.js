@@ -2,6 +2,7 @@
 import { FaCertificate } from "react-icons/fa6";
 import apiService from "./apiService";
 import Form from "antd/es/form/Form";
+import { useState } from "react";
 
 export const getUser = (limit, offset, value, courseId, status, batchId) => {
   return apiService.get(
@@ -181,11 +182,21 @@ export const getLeaveRequest = (limit, offset, date, status, value) => {
 };
 
 export const getLeaveRequestById = (id) => {
-  return apiService.get(`/leave/${id}`);
+  return apiService.get(`/leave?_id=${id}`);
 };
 
-export const updateLeaveRequest = (id, status) => {
-  return apiService.put(`/leave/${id}`, { status: status });
+export const updateLeaveRequest = (id, status, adminId, reason) => {
+  let reasonType = "";
+  if (status === "Rejected") {
+    reasonType = "rejectReason";
+  } else {
+    reasonType = "approvedReason";
+  }
+  return apiService.put(`/leave/${id}`, {
+    status: status,
+    approverId: adminId,
+    [reasonType]: reason,
+  });
 };
 
 // fee
@@ -220,13 +231,36 @@ export const calcfee = (courseId, batchId, semester, searchText) => {
 // dashboard
 
 export const getDashboardUser = () => {
-  return apiService.get(`/user`);
+  return apiService.get(`/user?limit=4&inStatus=ongoing`);
 };
 
-export const getDashboardEvents = () => {
-  return apiService.get(`/event`);
+export const getDashboardEvents = (status) => {
+  return apiService.get(`/event?&status=${status}`);
 };
 
-export const getDashboardLeave = () => {
-  return apiService.get(`/leave`);
+export const getDashboardLeave = (status) => {
+    const today = new Date().toISOString().split("T")[0];
+
+  return apiService.get(`/leave?status=${status}&date=${today}`);
+};
+
+export const studentCount = () => {
+  return apiService.get(`/user/count`);
+};
+
+export const getStudentAttendencemonth = (userId) => {
+  return apiService.get(`/leave/month?userId=${userId}`);
+};
+
+export const getAttendanceStudentList = (userId) => {
+  return apiService.get(`/attendance?userId=${userId}&limit=4`);
+};
+
+export const getTodayrate = () => {
+  const today = new Date().toISOString().split("T")[0];
+  return apiService.get(`/attendance/rate?date=${today}`);
+};
+
+export const getDashboardAttendencerate = (date) => {
+  return apiService.get(`/attendance/rate?date=${date}`);
 };
