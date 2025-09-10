@@ -116,3 +116,8 @@
   font-size: 20px;
   font-weight: 600;
 }
+
+.submit_btn:hover {
+     background: #154682fc;
+
+}

@@ -621,3 +621,71 @@
   display: flex;
   justify-content: space-between;
 }
+
+.feeupdatetable{
+  width: 100%;
+ 
+}
+.feeupdatetable table{
+  /* width: 100%; */
+  width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.feeupdatetable::-webkit-scrollbar {
+  display: none;
+}
+
+.feeupdatetable thead {
+  background-color: #9694942a;
+}
+.feeaction{
+  display: flex;
+  gap:10px;
+}
+
+.feeupdatetable th{
+  text-align: left;
+  font-weight: 500;
+   padding: 6px;
+   font-size: 12px;
+}
+.addfeebtn{
+  display: flex;
+  justify-content: flex-end ;
+  gap: 10px;
+}
+.addfeebtn button{
+  background: linear-gradient(to bottom, #144196, #061530);
+  color: #f6f6f6;
+  border: none;
+  padding: 8px 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  width:max-content;
+  text-align: center;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  /* margin-left: auto; */
+  margin-top: 10px;
+}
+.addfeebtn button{
+   cursor: pointer;
+}
+.addfeebtn button:hover,.updatefeebtn button:hover,.updatefeeinputinput button:hover,.formbtn button:hover{
+  background: #154682fc;
+
+}
+
+.feeupdatetable td{
+  text-align: left;
+  border-bottom: 1px solid #e6e6e690;
+  padding: 8px;
+}   
+
+.feeupdatetable input{
+  width: 100%;
+}
+

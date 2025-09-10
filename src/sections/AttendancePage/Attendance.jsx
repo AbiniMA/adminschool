@@ -452,7 +452,7 @@ const Attandance = () => {
                     <td style={{ color: item?.onLeave && "red" }}>{item.courseDetails?.courseName}</td>
                     <td style={{ color: item?.onLeave && "red" }}>{item.date?.split("T")[0]}</td>
 
-                    <td>{item?.onLeave ? <p style={{ color: "red" }}>Leave</p> : formatTime(item?.inTime)}</td>
+                    <td>{item?.onLeave ? <p style={{ color: "red" }}>Leave</p> : item.inTime ?formatTime(item?.inTime) : <p style={{ background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p>}</td>
                     <td  >
                       {item?.onLeave ? '' :  item.outTime ? formatTime(item?.outTime) : <p style={{ background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p> 
                       }

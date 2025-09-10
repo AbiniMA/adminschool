@@ -240,6 +240,10 @@
   color: white;
   font-size: 18px;
 }
+.submit:hover{
+ background: #154682fc;
+}
+
 .sixth_detail {
   display: flex;
   flex-wrap: wrap;

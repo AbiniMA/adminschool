@@ -126,6 +126,13 @@
     border-radius: 10px;
     cursor: pointer;
 }
+.popyes:hover ,.createbtn:hover{
+    background: #154682fc;
+}
+.popno:hover {
+  background: #d6d7d7fc;
+  border: none;
+}
 .popno{
     color: black;
      width: 70px;

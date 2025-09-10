@@ -55,6 +55,8 @@ const ModalView = ({ viewOpen, viewClose, children,id }) => {
           </div>
         </div>
       </div>
+
+     
     </div>
   );
 };

@@ -246,7 +246,6 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
 
                 setErrors({})
                 closeModal()
-
                 // setUser(res?.data);
                 if (onSuccess) onSuccess();
 
@@ -431,7 +430,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                         </div>
                         <div className={styles.student_email}>
                             <label htmlFor="email">E-Mail<span className={styles.important}>*</span></label>
-                            <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), setErrors({ ...Errors, student_email: '' }) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
+                            <input className={styles.input_field} disabled style={{color:'grey',cursor:'not-allowed'}} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), setErrors({ ...Errors, student_email: '' }) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
                             <p className={styles.error}>{Errors.student_email}</p>
                         </div>
                     </div>

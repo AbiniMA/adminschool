@@ -28,6 +28,10 @@
   border-radius: 10px;
   cursor: pointer;
 }
+
+.popyes:hover ,.button button:hover{
+    background: #154682fc;
+}
 .popno {
   color: black;
   width: 70px;
@@ -35,4 +39,9 @@
   border-radius: 10px;
   cursor: pointer;
   border: 1px solid black;
+}
+
+.popno:hover {
+  background: #d6d7d7fc;
+  border: none;
 }

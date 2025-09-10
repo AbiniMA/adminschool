@@ -22,3 +22,12 @@
     cursor: pointer;
     border: 1px solid black;
 }
+.popyes:hover ,.button button:hover{
+    background: #154682fc;
+}
+
+
+.popno:hover {
+  background: #d6d7d7fc;
+  border: none;
+}

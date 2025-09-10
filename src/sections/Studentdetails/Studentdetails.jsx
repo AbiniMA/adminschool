@@ -3,13 +3,14 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import profile from '../../assets/dashboardimgs/profile.png';
 import Import from '../../assets/dashboardimgs/Import.png';
 import { Form, useParams } from 'react-router-dom';
-import { getAttendanceStudentList, getStudentAttendencemonth, getUserId, updateUser } from '../../api/Serviceapi'
+import { getAttendanceStudentList, getStudentAttendencemonth, getUserId, updatedetailsuser, updateUser } from '../../api/Serviceapi'
 import Modal from 'react-modal';
 import UpdateStudent from '../../component/updatestudent/UpdateStudent';
 import styles from './Studentdetails.module.css';
 import { IoMdArrowRoundBack } from "react-icons/io";
 import Skeleton from '@mui/material/Skeleton';
 import nodata from '../../assets/trans.png'
+import { Switch } from 'antd';
 
 
 const Studentdetails = () => {
@@ -19,7 +20,7 @@ const Studentdetails = () => {
     const [certificateUrl, setCertificateUrl] = useState('');
     const [totalcount, setTotalcount] = useState(null)
     const [studentattendance, setAttendance] = useState({})
-
+    const [status, setStatus] = useState(true)
 
     useEffect(() => {
 
@@ -45,11 +46,11 @@ const Studentdetails = () => {
                     const userData = users[0];
                     setUser({
                         ...userData,
-                        //   inStatus: userData.inStatus || "Ongoing"   
+                        //   inStatus: userData.inStatus || "Ongoing"  
                     });
+                    setStatus(userData.status === "active");
                     setFileUrl(userData.aadharURL);
                     setCertificateUrl(userData.certificateURL);
-
                 }
             })
             .catch((err) => console.error("Error fetching user:", err))
@@ -113,6 +114,15 @@ const Studentdetails = () => {
         }
     };
 
+    const onChange = async (checked) => {
+        const newStatus = checked ? "active" : "inactive";
+        try {
+            await updatedetailsuser(newStatus, id);
+            setStatus(checked);
+        } catch (err) {
+            console.error("Error updating status:", err);
+        }
+    };
 
 
     return (
@@ -350,10 +360,14 @@ const Studentdetails = () => {
                                 <div className='w-[85%]'>
                                     <div class="flex justify-between items-center pb-[10px]">
                                         <h2 className='text-[22px] font-[500] text-center md:text-left'>{user?.name?.replace(/\b\w/g, (char) => char.toUpperCase())}</h2>
-                                        <div>
-                                            <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] px-[40px] p-2 '><EditOutlinedIcon className="text-[#144196]" sx={{ fontSize: '14px', cursor: 'pointer' }} /> Edit</div>
+                                        <div className="flex justify-between items-center pb-[10px]">
+                                            <div onClick={() => setIsOpen(true)} className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] px-[40px] p-2 '>
+                                                <EditOutlinedIcon  className="text-[#144196]" sx={{ fontSize: '14px', cursor: 'pointer' }} /> Edit</div>
+                                            <div>
+                                                <Switch value={status} onChange={onChange} style={{
 
-
+                                                }} size="small" />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -415,12 +429,12 @@ const Studentdetails = () => {
                                         <div key={index} className='grid grid-cols-3 text-[12px] bg-white rounded-[10px] px-[20px] py-[10px] my-5'>
                                             <div>
                                                 <div className='text-[#00000080]'>Date</div>
-                                                <p className='font-[500]'>{new Date(item.date).toLocaleDateString()}</p>
+                                                <p className='font-[500]' style={{color: item?.onLeave ? 'red' : ''}}>{new Date(item.date).toLocaleDateString()}</p>
                                             </div>
                                             <div>
                                                 <div className='text-[#00000080]'>Check-in</div>
                                                 <p className='font-[500]'>
-                                                    {item?.onLeave ? 'Leave' : item.inTime ? new Date(item.inTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : "-"}
+                                                    {item?.onLeave ? <span style={{color:'red'}}>Leave</span> : item.inTime ? new Date(item.inTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : "-"}
 
                                                 </p>
                                             </div>

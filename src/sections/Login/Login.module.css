@@ -229,7 +229,9 @@ body, html {
   transition: 0.3s ease;
   border: 1px solid white;
 }
-
+.formDivBtn button:hover {
+    background: #154682fc;
+}
 
 .content-right-formDiv .formDivForgetPass{
   /* border: 1px solid ; */

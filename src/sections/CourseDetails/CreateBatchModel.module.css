@@ -114,11 +114,13 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
+  /* transition: 0.3s; */
 }
 
 .submitBtn:hover {
-  opacity: 0.9;
+  /* opacity: 0.9; */
+      background: #154682fc;
+
 }
 
 @media (max-width: 768px) {

@@ -347,7 +347,7 @@ const Studentlist = () => {
                 }}
               />
             </div>
-            <div>
+            <div className={styles.button}>
               <button onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-[#FFFFFF] bg-gradient-to-b from-[#144196] to-[#061530]  px-[20px] w-fit py-2 rounded-md mr-2 flex items-center justify-between'><PlusIcon className='w-4 h-4 text-[600]' />Add Student</button>
             </div>
 
@@ -387,7 +387,7 @@ const Studentlist = () => {
                       <td className="px-4 py-2">{user.mobileNo}</td>
                       <td className="px-4 py-2">{user.email}</td>
                       <td className="px-4 py-2">{user?.courseDetails?.courseName}</td>
-                      <td className="px-4 py-2">{user?.batchDetails?.batchName}</td>
+                      <td className="px-4 py-2">{user?.batchDetails?.batchName || '-'} </td>
                       <td className={`${'px-4 py-2  font-medium'} ${user.inStatus === 'completed' 
                          && 'text-green-500' } ${user.inStatus === 'placed' && 'text-yellow-500'} ${user.inStatus === 'ongoing' && 'text-blue-700'} ${user.inStatus === 'dropout' && 'text-red-500'}`}>
                         {user.inStatus}

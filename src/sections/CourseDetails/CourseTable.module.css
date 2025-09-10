@@ -32,7 +32,10 @@
   gap: 8px; /* Space between icon and text */
   font-size: 14px;
 }
+.addBtn:hover{
+      background: #154682fc;
 
+}
 .courseTable {
   width: 100%;
   border-collapse: collapse;

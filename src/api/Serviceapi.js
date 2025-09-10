@@ -54,7 +54,6 @@ export const updateCourseBatch = (id, editdata) => {
   return apiService.put(`/batch/${id}`, editdata);
 };
 
-
 // get batch by courseId
 export const getCourseBatchByCourseId = (courseId, limit, offset) => {
   return apiService.get(
@@ -103,6 +102,10 @@ export const updateUser = (FormData, id) => {
   return apiService.put(`/user/${id}`, data);
 };
 
+export const updatedetailsuser = (status, id) => {
+  return apiService.put(`/user/${id}`, { status });
+};
+
 export const uploadFile = (file) => {
   const formData = new FormData();
   formData.append("file", file); // key name must be 'file'
@@ -147,7 +150,7 @@ export const updateEvent = (formdata, id) => {
     description: formdata.description,
     date: formdata.date,
     time: formdata.time,
-    eventType: formdata.eventType
+    eventType: formdata.eventType,
   };
   return apiService.put(`/event/${id}`, data);
 };
@@ -204,18 +207,18 @@ export const updateLeaveRequest = (id, status, adminId, reason) => {
 
 // fee
 
-export const getFee = (
-  limit,
-  offset,
-  courseId,
-  batchId,
-  semester,
-  searchtext
-) => {
-  return apiService.get(
-    `/fee?limit=${limit}&offset=${offset}&courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchtext}`
-  );
-};
+// export const getFee = (
+//   limit,
+//   offset,
+//   courseId,
+//   batchId,
+//   semester,
+//   searchtext
+// ) => {
+//   return apiService.get(
+//     `/fee?limit=${limit}&offset=${offset}&courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchtext}`
+//   );
+// };
 
 export const getFeeById = (id) => {
   return apiService.get(`/fee/?_id=${id}`);
@@ -225,11 +228,11 @@ export const createFee = (formdata) => {
   return apiService.post(`/fee/create`, formdata);
 };
 
-export const calcfee = (courseId, batchId, semester, searchText) => {
-  return apiService.get(
-    `/fee/cal?courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchText}`
-  );
-};
+// export const calcfee = (courseId, batchId, semester, searchText) => {
+//   return apiService.get(
+//     `/fee/cal?courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchText}`
+//   );
+// };
 
 // dashboard
 
@@ -242,7 +245,7 @@ export const getDashboardEvents = (status) => {
 };
 
 export const getDashboardLeave = (status) => {
-    const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
 
   return apiService.get(`/leave?status=${status}&date=${today}&limit=5`);
 };

@@ -148,8 +148,8 @@ const Eventlist = () => {
                             </FormControl>
                         </div>
 
-                        <div>
-                            <button onClick={() => setShowModal(true)} className='text-[#FFFFFF] bg-gradient-to-b from-[#144196] to-[#061530]  px-[20px] w-fit py-2 rounded-md mr-2 flex items-center justify-between cursor-pointer'><PlusIcon className='w-4 h-4 text-[600]' />Add Events</button>
+                        <div className={styles.button}>
+                            <button onClick={() => setShowModal(true)}  className='text-[#FFFFFF] bg-gradient-to-b from-[#144196] to-[#061530]  px-[20px] w-fit py-2 rounded-md mr-2 flex items-center justify-between cursor-pointer'><PlusIcon className='w-4 h-4 text-[600]' />Add Events</button>
                         </div>
 
                     </div>

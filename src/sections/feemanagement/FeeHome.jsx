@@ -8,6 +8,8 @@ import {
   faEye,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import magnification from "../../assets/glass.png";
 import Modal from "./Modal";
 import ModalView from "./ModalView";
@@ -17,7 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import { BiSearchAlt } from "react-icons/bi";
 import CloseIcon from '@mui/icons-material/Close';
-import { calcfee, createFee, getBatchbyid, getBatchName, getFee, getUser, getUserFilter } from "../../api/Serviceapi";
+import { createFee, getBatchbyid, getBatchName, getUser, getUserFilter } from "../../api/Serviceapi";
 import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import nodata from '../../assets/nodata.jpg'
@@ -186,26 +188,26 @@ const FeeHome = () => {
     }
   };
 
-  useEffect(() => {
-    getfeelist()
-  }, [offset, courseId, batchId, semester, searchText]);
+  // useEffect(() => {
+  //   getfeelist()
+  // }, [offset, courseId, batchId, semester, searchText]);
 
   const [loading, setLoading] = useState(false);
   const [id, setID] = useState('')
-  let getfeelist = async () => {
-    setLoading(true);
-    try {
-      const res = await getFee(limit, offset - 1, courseId, batchId, semester, searchText)
-      console.log(res?.data?.data, 'feelist')
-      setList(res?.data?.data?.data)
-      settotal(res?.data?.data?.totalCount)
-    }
-    catch (error) {
-      console.error("error", error.response?.data || error);
-    } finally {
-      setLoading(false)
-    }
-  }
+  // let getfeelist = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await getFee(limit, offset - 1, courseId, batchId, semester, searchText)
+  //     console.log(res?.data?.data, 'feelist')
+  //     setList(res?.data?.data?.data)
+  //     settotal(res?.data?.data?.totalCount)
+  //   }
+  //   catch (error) {
+  //     console.error("error", error.response?.data || error);
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
   const handlecompleted = (id) => {
     setOpenView(true),
@@ -404,26 +406,53 @@ const FeeHome = () => {
 
   const [calc, setCalc] = useState([])
 
-  useEffect(() => {
-    calculation()
-  }, [courseId, batchId, semester, searchText])
+  // useEffect(() => {
+  //   calculation()
+  // }, [courseId, batchId, semester, searchText])
 
   const [calloading, setCallodading] = useState(false)
-  let calculation = async () => {
-    setCallodading(true)
-    try {
-      let res = await calcfee(courseId, batchId, semester, searchText)
-      setCalc(res.data?.data[0])
-      console.log('hjjj', res.data?.data)
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setCallodading(false)
+  // let calculation = async () => {
+  //   setCallodading(true)
+  //   try {
+  //     let res = await calcfee(courseId, batchId, semester, searchText)
+  //     setCalc(res.data?.data[0])
+  //     console.log('hjjj', res.data?.data)
+  //   } catch (error) {
+  //     console.log(error)
+  //   } finally {
+  //     setCallodading(false)
+  //   }
+
+
+  // }
+
+  const [formdata, setFormData] = useState([]);
+
+  useEffect(() => {
+    if (searchlist?.length > 0) {
+      const initialData = {};
+      searchlist.forEach((student) => {
+        if (student?.courseDetails?.duration) {
+          initialData[student._id] = Array.from(
+            { length: student.courseDetails.duration * 2 },
+            (_, i) => ({
+              noOfsem: '',
+              paymentDate: '',
+              semFee: '',
+              paidAmount: '',
+              pendingAmount: '',
+              createdBy: localStorage.getItem('userId'),
+              userId: student._id,
+              studentId: student?.studentId,
+              courseId: student?.courseDetails?._id,
+              batchId: student?.batchDetails?._id
+            })
+          );
+        }
+      });
+      setFormData(initialData);
     }
-
-
-  }
-
+  }, [searchlist]);
   return (
     <div className={styles.container}>
       <div className={styles.feemanagement}>
@@ -1067,6 +1096,160 @@ const FeeHome = () => {
                           <div className={styles.updatefeebtn} >
                             <button onClick={() => update(student)}>Update</button>
                           </div>
+
+
+                          <div key={student._id} className={styles.feeupdatetable}>
+                            {/* <h3>{student.userDetails?.name} ({student.userDetails?.studentId})</h3> */}
+
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th style={{ width: "10%" }}>Sem</th>
+                                  <th>Sem Fee</th>
+                                  <th>Payment Date</th>
+                                  <th>Paid Amount</th>
+                                  <th>Pending Amount</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {formdata[student._id]?.map((row, index) => (
+                                  <tr key={index}>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        value={row.noOfsem}
+                                        onChange={(e) => {
+                                          const updated = { ...formdata };
+                                          updated[student._id] = [...updated[student._id]];
+                                          updated[student._id][index] = {
+                                            ...updated[student._id][index],
+                                            noOfsem: e.target.value
+                                          };
+                                          setFormData(updated);
+                                        }}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        value={row.semFee}
+                                        onChange={(e) => {
+                                          const updated = { ...formdata };
+                                          updated[student._id] = [...updated[student._id]];
+                                          updated[student._id][index] = {
+                                            ...updated[student._id][index],
+                                            semFee: e.target.value
+                                          };
+                                          setFormData(updated);
+                                        }}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="date"
+                                        value={row.paymentDate}
+                                        onChange={(e) => {
+                                          const updated = { ...formdata };
+                                          updated[student._id] = [...updated[student._id]];
+                                          updated[student._id][index] = {
+                                            ...updated[student._id][index],
+                                            paymentDate: e.target.value
+                                          };
+                                          setFormData(updated);
+                                        }}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        value={row.paidAmount}
+                                        onChange={(e) => {
+                                          const updated = { ...formdata };
+                                          updated[student._id] = [...updated[student._id]];
+                                          updated[student._id][index] = {
+                                            ...updated[student._id][index],
+                                            paidAmount: e.target.value
+                                          };
+                                          setFormData(updated);
+                                        }}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        value={row.pendingAmount}
+                                        onChange={(e) => {
+                                          const updated = { ...formdata };
+                                          updated[student._id] = [...updated[student._id]];
+                                          updated[student._id][index] = {
+                                            ...updated[student._id][index],
+                                            pendingAmount: e.target.value
+                                          };
+                                          setFormData(updated);
+                                        }}
+                                      />
+                                    </td>
+                                    <td>
+                                      <div style={{ display: 'flex', gap: '10px' }}>
+                                        <FaEdit style={{ cursor: 'pointer' }} />
+                                        <MdDelete
+                                          style={{ cursor: 'pointer' }}
+                                          onClick={() => {
+                                            const updated = { ...formdata };
+                                            updated[student._id] = updated[student._id].filter((_, i) => i !== index);
+                                            setFormData(updated);
+                                          }}
+                                        />
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+
+                            {/* Add Row only for this student */}
+                            <div className={styles.addfeebtn}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = { ...formdata };
+                                  updated[student._id] = [
+                                    ...updated[student._id],
+                                    {
+                                      noOfsem: '',
+                                      paymentDate: '',
+                                      semFee: '',
+                                      paidAmount: '',
+                                      pendingAmount: '',
+                                      createdBy: localStorage.getItem('userId'),
+                                      userId: student._id,
+                                      studentId: student?.studentId,
+                                      courseId: student?.courseDetails?._id,
+                                      batchId: student?.batchDetails?._id
+                                    }
+                                  ];
+                                  setFormData(updated);
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faPlus} /> Add Row
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const studentId = student._id; // the student you're rendering
+                                  const payload = { [studentId]: formdata[studentId] };
+                                  console.log(payload, 'sending only this student');
+                                }}
+                              >
+                                Save
+                              </button>
+                            </div>
+                          </div>
+
+
+
+
+
                         </div>
                       );
                     })

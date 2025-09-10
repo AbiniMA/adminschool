@@ -112,6 +112,10 @@
   cursor: pointer;
   font-weight: bold;
 }
+.submit_btn:hover {
+     background: #154682fc;
+
+}
 .header h2 {
   font-size: 20px;
   font-weight: 600;

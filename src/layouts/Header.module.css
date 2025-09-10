@@ -162,6 +162,11 @@
   font-weight: 500;
 }
 
+.add_student_button:hover {
+  background-color: #dde0e1fc;
+  color: black;
+}
+
 .task_box {
   width: 100%;
 }

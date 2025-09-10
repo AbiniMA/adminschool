@@ -227,6 +227,10 @@
   background: linear-gradient(to bottom, #144196, #061530);
   color: white;
 }
+.attendancemiddlediv1 div:nth-child(2):hover{
+      background: #154682fc;
+
+}
 @media screen and (max-width: 767px) {
   .attendancemiddle {
     grid-template-columns: 1fr;
@@ -286,12 +290,12 @@
   color: #08792e;
 }
 .table tr td:last-child {
-  background-image: linear-gradient(to bottom, #144196, #061530);
+  /* background-image: linear-gradient(to bottom, #144196, #061530); */
   background-size: 100%;
-  -webkit-background-clip: text;
+  /* -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  -webkit-text-fill-color: transparent; */
+  color: #08792e;
 }
 
 .showdiv {

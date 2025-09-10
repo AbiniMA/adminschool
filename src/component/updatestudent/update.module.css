@@ -13,6 +13,9 @@
 ::-webkit-scrollbar{
   display: none;
 }
+.submit:hover{
+ background: #154682fc;
+}
 .close_icon {
   position: absolute;
   top: 10px;
