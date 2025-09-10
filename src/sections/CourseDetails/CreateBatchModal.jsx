@@ -17,6 +17,8 @@ const CreateBatchModal = ({
     sem1FeeDate: "",
     sem2FeeDate: "",
   });
+    const [isLoading, setIsLoading] = useState(false);
+
  useEffect(() => {
    const formatDate = (isoString) => {
      if (!isoString) return "";

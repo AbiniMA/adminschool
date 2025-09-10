@@ -19,7 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import { BiSearchAlt } from "react-icons/bi";
 import CloseIcon from '@mui/icons-material/Close';
-import { createFee, getBatchbyid, getBatchName, getUser, getUserFilter } from "../../api/Serviceapi";
+import { calcfee, createBalanceFee, createFee, getBatchbyid, getBatchName, getFee, getUser, getUserFilter, updateBalanceFee } from "../../api/Serviceapi";
 import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import nodata from '../../assets/nodata.jpg'
@@ -188,26 +188,26 @@ const FeeHome = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getfeelist()
-  // }, [offset, courseId, batchId, semester, searchText]);
+  useEffect(() => {
+    getfeelist()
+  }, [offset, courseId, batchId, semester, searchText]);
 
   const [loading, setLoading] = useState(false);
   const [id, setID] = useState('')
-  // let getfeelist = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const res = await getFee(limit, offset - 1, courseId, batchId, semester, searchText)
-  //     console.log(res?.data?.data, 'feelist')
-  //     setList(res?.data?.data?.data)
-  //     settotal(res?.data?.data?.totalCount)
-  //   }
-  //   catch (error) {
-  //     console.error("error", error.response?.data || error);
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
+  let getfeelist = async () => {
+    setLoading(true);
+    try {
+      const res = await getFee(limit, offset - 1, courseId, batchId, semester, searchText)
+      console.log(res?.data?.data, 'feelist')
+      setList(res?.data?.data?.data)
+      settotal(res?.data?.data?.totalCount)
+    }
+    catch (error) {
+      console.error("error", error.response?.data || error);
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handlecompleted = (id) => {
     setOpenView(true),
@@ -385,11 +385,10 @@ const FeeHome = () => {
         [student._id]: { updatesemester: "", feeamountField: "", payment: "" }
       }));
       setEntername('')
-      setShowDiv(false)
       getfeelist();
       setStudentFormData({});
       setStudentErrors({});
-
+      getfeelist();
     } catch (err) {
       console.error(err);
     }
@@ -406,53 +405,136 @@ const FeeHome = () => {
 
   const [calc, setCalc] = useState([])
 
-  // useEffect(() => {
-  //   calculation()
-  // }, [courseId, batchId, semester, searchText])
+  useEffect(() => {
+    calculation()
+  }, [courseId, batchId, semester, searchText])
 
   const [calloading, setCallodading] = useState(false)
-  // let calculation = async () => {
-  //   setCallodading(true)
-  //   try {
-  //     let res = await calcfee(courseId, batchId, semester, searchText)
-  //     setCalc(res.data?.data[0])
-  //     console.log('hjjj', res.data?.data)
-  //   } catch (error) {
-  //     console.log(error)
-  //   } finally {
-  //     setCallodading(false)
-  //   }
+  let calculation = async () => {
+    setCallodading(true)
+    try {
+      let res = await calcfee(courseId, batchId, semester, searchText)
+      setCalc(res.data?.data?.data?.[0] || [])
+      console.log('hjjj', res.data?.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setCallodading(false)
+    }
 
 
-  // }
+  }
 
-  const [formdata, setFormData] = useState([]);
+  const [balancefee, setBalancefee] = useState([])
+
+
+  let updatebalacncefee = async (feeBalanceId, row) => {
+    try {
+      // Remove _id before sending
+      const { _id, ...rest } = row;
+
+      const payload = {
+        ...rest,
+        noOfsem: Number(row.noOfsem),
+        semFee: Number(row.semFee),
+        paidAmount: Number(row.paidAmount) || 0,
+        pendingAmount: Number(row.pendingAmount) || 0,
+        paymentDate: row.paymentDate ? new Date(row.paymentDate).toISOString() : null,
+      };
+
+      let res = await updateBalanceFee(feeBalanceId, payload);
+      console.log("Update response:", res.data);
+      setShowDiv(false)
+      // getfeelist()
+    } catch (error) {
+      console.error("Error updating fee balance:", error);
+    }
+  };
+
+
+  const [formdata, setFormData] = useState({});
+
 
   useEffect(() => {
     if (searchlist?.length > 0) {
       const initialData = {};
+
       searchlist.forEach((student) => {
-        if (student?.courseDetails?.duration) {
+        if (student?.feebalance?.length > 0) {
+          // If fee balance already exists, use it
+          initialData[student._id] = student.feebalance.map((f) => ({
+            noOfsem: f.noOfsem,
+            paymentDate: f.paymentDate ? f.paymentDate.split("T")[0] : "",
+            semFee: f.semFee,
+            paidAmount: f.paidAmount,
+            pendingAmount: f.pendingAmount,
+            createdBy: f.createdBy,
+            userId: f.userId,
+            studentId: f.studentId,
+            courseId: f.courseId,
+            batchId: f.batchId,
+            _id: f._id,
+          }));
+        } else if (student?.courseDetails?.duration) {
+          // Generate fresh rows if no feebalance
           initialData[student._id] = Array.from(
             { length: student.courseDetails.duration * 2 },
-            (_, i) => ({
-              noOfsem: '',
-              paymentDate: '',
-              semFee: '',
-              paidAmount: '',
-              pendingAmount: '',
-              createdBy: localStorage.getItem('userId'),
-              userId: student._id,
-              studentId: student?.studentId,
-              courseId: student?.courseDetails?._id,
-              batchId: student?.batchDetails?._id
-            })
+            (_, i) => {
+              const semNumber = i + 1;
+              let semFee = "";
+
+              if (semNumber === 1) {
+                semFee = student.courseDetails.firstsemFee || 0;
+              } else if (semNumber === 2) {
+                semFee = student.courseDetails.secondSemFee || 0;
+              }
+
+              return {
+                noOfsem: semNumber,
+                paymentDate: "",
+                semFee,
+                paidAmount: "",
+                pendingAmount: semFee,
+                createdBy: localStorage.getItem("userId"),
+                userId: student._id,
+                studentId: student?.studentId,
+                courseId: student?.courseDetails?._id,
+                batchId: student?.batchDetails?._id,
+              };
+            }
           );
         }
       });
+
       setFormData(initialData);
     }
   }, [searchlist]);
+
+
+
+  const handleSave = async (studentId) => {
+    
+    try {
+      const payload = formdata[studentId].map((row) => ({
+        ...row,
+        noOfsem: Number(row.noOfsem),
+        semFee: Number(row.semFee),
+        paidAmount: Number(row.paidAmount) || 0,
+        pendingAmount: Number(row.pendingAmount) || 0,
+        paymentDate: row.paymentDate ? new Date(row.paymentDate).toISOString() : null
+      }));
+
+      console.log("Final payload:", payload);
+
+      const response = await createBalanceFee(payload);
+      console.log("API response:", response);
+      getfeelist()
+      setShowDiv(false)
+    } catch (error) {
+      console.error("Error saving balance fee:", error);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.feemanagement}>
@@ -570,9 +652,9 @@ const FeeHome = () => {
                     }}
                   >
                     <MenuItem value="">All</MenuItem>
-                    <MenuItem value="1st">Semester 1</MenuItem>
+                    <MenuItem value="1">Semester 1</MenuItem>
 
-                    <MenuItem value="2nd">Semester 2</MenuItem>
+                    <MenuItem value="2">Semester 2</MenuItem>
 
 
                   </Select>
@@ -660,7 +742,7 @@ const FeeHome = () => {
                   <p className={styles.amtText}>Total Fee Amount</p>
                 </div>
                 <div className={styles.feeamtamount}>
-                  <p className={styles.amtValue}>{calc?.totalFee}</p>
+                  <p className={styles.amtValue}>{calc?.totalFee || 0}</p>
                 </div>
               </div>
               <div className={styles.feeamt}>
@@ -668,7 +750,7 @@ const FeeHome = () => {
                   <p className={styles.amtText}>Collected Fee Amount</p>
                 </div>
                 <div className={styles.feeamtamount}>
-                  <p className={styles.amtValue}>{calc?.paidFee}</p>
+                  <p className={styles.amtValue}>{calc?.paidFee || 0}</p>
                 </div>
               </div>
               <div className={styles.feeamt}>
@@ -676,7 +758,7 @@ const FeeHome = () => {
                   <p className={styles.amtText}>Pending Fee Amount</p>
                 </div>
                 <div className={styles.feeamtamount}>
-                  <p className={styles.amtValue}>{calc?.pendingFee}</p>
+                  <p className={styles.amtValue}>{calc?.pendingFee || 0}</p>
                 </div>
               </div>
             </div>
@@ -713,7 +795,7 @@ const FeeHome = () => {
                         <td>{item.userDetails?.name}</td>
                         <td>{item.userDetails?.studentId}</td>
                         <td>{item.userDetails?.mobileNo}</td>
-                        <td>{item.courseName}</td>
+                        <td>{item.courseDetails?.courseName}</td>
                         <td>{item.userDetails?.totalFee}</td>
                         <td style={{ color: item.userDetails?.pendingFee === 0 ? "green" : "red" }}>{item.userDetails?.pendingFee === 0 ? 'Completed' : item.userDetails?.pendingFee}</td>
                         <td style={{ color: item.userDetails?.pendingFee === 0 ? "green" : "red" }}>{item.paymentDate?.split("T")[0]}</td>
@@ -1013,8 +1095,8 @@ const FeeHome = () => {
 
                                 >
                                   <MenuItem value="">All</MenuItem>
-                                  <MenuItem value="1st">Semester 1</MenuItem>
-                                  <MenuItem value="2nd">Semester 2</MenuItem>
+                                  <MenuItem value="1">Semester 1</MenuItem>
+                                  <MenuItem value="2">Semester 2</MenuItem>
                                 </Select>
                               </FormControl>
 
@@ -1117,6 +1199,7 @@ const FeeHome = () => {
                                   <tr key={index}>
                                     <td>
                                       <input
+                                        disabled
                                         type="text"
                                         value={row.noOfsem}
                                         onChange={(e) => {
@@ -1132,6 +1215,7 @@ const FeeHome = () => {
                                     </td>
                                     <td>
                                       <input
+                                        disabled
                                         type="text"
                                         value={row.semFee}
                                         onChange={(e) => {
@@ -1169,7 +1253,7 @@ const FeeHome = () => {
                                           updated[student._id] = [...updated[student._id]];
                                           updated[student._id][index] = {
                                             ...updated[student._id][index],
-                                            paidAmount: e.target.value
+                                            paidAmount: e.target.value,
                                           };
                                           setFormData(updated);
                                         }}
@@ -1177,6 +1261,7 @@ const FeeHome = () => {
                                     </td>
                                     <td>
                                       <input
+                                     
                                         type="text"
                                         value={row.pendingAmount}
                                         onChange={(e) => {
@@ -1187,20 +1272,21 @@ const FeeHome = () => {
                                             pendingAmount: e.target.value
                                           };
                                           setFormData(updated);
+
                                         }}
                                       />
                                     </td>
                                     <td>
                                       <div style={{ display: 'flex', gap: '10px' }}>
-                                        <FaEdit style={{ cursor: 'pointer' }} />
-                                        <MdDelete
+                                        <FaEdit style={{ cursor: 'pointer', color: '#144196' }} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }} />
+                                        {/* <MdDelete
                                           style={{ cursor: 'pointer' }}
                                           onClick={() => {
                                             const updated = { ...formdata };
                                             updated[student._id] = updated[student._id].filter((_, i) => i !== index);
                                             setFormData(updated);
                                           }}
-                                        />
+                                        /> */}
                                       </div>
                                     </td>
                                   </tr>
@@ -1210,7 +1296,7 @@ const FeeHome = () => {
 
                             {/* Add Row only for this student */}
                             <div className={styles.addfeebtn}>
-                              <button
+                              {/* <button
                                 type="button"
                                 onClick={() => {
                                   const updated = { ...formdata };
@@ -1233,16 +1319,10 @@ const FeeHome = () => {
                                 }}
                               >
                                 <FontAwesomeIcon icon={faPlus} /> Add Row
-                              </button>
-                              <button
-                                onClick={() => {
-                                  const studentId = student._id; // the student you're rendering
-                                  const payload = { [studentId]: formdata[studentId] };
-                                  console.log(payload, 'sending only this student');
-                                }}
-                              >
-                                Save
-                              </button>
+                              </button> */}
+                              {!student.feebalance?.length && (
+                                <button onClick={() => handleSave(student._id)}>Save</button>
+                              )}
                             </div>
                           </div>
 

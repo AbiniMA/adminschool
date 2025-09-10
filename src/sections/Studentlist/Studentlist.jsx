@@ -365,6 +365,8 @@ const Studentlist = () => {
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Mail</th>
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Course</th>
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Batch</th>
+                <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Active</th>
+
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Status</th>
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold text-center" colSpan={2}>Action</th>
               </tr>
@@ -388,8 +390,10 @@ const Studentlist = () => {
                       <td className="px-4 py-2">{user.email}</td>
                       <td className="px-4 py-2">{user?.courseDetails?.courseName}</td>
                       <td className="px-4 py-2">{user?.batchDetails?.batchName || '-'} </td>
-                      <td className={`${'px-4 py-2  font-medium'} ${user.inStatus === 'completed' 
-                         && 'text-green-500' } ${user.inStatus === 'placed' && 'text-yellow-500'} ${user.inStatus === 'ongoing' && 'text-blue-700'} ${user.inStatus === 'dropout' && 'text-red-500'}`}>
+                      <td className="px-4 py-2" style={{ textTransform: 'capitalize',color: user.status === 'active' ? 'green' : 'red' }}>{user?.status || '-'} </td>
+
+                      <td className={`${'px-4 py-2  font-medium'} ${user.inStatus === 'completed'
+                        && 'text-green-500'} ${user.inStatus === 'placed' && 'text-yellow-500'} ${user.inStatus === 'ongoing' && 'text-blue-700'} ${user.inStatus === 'dropout' && 'text-red-500'}`}>
                         {user.inStatus}
                       </td>
                       <td className="px-4 py-2 space-x-2 text-sm">
@@ -400,14 +404,14 @@ const Studentlist = () => {
                           <VisibilityIcon /> View
                         </button>
                       </td>
-                      <td className="px-4 py-2 space-x-2 text-sm">
+                      {/* <td className="px-4 py-2 space-x-2 text-sm">
                         <button
                           className="text-red-600 flex items-center gap-1 cursor-pointer"
                           onClick={() => { setDeleteOpen(true), setId(user._id) }}
                         >
                           <DeleteOutlineIcon /> Delete
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   ))
                 ) : (

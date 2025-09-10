@@ -207,18 +207,18 @@ export const updateLeaveRequest = (id, status, adminId, reason) => {
 
 // fee
 
-// export const getFee = (
-//   limit,
-//   offset,
-//   courseId,
-//   batchId,
-//   semester,
-//   searchtext
-// ) => {
-//   return apiService.get(
-//     `/fee?limit=${limit}&offset=${offset}&courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchtext}`
-//   );
-// };
+export const getFee = (
+  limit,
+  offset,
+  courseId,
+  batchId,
+  semester,
+  searchtext
+) => {
+  return apiService.get(
+    `/fee?limit=${limit}&offset=${offset}&courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchtext}`
+  );
+};
 
 export const getFeeById = (id) => {
   return apiService.get(`/fee/?_id=${id}`);
@@ -228,13 +228,24 @@ export const createFee = (formdata) => {
   return apiService.post(`/fee/create`, formdata);
 };
 
-// export const calcfee = (courseId, batchId, semester, searchText) => {
-//   return apiService.get(
-//     `/fee/cal?courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchText}`
-//   );
-// };
+export const calcfee = (courseId, batchId, semester, searchText) => {
+  return apiService.get(
+    `/feeBalance/dasboard?courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchText}`
+  );
+};
 
 // dashboard
+
+export const createBalanceFee = (formdata) => {
+  return apiService.post(`/feeBalance`, formdata);
+};
+
+
+
+export const updateBalanceFee = (userId,payload) => {
+  return apiService.put(`/feeBalance/${userId}`,payload);
+};
+
 
 export const getDashboardUser = () => {
   return apiService.get(`/user?limit=3&inStatus=ongoing`);

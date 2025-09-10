@@ -119,7 +119,7 @@ const CourseTable = () => {
             <th>No of Semester</th>
             <th>Admission Fee</th>
             <th>Course Fees</th>
-            <th>No.of students 2025-26</th>
+            {/* <th>No.of students 2025-26</th> */}
             <th>Total Students</th>
           </tr>
         </thead>
@@ -138,7 +138,7 @@ const CourseTable = () => {
                 <td>{data.noOfSem}</td>
                 <td>{data.admissionFee}</td>
                 <td>{data.courseFee}</td>
-                <td className={styles.greenText}>{data.studentCount}</td>
+                {/* <td className={styles.greenText}>{data.studentCount}</td> */}
                 <td className={styles.greenText}>{data.studentCount}</td>
               </tr>
             ))
