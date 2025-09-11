@@ -473,7 +473,7 @@ const Studentdetails = () => {
                                             <p className='font-[500]'>{user?.pendingFee}</p>
                                         </div>
                                         <div>
-                                            <div className='text-[#00000080]'>Due Date</div>
+                                            <div className='text-[#00000080]'>Paid Date</div>
                                             <p className='font-[500]'>{user?.dueDate?.split("T")[0]}</p>
                                         </div>
                                     </div>

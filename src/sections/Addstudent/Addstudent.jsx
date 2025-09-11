@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import defaultimg from '../../../src/assets/profile.png'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const Addstudent = ({ closeModal, onStudentAdded }) => {
 
@@ -29,7 +30,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    navigate=useNavigate()
+    let navigate=useNavigate()
 
     const [Formdata, setFormdata] = useState({
         name: '',

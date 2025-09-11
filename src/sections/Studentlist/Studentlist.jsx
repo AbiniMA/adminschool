@@ -269,7 +269,7 @@ const Studentlist = () => {
                   <MenuItem value="completed">Completed</MenuItem>
                   <MenuItem value="ongoing">Ongoing</MenuItem>
                   <MenuItem value="placed">Placed</MenuItem>
-                  <MenuItem value="dropout">Dropout</MenuItem>
+                  {/* <MenuItem value="dropout">Dropout</MenuItem> */}
 
                   {/* {course.map((item, index) => {
                     return (
@@ -438,7 +438,7 @@ const Studentlist = () => {
                       <td className="px-4 py-2" style={{ textTransform: 'capitalize', color: user.status === 'active' ? 'green' : 'red' }}>{user?.status || '-'} </td>
 
                       <td className={`${'px-4 py-2  font-medium'} ${user.inStatus === 'completed'
-                        && 'text-green-500'} ${user.inStatus === 'placed' && 'text-yellow-500'} ${user.inStatus === 'ongoing' && 'text-blue-700'} ${user.inStatus === 'dropout' && 'text-red-500'}`}>
+                        && 'text-green-500'} ${user.inStatus === 'placed' && 'text-yellow-500'} ${user.inStatus === 'ongoing' && 'text-blue-700'} `}>
                         {user.inStatus}
                       </td>
                       <td className="px-4 py-2 space-x-2 text-sm">

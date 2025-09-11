@@ -83,7 +83,7 @@ const Header = ({ setLoginUser }) => {
     setLoginUser(false);
   };
 
-  let userName=localStorage.getItem('username');
+  let userName = localStorage.getItem('username');
   return (
     <>
       <div className={styles.aloschool}>
@@ -91,11 +91,13 @@ const Header = ({ setLoginUser }) => {
         <div className={`${styles.navbar} ${windowWidth <= 768 ? (isNavbarOpen ? styles.open : styles.closed) : ''}`}>
           <div className={styles.navbar_close} onClick={handleCloseNavbar}><IoMdClose /></div>
           <div className={styles.navbar_content}>
-            <div className={styles.logo}>
-            <Link  to='/dashboard'>
-            <img src={logo} alt="logo" height={"100%"} width={"100%"} style={{
-                filter: 'brightness(0) saturate(100%) invert(100%)'
-              }} /></Link>
+            <div>
+              <div className={styles.logo}>
+                <Link to='/dashboard'>
+                  <img src={logo} alt="logo" height={"100%"} width={"100%"} style={{
+                    filter: 'brightness(0) saturate(100%) invert(100%)'
+                  }} /></Link>
+              </div>
             </div>
             <div className={styles.main_navigation}>
               <div className={styles.navigation}>
@@ -111,12 +113,12 @@ const Header = ({ setLoginUser }) => {
                 </div>
                 <div className={styles.attendance}>
                   <button className={`${styles.attendance_button} ${location.pathname == '/attendence' || location.pathname.startsWith('/attendence/leaverequest') ? styles.navactive : ''}`} onClick={() => navigate('/attendence')}>
-                    {location.pathname == '/attendence' || location.pathname.startsWith('/attendence/leaverequest')  ? <RiFileList2Fill className={styles.filled_list_icon} />
+                    {location.pathname == '/attendence' || location.pathname.startsWith('/attendence/leaverequest') ? <RiFileList2Fill className={styles.filled_list_icon} />
                       :
                       <RiFileList2Line className={styles.outline_list_icon} />}Attendance</button>
                 </div>
                 <div className={styles.attendance}>
-                  <button className={`${styles.attendance_button} ${location.pathname == '/course'|| location.pathname.startsWith('/course/coursedetails') ? styles.navactive : ''}`} onClick={() => navigate('/course')}>
+                  <button className={`${styles.attendance_button} ${location.pathname == '/course' || location.pathname.startsWith('/course/coursedetails') ? styles.navactive : ''}`} onClick={() => navigate('/course')}>
                     {location.pathname == '/course' || location.pathname.startsWith('/course/coursedetails') ? <RiFileList2Fill className={styles.filled_list_icon} /> : <RiFileList2Line className={styles.outline_list_icon} />}
 
 
@@ -153,11 +155,11 @@ const Header = ({ setLoginUser }) => {
             </div>
             <div className={styles.login_details}>
               <div className={styles.notification_icon}><GoBell /></div>
-              <div className={styles.userdetails} onClick={()=>setIsLogutOpen(true)} style={{ cursor: 'pointer'}}>
-                <div className={styles.user_image} style={{ cursor: 'pointer'}}>
+              <div className={styles.userdetails} onClick={() => setIsLogutOpen(true)} style={{ cursor: 'pointer' }}>
+                <div className={styles.user_image} style={{ cursor: 'pointer' }}>
                   <img src={user_image} alt="" height={"100%"} width={"100%"} />
                 </div>
-                <div className={styles.user_name}><p className={styles.admin_user} style={{ cursor: 'pointer'}} >{userName}</p></div>
+                <div className={styles.user_name}><p className={styles.admin_user} style={{ cursor: 'pointer' }} >{userName}</p></div>
               </div>
             </div>
           </div>
