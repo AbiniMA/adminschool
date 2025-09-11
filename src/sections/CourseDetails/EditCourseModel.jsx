@@ -19,6 +19,8 @@ const EditCourseModal = ({ visible, onCancel, onUpdate, formData,id }) => {
   const [adfeeerror, setadfeeerror] = useState("");
   const [sem1feeerror, setsem1feeerror] = useState("");
   const [sem2feeerror, setsem2feeerror] = useState("");
+
+  const [loading, setLoading] = useState(false);
   
   useEffect(() => {
     console.log(formData[0])
@@ -131,6 +133,7 @@ const EditCourseModal = ({ visible, onCancel, onUpdate, formData,id }) => {
     // GetMethod()
     // // Update state in parent here if needed
     // onCancel();
+    setLoading(true);
         try {
           // Capitalize first letter of each word
           const formattedCourseName = courseName
@@ -156,6 +159,8 @@ const EditCourseModal = ({ visible, onCancel, onUpdate, formData,id }) => {
           onCancel();
         } catch (error) {
           console.error("Error updating course:", error);
+        }finally{
+          setLoading(false);
         }
 
   }
@@ -263,7 +268,7 @@ const EditCourseModal = ({ visible, onCancel, onUpdate, formData,id }) => {
               style={{ textAlign: "left", marginTop: "20px", fontSize: "20px" }}
             >
               <button type="submit" className={styles.submitBtn}>
-                Update
+               {loading ? "Updating..." : "Update"} 
               </button>
             </div>
           </div>

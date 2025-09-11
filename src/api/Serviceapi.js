@@ -77,7 +77,7 @@ export const addUser = (FormData) => {
     courseId: FormData.student_course,
     batchId: FormData.student_batch,
     DOB: FormData.student_dob,
-    createdBy:localStorage.getitem('userId'),
+    createdBy:localStorage.getItem('userId'), 
   };
   return apiService.post(`/user/create`, data);
 };

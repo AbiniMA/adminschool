@@ -245,7 +245,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                 if (onStudentAdded) onStudentAdded();
 
             } catch (err) {
-                console.log(err.response?.data.message);
+                // console.log(err.response?.data.message);
                 showToast(err?.response?.data?.message, "error");
                 setLoading(false);
                 setMes(err?.response?.data?.message);

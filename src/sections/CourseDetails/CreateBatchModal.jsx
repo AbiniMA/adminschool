@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./CreateBatchModel.module.css";
 import { postCourseBatch } from "../../api/Serviceapi";
 import { updateCourseBatch } from "../../api/Serviceapi";
@@ -17,37 +17,37 @@ const CreateBatchModal = ({
     sem1FeeDate: "",
     sem2FeeDate: "",
   });
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
- useEffect(() => {
-   const formatDate = (isoString) => {
-     if (!isoString) return "";
-     const date = new Date(isoString);
-     // Get yyyy-MM-dd
-     const year = date.getFullYear();
-     const month = String(date.getMonth() + 1).padStart(2, "0");
-     const day = String(date.getDate()).padStart(2, "0");
-     return `${year}-${month}-${day}`;
-   };
+  useEffect(() => {
+    const formatDate = (isoString) => {
+      if (!isoString) return "";
+      const date = new Date(isoString);
+      // Get yyyy-MM-dd
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
 
-   if (batchData) {
-     setFormData({
-       batchName: batchData.batchName || "",
-       startDate: formatDate(batchData.startDate),
-       endDate: formatDate(batchData.endDate),
-       sem1FeeDate: formatDate(batchData.sem1PayDate),
-       sem2FeeDate: formatDate(batchData.sem2PayDate),
-     });
-   } else {
-     setFormData({
-       batchName: "",
-       startDate: "",
-       endDate: "",
-       sem1FeeDate: "",
-       sem2FeeDate: "",
-     });
-   }
- }, [batchData]);
+    if (batchData) {
+      setFormData({
+        batchName: batchData.batchName || "",
+        startDate: formatDate(batchData.startDate),
+        endDate: formatDate(batchData.endDate),
+        sem1FeeDate: formatDate(batchData.sem1PayDate),
+        sem2FeeDate: formatDate(batchData.sem2PayDate),
+      });
+    } else {
+      setFormData({
+        batchName: "",
+        startDate: "",
+        endDate: "",
+        sem1FeeDate: "",
+        sem2FeeDate: "",
+      });
+    }
+  }, [batchData]);
 
 
 
@@ -73,10 +73,10 @@ const CreateBatchModal = ({
       newErrors.batchName = "Batch name is required";
     if (!formData.startDate) newErrors.startDate = "Start date is required";
     if (!formData.endDate) newErrors.endDate = "End date is required";
-     if (!formData.sem1FeeDate)
-       newErrors.sem1FeeDate = "Sem1 Fee Date is required";
-     if (!formData.sem2FeeDate)
-       newErrors.sem2FeeDate = "Sem2 Fee Date is required";
+    if (!formData.sem1FeeDate)
+      newErrors.sem1FeeDate = "Sem1 Fee Date is required";
+    if (!formData.sem2FeeDate)
+      newErrors.sem2FeeDate = "Sem2 Fee Date is required";
 
     // Date logic (batch duration)
     if (formData.startDate && formData.endDate) {
@@ -123,43 +123,43 @@ const CreateBatchModal = ({
     setIsLoading(true);
     try {
 
-        const formattedCourseName = formData.batchName
-          .trim()
-          .split(" ")
-          .filter((word) => word.length > 0) // remove extra spaces
-          .map(
-            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-          )
-          .join(" ");
+      const formattedCourseName = formData.batchName
+        .trim()
+        .split(" ")
+        .filter((word) => word.length > 0) // remove extra spaces
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(" ");
       // ✅ map frontend keys to backend keys
-   const payload = {
-     batchName: formattedCourseName,
-     courseId: id,
-     startDate: formData.startDate,
-     endDate: formData.endDate,
-     sem1PayDate: formData.sem1FeeDate,
-     sem2PayDate: formData.sem2FeeDate,
-   };
+      const payload = {
+        batchName: formattedCourseName,
+        courseId: id,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        sem1PayDate: formData.sem1FeeDate,
+        sem2PayDate: formData.sem2FeeDate,
+      };
 
 
       console.log("Submitting batch:", payload);
       let res;
-     if (batchData) {
-       const updatePayload = {
-         batchName: formData.batchName,
-         startDate: formData.startDate,
-         endDate: formData.endDate,
-         sem1PayDate: formData.sem1FeeDate,
-         sem2PayDate: formData.sem2FeeDate,
-       };
+      if (batchData) {
+        const updatePayload = {
+          batchName: formData.batchName,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          sem1PayDate: formData.sem1FeeDate,
+          sem2PayDate: formData.sem2FeeDate,
+        };
 
-       const resedit = await updateCourseBatch(batchData._id, updatePayload);
-       console.log("Update response:", resedit);
+        const resedit = await updateCourseBatch(batchData._id, updatePayload);
+        console.log("Update response:", resedit);
 
-     } else {
-       res = await postCourseBatch(payload);
-       console.log("Batch created:", res.data.data);
-     }
+      } else {
+        res = await postCourseBatch(payload);
+        console.log("Batch created:", res.data.data);
+      }
       if (onBatchCreated) onBatchCreated();
 
       // ✅ reset form
@@ -173,7 +173,7 @@ const CreateBatchModal = ({
       onClose();
     } catch (err) {
       console.error("Error creating batch:", err);
-    }finally{
+    } finally {
       setIsLoading(false);
     }
 
@@ -195,11 +195,11 @@ const CreateBatchModal = ({
           {batchData ? "Edit Batch" : "Create Batch"}
         </h2>
         <button className={styles.closeBtn}
-         onClick={()=>{
-          onClose()
-          resetForm();
+          onClick={() => {
+            onClose()
+            resetForm();
 
-        }  }>
+          }}>
           ×
         </button>
 
@@ -260,7 +260,7 @@ const CreateBatchModal = ({
 
           <div className={styles.rowTwoGrid}>
             <div className={styles.formGroup}>
-              <label>Semester 1 Fee Date</label>
+              <label>Semester 1 Fee Date<span className={styles.required}>*</span></label>
               <input
                 type="date"
                 name="sem1FeeDate"
@@ -273,7 +273,7 @@ const CreateBatchModal = ({
             </div>
 
             <div className={styles.formGroup}>
-              <label>Semester 2 Fee Date</label>
+              <label>Semester 2 Fee Date<span className={styles.required}>*</span></label>
               <input
                 type="date"
                 name="sem2FeeDate"
@@ -285,7 +285,7 @@ const CreateBatchModal = ({
               )}
             </div>
           </div>
-
+          {/* {isLoading ? (<div className={styles.loader}></div>):null} */}
           <button
             type="button"
             className={styles.submitBtn}

@@ -145,6 +145,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
       console.error("Error posting course:", error);
     } finally {
       setIsDisabled(false);
+     
     }
   };
   const handleCancel = () => {
@@ -274,6 +275,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
               type="submit"
               className={styles.submitBtn}
               disabled={isDisabled}
+              style={{ cursor: isDisabled ? "not-allowed" : "pointer" }}
             >
               {isDisabled ? "Creating..." : "Create"}
             </button>
