@@ -55,6 +55,8 @@ const Studentlist = () => {
   const [batchId, setBatchId] = useState('')
   const [courseId, setCourseId] = useState('')
   const [status, setStatusName] = useState('')
+  const [activestatus, setActiveStatus] = useState('');
+
 
   const handleChange = (event) => {
     setBatchId(event.target.value);
@@ -152,7 +154,7 @@ const Studentlist = () => {
   useEffect(() => {
     getuserlist()
     // getBatchname()
-  }, [offset, searchText, courseId, status, batchId]);
+  }, [offset, searchText, courseId, status, batchId, activestatus]);
 
 
 
@@ -160,7 +162,7 @@ const Studentlist = () => {
 
   let getuserlist = async () => {
     setLoading(true); // start loading
-    await getUser(limit, offset - 1, searchText, courseId, status, batchId)
+    await getUser(limit, offset - 1, searchText, courseId, status, batchId, activestatus)
       .then((res) => {
         setUser(res?.data?.data?.data);
         settotal(res?.data?.data?.totalCount);
@@ -170,11 +172,18 @@ const Studentlist = () => {
   };
 
 
+
+
   const handleClearSearch = () => {
     setUser([])
     setSearchText('');
     setoffset(1);
   };
+
+  const statusChange = (event) => {
+    setActiveStatus(event.target.value);
+    setoffset(1)
+  }
 
   const handleDelete = async (id) => {
     try {
@@ -194,6 +203,42 @@ const Studentlist = () => {
         <div className="flex justify-between items-center lg:flex-row md:flex-row flex-col">
           <h4 className='text-xl font-normal'>Student Management</h4>
           <div className=' flex items-center md:justify-around flex-wrap p-2 gap-2 '>
+            <div style={{ width: '130px', }}>
+              <FormControl
+                variant="outlined"
+                size="small"
+                sx={{
+                  minWidth: 120,
+                  backgroundColor: '#F6F6F6', // match the image background
+                  borderRadius: '6px',
+                  border: 'none'
+                }}
+              >
+                <Select
+                  value={activestatus}
+                  onChange={statusChange}
+                  displayEmpty
+                  IconComponent={KeyboardArrowDownIcon}
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: 'none',
+                    },
+                    fontSize: '14px',
+                    padding: '4px 10px',
+                    height: '36px',
+                    border: 'none'
+                  }}
+                >
+                  <MenuItem value="">All</MenuItem>
+
+                  <MenuItem value="active">Active</MenuItem>
+                  <MenuItem value="inactive">Inactive</MenuItem>
+
+
+
+                </Select>
+              </FormControl>
+            </div>
             <div >
               <FormControl
                 variant="outlined"
@@ -390,7 +435,7 @@ const Studentlist = () => {
                       <td className="px-4 py-2">{user.email}</td>
                       <td className="px-4 py-2">{user?.courseDetails?.courseName}</td>
                       <td className="px-4 py-2">{user?.batchDetails?.batchName || '-'} </td>
-                      <td className="px-4 py-2" style={{ textTransform: 'capitalize',color: user.status === 'active' ? 'green' : 'red' }}>{user?.status || '-'} </td>
+                      <td className="px-4 py-2" style={{ textTransform: 'capitalize', color: user.status === 'active' ? 'green' : 'red' }}>{user?.status || '-'} </td>
 
                       <td className={`${'px-4 py-2  font-medium'} ${user.inStatus === 'completed'
                         && 'text-green-500'} ${user.inStatus === 'placed' && 'text-yellow-500'} ${user.inStatus === 'ongoing' && 'text-blue-700'} ${user.inStatus === 'dropout' && 'text-red-500'}`}>

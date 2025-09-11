@@ -4,9 +4,9 @@ import apiService from "./apiService";
 import Form from "antd/es/form/Form";
 import { useState } from "react";
 
-export const getUser = (limit, offset, value, courseId, status, batchId) => {
+export const getUser = (limit, offset, value, courseId, status, batchId,activestatus) => {
   return apiService.get(
-    `/user?limit=${limit}&offset=${offset}&value=${value}&courseId=${courseId}&inStatus=${status}&batchId=${batchId}`
+    `/user?limit=${limit}&offset=${offset}&value=${value}&courseId=${courseId}&inStatus=${status}&batchId=${batchId}&status=${activestatus}`
   );
 };
 export const getUserFilter = (value) => {
@@ -249,7 +249,7 @@ export const updateBalanceFee = (userId,payload) => {
 
 
 export const getDashboardUser = () => {
-  return apiService.get(`/user?limit=3&inStatus=ongoing`);
+  return apiService.get(`/user?limit=3&inStatus=ongoing&status=active`);
 };
 
 export const getDashboardEvents = (status) => {
