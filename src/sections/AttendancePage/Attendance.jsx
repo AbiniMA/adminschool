@@ -464,7 +464,7 @@ const Attandance = () => {
                 <tr >
                   <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold " style={{ border: "none" }}>
                     <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
-                    <p className="text-center">No Data Found</p>
+                    <p className="text-center text-gray-500">No Data Found</p>
                   </td>
                 </tr>
 
