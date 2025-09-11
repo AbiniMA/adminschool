@@ -285,14 +285,17 @@ const CreateBatchModal = ({
               )}
             </div>
           </div>
-          {/* {isLoading ? (<div className={styles.loader}></div>):null} */}
-          <button
-            type="button"
-            className={styles.submitBtn}
-            onClick={handleSubmit}
-          >
-            {batchData ? "Update" : "Create"}
-          </button>
+          {isLoading ? (<div className={styles.loader}> {batchData ? "Updating..." : "Creating..."}</div>) :
+
+            <button
+              type="button"
+              className={styles.submitBtn}
+              onClick={handleSubmit}
+            >
+              {batchData ? "Update" : "Create"}
+            </button>
+          }
+
         </div>
       </div>
     </div>

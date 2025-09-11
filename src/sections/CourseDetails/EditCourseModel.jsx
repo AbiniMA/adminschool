@@ -139,10 +139,10 @@ const EditCourseModal = ({ visible, onCancel, onUpdate, formData,id }) => {
           const formattedCourseName = courseName
             .split(" ")
             .filter((word) => word.trim() !== "") // remove extra spaces
-            .map(
-              (word) =>
-                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-            )
+            // .map(
+            //   (word) =>
+            //     word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            // )
             .join(" ");
 
           await editCouse(id, {

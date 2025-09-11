@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { use, useEffect } from 'react';
 import styles from './Addstudent.module.css';
 import { AiOutlineClose } from "react-icons/ai";
 import { FaChevronDown } from "react-icons/fa6";
@@ -28,6 +28,8 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
     const [batch, setBatch] = useState([])
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+
+    navigate=useNavigate()
 
     const [Formdata, setFormdata] = useState({
         name: '',
@@ -241,8 +243,10 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                 setErrors({})
                 closeModal()
 
+                
                 // setUser(res?.data);
                 if (onStudentAdded) onStudentAdded();
+                navigate("/students")
 
             } catch (err) {
                 // console.log(err.response?.data.message);
