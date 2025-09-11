@@ -314,7 +314,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
             const res = await getBatchbyid(id);
 
             // Extract imageURL from backend response
- 
+
             console.log(res?.data?.data, 'batch')
             const course = res?.data?.data?.find(c => c._id === id);
 
@@ -381,6 +381,8 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                 <h2 className={styles.title}>Update Student</h2>
                 <span className={styles.close_icon} onClick={closeModal}><AiOutlineClose /></span>
             </div>
+            <p style={{ color: 'red', fontSize: '12px', marginTop: '1rem' }}>Note: File size should be less than 1MB*</p>
+
             <form action="">
                 <div className={styles.form_body}>
 
@@ -418,7 +420,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                         </div>
                         <div className={styles.student_id}>
                             <label htmlFor="id">ID</label>
-                            <input className={styles.input_field} style={{color:'grey',cursor:'not-allowed'}} disabled onChange={(e) => setFormdata({ ...Formdata, student_id: e.target.value })} value={Formdata.student_id} id='id' type="text" placeholder='0245687' />
+                            <input className={styles.input_field} style={{ color: 'grey', cursor: 'not-allowed' }} disabled onChange={(e) => setFormdata({ ...Formdata, student_id: e.target.value })} value={Formdata.student_id} id='id' type="text" placeholder='0245687' />
                             {/* <p>{Errors.student_id}</p> */}
                         </div>
                     </div>
@@ -430,7 +432,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                         </div>
                         <div className={styles.student_email}>
                             <label htmlFor="email">E-Mail<span className={styles.important}>*</span></label>
-                            <input className={styles.input_field} disabled style={{color:'grey',cursor:'not-allowed'}} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), setErrors({ ...Errors, student_email: '' }) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
+                            <input className={styles.input_field} disabled style={{ color: 'grey', cursor: 'not-allowed' }} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), setErrors({ ...Errors, student_email: '' }) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
                             <p className={styles.error}>{Errors.student_email}</p>
                         </div>
                     </div>
@@ -509,13 +511,13 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                                             onClose={() => setOpen(false)}
                                             value={Formdata.student_dob} // must be dayjs or null
                                             maxDate={dayjs()}
-                                           onAccept={(newValue) => {
+                                            onAccept={(newValue) => {
                                                 setFormdata({ ...Formdata, student_dob: newValue });
                                                 setErrors({ ...Errors, student_dob: "" });
                                                 setOpen(false);
                                             }}
                                             format="DD/MM/YYYY"
-                                            
+
                                             slotProps={{
                                                 textField: {
                                                     fullWidth: true,

@@ -26,7 +26,7 @@ const Login = ({ setLoginUser }) => {
   function Validation() {
     let newErrors = {}
     if (!email.trim()) {
-      newErrors.userName = "EmailId is required";
+      newErrors.userName = "Email Id is required";
       setError(prev => ({ ...prev, userName: newErrors.userName }));
 
     } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email.trim())) {

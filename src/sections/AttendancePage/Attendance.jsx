@@ -59,6 +59,7 @@ const Attandance = () => {
   const [open, setOpen] = useState(false)
   const [deleteevent, setDelete] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState('');
 
 
 
@@ -153,11 +154,11 @@ const Attandance = () => {
   useEffect(() => {
     if (!date) return;
     getAttendanceList()
-  }, [offset, searchText, courseId, batchId, date])
+  }, [offset, searchText, courseId, batchId, date,status])
   let getAttendanceList = async () => {
     setLoading(true);
     try {
-      let res = await getAttendance(limit, offset - 1, searchText, courseId, batchId, date)
+      let res = await getAttendance(limit, offset - 1, searchText, courseId, batchId, date,status)
       console.log(res.data?.data?.data, 'l')
       setList(res.data?.data?.data)
       settotal(res.data?.data?.totalCount)
@@ -203,6 +204,10 @@ const Attandance = () => {
     });
   };
 
+  const statusChange = (event) => {
+    setStatus(event.target.value);
+    setoffset(1)
+  }
   return (
     <div className={styles.container}>
       <div className={styles.attendancetop}>
@@ -211,6 +216,38 @@ const Attandance = () => {
         </div>
         <div className={styles.attendanceright}>
           <div className={styles.attendancerightdiv}>
+            <div className={styles.selectWrapper}>
+              <FormControl
+                variant="outlined"
+                size="small"
+                sx={{
+                  minWidth: 120,
+                  backgroundColor: '#F6F6F6', // match the image background
+                  borderRadius: '6px',
+                  border: 'none'
+                }}
+              >
+                <Select
+                  value={status}
+                  onChange={statusChange}
+                  displayEmpty
+                  IconComponent={KeyboardArrowDownIcon}
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: 'none',
+                    },
+                    fontSize: '14px',
+                    padding: '4px 10px',
+                    height: '36px',
+                    border: 'none'
+                  }}
+                >
+                  <MenuItem value={""}>All</MenuItem>
+                  <MenuItem value={true}>Absent</MenuItem>
+                  <MenuItem value={false}>Present</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
             <div className={styles.selectWrapper}>
               <FormControl
                 variant="outlined"
@@ -452,9 +489,9 @@ const Attandance = () => {
                     <td style={{ color: item?.onLeave && "red" }}>{item.courseDetails?.courseName}</td>
                     <td style={{ color: item?.onLeave && "red" }}>{item.date?.split("T")[0]}</td>
 
-                    <td>{item?.onLeave ? <p style={{ color: "red" }}>Leave</p> : item.inTime ?formatTime(item?.inTime) : <p style={{ background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p>}</td>
+                    <td>{item?.onLeave ? <p style={{ color: "red" }}>Leave</p> : item.inTime ? formatTime(item?.inTime) : <p style={{ background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p>}</td>
                     <td  >
-                      {item?.onLeave ? '' :  item.outTime ? formatTime(item?.outTime) : <p style={{ background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p> 
+                      {item?.onLeave ? '' : item.outTime ? formatTime(item?.outTime) : <p style={{ background: "none", WebkitBackgroundClip: "initial", WebkitTextFillColor: "initial" }}>--:--</p>
                       }
                     </td>
                   </tr>

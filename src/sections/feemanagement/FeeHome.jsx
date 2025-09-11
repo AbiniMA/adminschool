@@ -19,7 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import { BiSearchAlt } from "react-icons/bi";
 import CloseIcon from '@mui/icons-material/Close';
-import { calcfee,  createFee, getBatchbyid, getBatchName, getFee, getUser, getUserFilter, updateBalanceFee } from "../../api/Serviceapi";
+import { calcfee, createFee, getBatchbyid, getBatchName, getFee, getUser, getUserFilter, updateBalanceFee } from "../../api/Serviceapi";
 import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import nodata from '../../assets/nodata.jpg'
@@ -374,6 +374,7 @@ const FeeHome = () => {
         noOfsem: formData.updatesemester,
         modeOfPayment: formData.payment,
         userId: student._id,
+        studentId: student.studentId
       };
 
       await createFee(data);
@@ -389,6 +390,8 @@ const FeeHome = () => {
       setStudentFormData({});
       setStudentErrors({});
       getfeelist();
+      calculation()
+      setShowDiv(false)
     } catch (err) {
       console.error(err);
     }
@@ -427,29 +430,49 @@ const FeeHome = () => {
 
   const [balancefee, setBalancefee] = useState([])
 
-
+  const [savingRows, setSavingRows] = useState({});
   let updatebalacncefee = async (feeBalanceId, row) => {
-    try {
-      // Remove _id before sending
-      const { _id, ...rest } = row;
+  setSavingRows((prev) => ({ ...prev, [feeBalanceId]: true }));
+  try {
+    const { _id, thisPayment, ...rest } = row;
 
-      const payload = {
-        ...rest,
-        noOfsem: Number(row.noOfsem),
-        semFee: Number(row.semFee),
-        paidAmount: Number(row.paidAmount) || 0,
-        pendingAmount: Number(row.pendingAmount) || 0,
-        paymentDate: row.paymentDate ? new Date(row.paymentDate).toISOString() : null,
-      };
+    const semFee = Number(row.semFee) || 0;
+    const alreadyPaid = Number(row.paidAmount) || 0;
+    const newPayment = Number(thisPayment) || 0;
 
-      let res = await updateBalanceFee(feeBalanceId, payload);
-      console.log("Update response:", res.data);
-      setShowDiv(false)
-      // getfeelist()
-    } catch (error) {
-      console.error("Error updating fee balance:", error);
-    }
-  };
+    // ✅ Add thisPayment to total
+    const totalPaid = alreadyPaid + newPayment;
+
+    const payload = {
+      ...rest,
+      noOfsem: Number(row.noOfsem),
+      semFee: semFee,
+      paidAmount: totalPaid, // send total
+      pendingAmount: Math.max(0, semFee - totalPaid), // recalc
+      paymentDate: row.paymentDate 
+    };
+
+    let res = await updateBalanceFee(feeBalanceId, payload);
+    console.log("Update response:", res.data);
+
+    // ✅ After save: update state with new total & reset thisPayment
+    setFormData((prev) => {
+      const updated = { ...prev };
+      updated[row.userId] = updated[row.userId].map((item) =>
+        item._id === feeBalanceId
+          ? { ...item, paidAmount: totalPaid, pendingAmount: payload.pendingAmount, thisPayment: "" }
+          : item
+      );
+      return updated;
+    });
+
+  } catch (error) {
+    console.error("Error updating fee balance:", error);
+  } finally {
+    setSavingRows((prev) => ({ ...prev, [feeBalanceId]: false }));
+  }
+};
+
 
 
   const [formdata, setFormData] = useState({});
@@ -467,7 +490,7 @@ const FeeHome = () => {
             paymentDate: f.paymentDate ? f.paymentDate.split("T")[0] : "",
             semFee: f.semFee,
             paidAmount: f.paidAmount,
-            pendingAmount: f.pendingAmount,
+            pendingAmount: Math.max(0, Number(f.semFee) - Number(f.paidAmount)),
             createdBy: f.createdBy,
             userId: f.userId,
             studentId: f.studentId,
@@ -513,7 +536,7 @@ const FeeHome = () => {
 
 
   // const handleSave = async (studentId) => {
-    
+
   //   try {
   //     const payload = formdata[studentId].map((row) => ({
   //       ...row,
@@ -772,10 +795,11 @@ const FeeHome = () => {
                 <th>Name</th>
                 <th>ID No</th>
                 <th>Mobile</th>
-                <th>Course</th>
+                <th style={{ width: "49%" }}>Course</th>
                 <th>Total Fees</th>
+                <th>Paid Amount</th>
                 <th>Pending Fees</th>
-                <th>Payment Date</th>
+                <th style={{ width: "35%" }}>Payment Date</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -796,14 +820,15 @@ const FeeHome = () => {
                         <td>{item.userDetails?.studentId}</td>
                         <td>{item.userDetails?.mobileNo}</td>
                         <td>{item.courseDetails?.courseName}</td>
-                        <td>{item.userDetails?.totalFee}</td>
-                        <td style={{ color: item.userDetails?.pendingFee === 0 ? "green" : "red" }}>{item.userDetails?.pendingFee === 0 ? 'Completed' : item.userDetails?.pendingFee}</td>
-                        <td style={{ color: item.userDetails?.pendingFee === 0 ? "green" : "red" }}>{item.paymentDate?.split("T")[0]}</td>
+                        <td>{item.totalFeeAmount}</td>
+                        <td>{item.paidAmount}</td>
+                        <td style={{ color: item.pendingAmount === 0 ? "green" : "red" }}>{item.pendingAmount === 0 ? 'Completed' : item.pendingAmount}</td>
+                        <td style={{ color: item.pendingAmount === 0 ? "green" : "red" }}>{item.paymentDate?.split("T")[0]}</td>
                         <td
                           className={styles.viewBtn}
-                          onClick={() => { item.userDetails?.pendingFee === 0 && handlecompleted(item._id) }}
+                          onClick={() => { item.pendingAmount === 0 && handlecompleted(item._id) }}
                         >
-                          {item.userDetails?.pendingFee === 0 ? <div>
+                          {item.pendingAmount === 0 ? <div>
                             <FontAwesomeIcon
                               icon={faEye}
                               style={{ marginRight: "5px" }}
@@ -1036,7 +1061,7 @@ const FeeHome = () => {
                               <label className={styles.updatefeeinputlabel}>Batch</label>
                               <select
                                 className={styles.select_field}
-                                value={student?.batchDetails?._id}
+                                value={student?.batchDetails?._id || ""}
                                 disabled
                                 style={{
                                   cursor: "not-allowed",
@@ -1044,17 +1069,12 @@ const FeeHome = () => {
                                   color: "#848282ff",
                                 }}
                               >
-                                <option value="">Select a batch</option>
-                                {Array.isArray(batch) &&
-                                  batch.map((b) => (
-                                    <option key={b._id} value={b._id}>
-                                      {b.batchName}
-                                    </option>
-                                  ))}
+                                <option value={student?.batchDetails?._id}>
+                                  {student?.batchDetails?.batchName}
+                                </option>
                               </select>
                             </div>
                           </div>
-
                           {/* Semester, Fee, Payment */}
                           <div className={styles.nameemaildiv1}>
                             <div className={styles.namediv2}>
@@ -1101,6 +1121,7 @@ const FeeHome = () => {
                               </FormControl>
 
                               <p className={styles.stderror1}>{studentErrors[student._id]?.semError}</p>
+
 
                             </div>
 
@@ -1175,9 +1196,7 @@ const FeeHome = () => {
                           </div>
 
                           {/* Update Button */}
-                          <div className={styles.updatefeebtn} >
-                            <button onClick={() => update(student)}>Update</button>
-                          </div>
+
 
 
                           <div key={student._id} className={styles.feeupdatetable}>
@@ -1188,9 +1207,10 @@ const FeeHome = () => {
                                 <tr>
                                   <th style={{ width: "10%" }}>Sem</th>
                                   <th>Sem Fee</th>
-                                  <th>Payment Date</th>
                                   <th>Paid Amount</th>
                                   <th>Pending Amount</th>
+                                  <th>Payment Date</th>
+
                                   <th>Action</th>
                                 </tr>
                               </thead>
@@ -1229,6 +1249,60 @@ const FeeHome = () => {
                                         }}
                                       />
                                     </td>
+
+                                    <td>
+                                      <input
+                                        type="number"
+                                        style={{ border: '2px solid black', borderRadius: '5px' }}
+                                        value={row.thisPayment || ""}
+                                        onChange={(e) => {
+                                          const updated = { ...formdata };
+                                          updated[student._id] = [...updated[student._id]];
+
+                                          let thisPayment = e.target.value;
+                                          const semFee = Number(updated[student._id][index].semFee) || 0;
+                                          const alreadyPaid = Number(updated[student._id][index].paidAmount) || 0;
+
+                                          // If input cleared → revert pending to original
+                                          if (thisPayment === "") {
+                                            updated[student._id][index] = {
+                                              ...updated[student._id][index],
+                                              thisPayment: "",
+                                              pendingAmount: semFee - alreadyPaid, // ✅ revert
+                                            };
+                                          } else {
+                                            thisPayment = Number(thisPayment) || 0;
+                                            const totalPaid = alreadyPaid + thisPayment;
+
+                                            updated[student._id][index] = {
+                                              ...updated[student._id][index],
+                                              thisPayment,
+                                              pendingAmount: semFee - totalPaid < 0 ? 0 : semFee - totalPaid,
+                                            };
+                                          }
+
+                                          setFormData(updated);
+                                        }}
+                                      />
+                                    </td>
+
+                                    <td>
+                                      <input
+                                        disabled
+                                        type="text"
+                                        value={row.pendingAmount}
+                                      // onChange={(e) => {
+                                      //   const updated = { ...formdata };
+                                      //   updated[student._id] = [...updated[student._id]];
+                                      //   updated[student._id][index] = {
+                                      //     ...updated[student._id][index],
+                                      //     pendingAmount: e.target.value,
+                                      //   };
+                                      //   setFormData(updated);
+
+                                      // }}
+                                      />
+                                    </td>
                                     <td>
                                       <input
                                         type="date"
@@ -1245,40 +1319,11 @@ const FeeHome = () => {
                                       />
                                     </td>
                                     <td>
-                                      <input
-                                        type="text"
-                                        value={row.paidAmount}
-                                        onChange={(e) => {
-                                          const updated = { ...formdata };
-                                          updated[student._id] = [...updated[student._id]];
-                                          updated[student._id][index] = {
-                                            ...updated[student._id][index],
-                                            paidAmount: e.target.value,
-                                          };
-                                          setFormData(updated);
-                                        }}
-                                      />
-                                    </td>
-                                    <td>
-                                      <input
-                                     
-                                        type="text"
-                                        value={row.pendingAmount}
-                                        onChange={(e) => {
-                                          const updated = { ...formdata };
-                                          updated[student._id] = [...updated[student._id]];
-                                          updated[student._id][index] = {
-                                            ...updated[student._id][index],
-                                            pendingAmount: e.target.value
-                                          };
-                                          setFormData(updated);
-
-                                        }}
-                                      />
-                                    </td>
-                                    <td>
                                       <div style={{ display: 'flex', gap: '10px' }}>
-                                        <FaEdit style={{ cursor: 'pointer', color: '#144196' }} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }} />
+                                        {/* <FaEdit style={{ cursor: 'pointer', color: '#144196' }} 
+                                        onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }} /> */}
+
+                                        <button className={styles.savebtn} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
                                         {/* <MdDelete
                                           style={{ cursor: 'pointer' }}
                                           onClick={() => {
@@ -1325,7 +1370,9 @@ const FeeHome = () => {
                               )} */}
                             </div>
                           </div>
-
+                          <div className={styles.updatefeebtn} >
+                            <button onClick={() => update(student)}>Update</button>
+                          </div>
 
 
 

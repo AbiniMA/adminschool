@@ -4,7 +4,15 @@ import apiService from "./apiService";
 import Form from "antd/es/form/Form";
 import { useState } from "react";
 
-export const getUser = (limit, offset, value, courseId, status, batchId,activestatus) => {
+export const getUser = (
+  limit,
+  offset,
+  value,
+  courseId,
+  status,
+  batchId,
+  activestatus
+) => {
   return apiService.get(
     `/user?limit=${limit}&offset=${offset}&value=${value}&courseId=${courseId}&inStatus=${status}&batchId=${batchId}&status=${activestatus}`
   );
@@ -77,7 +85,7 @@ export const addUser = (FormData) => {
     courseId: FormData.student_course,
     batchId: FormData.student_batch,
     DOB: FormData.student_dob,
-    createdBy:localStorage.getItem('userId'), 
+    createdBy: localStorage.getItem("userId"),
   };
   return apiService.post(`/user/create`, data);
 };
@@ -167,11 +175,16 @@ export const getAttendance = (
   searchtext,
   courseId,
   batchId,
-  date
+  date,
+  status
 ) => {
-  return apiService.get(
-    `/attendance?limit=${limit}&page=${offset}&value=${searchtext}&courseId=${courseId}&batchId=${batchId}&date=${date}`
-  );
+  let url = `/attendance?limit=${limit}&page=${offset}&value=${searchtext}&courseId=${courseId}&batchId=${batchId}&date=${date}`;
+
+  if (status !== "") {
+    url += `&onLeave=${status}`;
+  }
+
+  return apiService.get(url);
 };
 
 export const getAttendancerate = (date, courseId, batchId) => {
@@ -241,12 +254,9 @@ export const calcfee = (courseId, batchId, semester, searchText) => {
 //   return apiService.post(`/feeBalance`, formdata);
 // };
 
-
-
-export const updateBalanceFee = (userId,payload) => {
-  return apiService.put(`/feeBalance/${userId}`,payload);
+export const updateBalanceFee = (userId, payload) => {
+  return apiService.put(`/feeBalance/${userId}`, payload);
 };
-
 
 export const getDashboardUser = () => {
   return apiService.get(`/user?limit=3&inStatus=ongoing&status=active`);
