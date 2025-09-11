@@ -486,7 +486,7 @@ const LeaveRequest = () => {
               <div className={styles.grids}>
                 <div className={styles.grid2}>
                   <label for="">
-                    No of Days <sup style={{ color: "red" }}>*</sup>
+                    No of Days
                   </label>
                   {data?.isPermission ? 
                   <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="no of days" value={formatTimehours(data?.permissionTime)} disabled /> :

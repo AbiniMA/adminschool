@@ -19,7 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import { BiSearchAlt } from "react-icons/bi";
 import CloseIcon from '@mui/icons-material/Close';
-import { calcfee, createBalanceFee, createFee, getBatchbyid, getBatchName, getFee, getUser, getUserFilter, updateBalanceFee } from "../../api/Serviceapi";
+import { calcfee,  createFee, getBatchbyid, getBatchName, getFee, getUser, getUserFilter, updateBalanceFee } from "../../api/Serviceapi";
 import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import nodata from '../../assets/nodata.jpg'
@@ -512,28 +512,28 @@ const FeeHome = () => {
 
 
 
-  const handleSave = async (studentId) => {
+  // const handleSave = async (studentId) => {
     
-    try {
-      const payload = formdata[studentId].map((row) => ({
-        ...row,
-        noOfsem: Number(row.noOfsem),
-        semFee: Number(row.semFee),
-        paidAmount: Number(row.paidAmount) || 0,
-        pendingAmount: Number(row.pendingAmount) || 0,
-        paymentDate: row.paymentDate ? new Date(row.paymentDate).toISOString() : null
-      }));
+  //   try {
+  //     const payload = formdata[studentId].map((row) => ({
+  //       ...row,
+  //       noOfsem: Number(row.noOfsem),
+  //       semFee: Number(row.semFee),
+  //       paidAmount: Number(row.paidAmount) || 0,
+  //       pendingAmount: Number(row.pendingAmount) || 0,
+  //       paymentDate: row.paymentDate ? new Date(row.paymentDate).toISOString() : null
+  //     }));
 
-      console.log("Final payload:", payload);
+  //     console.log("Final payload:", payload);
 
-      const response = await createBalanceFee(payload);
-      console.log("API response:", response);
-      getfeelist()
-      setShowDiv(false)
-    } catch (error) {
-      console.error("Error saving balance fee:", error);
-    }
-  };
+  //     const response = await createBalanceFee(payload);
+  //     console.log("API response:", response);
+  //     getfeelist()
+  //     setShowDiv(false)
+  //   } catch (error) {
+  //     console.error("Error saving balance fee:", error);
+  //   }
+  // };
 
   return (
     <div className={styles.container}>
@@ -1320,9 +1320,9 @@ const FeeHome = () => {
                               >
                                 <FontAwesomeIcon icon={faPlus} /> Add Row
                               </button> */}
-                              {!student.feebalance?.length && (
+                              {/* {!student.feebalance?.length && (
                                 <button onClick={() => handleSave(student._id)}>Save</button>
-                              )}
+                              )} */}
                             </div>
                           </div>
 
@@ -1336,7 +1336,7 @@ const FeeHome = () => {
                   ) : (
                     <div className={styles.updatefeesearch}>
                       <div className={styles.img}>
-                        <img src={magnification} alt="" />
+                        <img src={nodata} alt="" />
                       </div>
                     </div>
                   )}

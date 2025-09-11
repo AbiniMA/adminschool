@@ -488,12 +488,15 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                                     </div>
 
                                     <input type="date" className={styles.inputfield} value={Formdata.student_dob} onChange={(e) => { setFormdata({ ...Formdata, student_dob: e.target.value }), setErrors({ ...Errors, student_dob: '' }) }} />
+                                    <p className={styles.error}>{Errors.student_dob}</p>
+
                                 </div>
                             </div>
                             <div className={styles.student_qualification}>
                                 <label htmlFor="qualification">Qualification<span className={styles.important}>*</span></label>
                                 <input type="text" id="qualification" onChange={(e) => { setFormdata({ ...Formdata, student_qualification: e.target.value }), setErrors({ ...Errors, student_qualification: '' }) }} value={Formdata.student_qualification} placeholder='Enter qualification' className={styles.input_field} />
                                 <p className={styles.error}>{Errors.student_qualification}</p>
+
                             </div>
                         </div>
                         <div className={styles.sixth_detail}>

@@ -118,16 +118,15 @@ const Login = ({ setLoginUser }) => {
               <form action="" onSubmit={(e) => handleClick(e)}>
                 {/* Username Field */}
                 <div className={styles.formDivName}>
-                  <label htmlFor="username">User Name</label>
+                  <label htmlFor="username">Email ID</label>
                   <input
                     type="text"
                     id="username"
-                    placeholder="User Name"
+                    placeholder="Email ID"
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
                       setError("");
-
                     }}
                   />
                   <p className={styles.errorMsg}>{error.userName}</p>

@@ -77,6 +77,7 @@ export const addUser = (FormData) => {
     courseId: FormData.student_course,
     batchId: FormData.student_batch,
     DOB: FormData.student_dob,
+    createdBy:localStorage.getitem('userId'),
   };
   return apiService.post(`/user/create`, data);
 };
@@ -236,9 +237,9 @@ export const calcfee = (courseId, batchId, semester, searchText) => {
 
 // dashboard
 
-export const createBalanceFee = (formdata) => {
-  return apiService.post(`/feeBalance`, formdata);
-};
+// export const createBalanceFee = (formdata) => {
+//   return apiService.post(`/feeBalance`, formdata);
+// };
 
 
 
