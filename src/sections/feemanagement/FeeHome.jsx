@@ -1251,8 +1251,11 @@ const FeeHome = () => {
                                     </td>
 
                                     <td>
-                                      <input
-                                        type="number"
+                                      {formdata[student._id]?.[index]?.semFee == formdata[student._id]?.[index]?.paidAmount ? (
+                                        'paid'
+                                      ):
+                                       <input
+                                        type="text"
                                         style={{ border: '2px solid black', borderRadius: '5px' }}
                                         value={row.thisPayment || ""}
                                         onChange={(e) => {
@@ -1284,6 +1287,8 @@ const FeeHome = () => {
                                           setFormData(updated);
                                         }}
                                       />
+                                      }
+                                     
                                     </td>
 
                                     <td>
