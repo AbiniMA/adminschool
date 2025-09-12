@@ -26,6 +26,7 @@
   display: flex;
   gap: 3px;
   justify-content: space-between;
+  align-items: center;
 }
 .feetitle {
   /* border: 1px solid ; */
@@ -39,6 +40,7 @@
   /* width: 75%; */
   display: flex;
   justify-content: space-between;
+  align-items: end;
   gap: 6px;
 }
 .formselect1 {
@@ -132,7 +134,7 @@
   outline: none;
 }
 .formbtn {
-  height: 100%;
+  /* height: 70%; */
   width: 150px;
   display: flex;
   justify-content: center;
@@ -150,6 +152,7 @@
   border-radius: 10px;
   border: none;
   cursor: pointer;
+  padding: 10px 0px;
  
 }
 

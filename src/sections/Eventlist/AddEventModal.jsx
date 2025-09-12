@@ -15,7 +15,7 @@ const AddEventModal = ({ closeModal, onevent }) => {
     description: "",
     date: "",
     time: "",
-    eventType: ""
+    eventType: "birthday"
   })
 
   const [errors, setErrors] = useState({
@@ -83,11 +83,11 @@ const AddEventModal = ({ closeModal, onevent }) => {
 
             <div className={styles.input_group}>
               <label htmlFor="title">Event Title<span className={styles.required}>*</span></label>
-              <input type="text" value={formdata.title} id="title" placeholder="Seminar on UI/UX" onChange={(e) => { setFormdata({ ...formdata, title: e.target.value }), setErrors({ ...errors, title: '' }) }} />
+              <input type="text" value={formdata.title} id="title" placeholder="Enter event title" onChange={(e) => { setFormdata({ ...formdata, title: e.target.value }), setErrors({ ...errors, title: '' }) }} />
               <p className={styles.error}>{errors.title}</p>
             </div>
             <div className={styles.input_group} style={{ width: '100%', height: '100%' }}>
-              <label >Leave Type<span className={styles.required}>*</span></label>
+              <label >Event Type<span className={styles.required}>*</span></label>
               <FormControl
                 variant="outlined"
                 size="small"
@@ -115,8 +115,10 @@ const AddEventModal = ({ closeModal, onevent }) => {
                     height: '36px',
                     border: 'none'
                   }}
+                //  placeholder="Event Type"
+
                 >
-                  <MenuItem value="">All</MenuItem>
+                  {/* <MenuItem value="">All</MenuItem> */}
 
                   <MenuItem value="birthday">Birthday</MenuItem>
                   {/* <MenuItem value="anniversary">Anniversary</MenuItem> */}

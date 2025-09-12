@@ -12,7 +12,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
     description: "",
     date: "",
     time: "",
-    eventType: ''
+    eventType: "birthday"
   })
 
   const [errors, setErrors] = useState({
@@ -116,7 +116,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
               <p className={styles.error}>{errors.title}</p>
             </div>
             <div className={styles.input_group} style={{ width: '100%', height: '100%' }}>
-              <label >Leave Type<span className={styles.required}>*</span></label>
+              <label >Event Type<span className={styles.required}>*</span></label>
               <FormControl
                 variant="outlined"
                 size="small"
@@ -145,7 +145,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
                     border: 'none'
                   }}
                 >
-                  <MenuItem value="">All</MenuItem>
+                  {/* <MenuItem value="">All</MenuItem> */}
 
                   <MenuItem value="birthday">Birthday</MenuItem>
                   {/* <MenuItem value="anniversary">Anniversary</MenuItem> */}

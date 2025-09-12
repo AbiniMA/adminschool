@@ -27,7 +27,7 @@
 .attendancerightdiv {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: end;
   width: 90%;
   gap: 10px;
 }

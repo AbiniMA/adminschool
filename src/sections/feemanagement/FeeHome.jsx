@@ -25,6 +25,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import nodata from '../../assets/nodata.jpg'
 import Loader from "../../component/loader/Loader";
 import Skeleton from '@mui/material/Skeleton';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
   components: {
@@ -246,9 +248,9 @@ const FeeHome = () => {
       let initialData = {};
       students.forEach((s) => {
         initialData[s._id] = {
-          updatesemester: "",
+          updatesemester: "1",
           feeamountField: "",
-          payment: "",
+          payment: "Online",
         };
       });
       setStudentFormData(initialData);
@@ -380,7 +382,6 @@ const FeeHome = () => {
       await createFee(data);
       console.log("Fee updated:", data);
 
-      // Reset only this student's form
       setStudentFormData(prev => ({
         ...prev,
         [student._id]: { updatesemester: "", feeamountField: "", payment: "" }
@@ -394,6 +395,8 @@ const FeeHome = () => {
       setShowDiv(false)
     } catch (err) {
       console.error(err);
+      toast.error(err?.response?.data?.message)
+
     }
   };
 
@@ -440,22 +443,27 @@ const FeeHome = () => {
     const alreadyPaid = Number(row.paidAmount) || 0;
     const newPayment = Number(thisPayment) || 0;
 
-    // ✅ Add thisPayment to total
     const totalPaid = alreadyPaid + newPayment;
+
+    
+    if (totalPaid > semFee) {
+      // alert("Error: Payment cannot exceed Semester Fee!");
+      toast.error(`Paid amount cannot be graeter than ${semFee} you have already paid ${alreadyPaid}`);
+      return; 
+    }
 
     const payload = {
       ...rest,
       noOfsem: Number(row.noOfsem),
       semFee: semFee,
-      paidAmount: totalPaid, // send total
-      pendingAmount: Math.max(0, semFee - totalPaid), // recalc
-      paymentDate: row.paymentDate 
+      paidAmount: totalPaid,
+      pendingAmount: Math.max(0, semFee - totalPaid),
+      paymentDate: row.paymentDate,
     };
 
     let res = await updateBalanceFee(feeBalanceId, payload);
     console.log("Update response:", res.data);
 
-    // ✅ After save: update state with new total & reset thisPayment
     setFormData((prev) => {
       const updated = { ...prev };
       updated[row.userId] = updated[row.userId].map((item) =>
@@ -475,6 +483,7 @@ const FeeHome = () => {
 
 
 
+
   const [formdata, setFormData] = useState({});
 
 
@@ -487,7 +496,7 @@ const FeeHome = () => {
           // If fee balance already exists, use it
           initialData[student._id] = student.feebalance.map((f) => ({
             noOfsem: f.noOfsem,
-            paymentDate:  "",
+            paymentDate: "",
             semFee: f.semFee,
             paidAmount: f.paidAmount,
             pendingAmount: Math.max(0, Number(f.semFee) - Number(f.paidAmount)),
@@ -568,6 +577,8 @@ const FeeHome = () => {
           <div className={styles.feeform}>
             <div className={styles.formselect1}>
               <div className={styles.selectWrapper}>
+                <p style={{ fontSize: "14px", fontWeight: "500" }}>Course</p>
+
                 <FormControl
                   variant="outlined"
                   size="small"
@@ -606,6 +617,8 @@ const FeeHome = () => {
             </div>
             <div className={styles.formselect2}>
               <div className={styles.selectWrapper}>
+                <p style={{ fontSize: "14px", fontWeight: "500" }}>Batch</p>
+
                 <FormControl
                   variant="outlined"
                   size="small"
@@ -648,6 +661,8 @@ const FeeHome = () => {
             </div>
             <div className={styles.formselect3}>
               <div className={styles.selectWrapper}>
+                <p style={{ fontSize: "14px", fontWeight: "500" }}>Semester</p>
+
                 <FormControl
                   variant="outlined"
                   size="small"
@@ -1114,7 +1129,7 @@ const FeeHome = () => {
                                   }}
 
                                 >
-                                  <MenuItem value="">All</MenuItem>
+                                  {/* <MenuItem value="">All</MenuItem> */}
                                   <MenuItem value="1">Semester 1</MenuItem>
                                   <MenuItem value="2">Semester 2</MenuItem>
                                 </Select>
@@ -1185,7 +1200,7 @@ const FeeHome = () => {
                                   }}
 
                                 >
-                                  <MenuItem value="">All</MenuItem>
+                                  {/* <MenuItem value="">All</MenuItem> */}
                                   <MenuItem value="Online">Online</MenuItem>
                                   <MenuItem value="Cash">Cash</MenuItem>
                                 </Select>
@@ -1196,9 +1211,6 @@ const FeeHome = () => {
                           </div>
 
                           {/* Update Button */}
-
-
-
                           <div key={student._id} className={styles.feeupdatetable}>
                             {/* <h3>{student.userDetails?.name} ({student.userDetails?.studentId})</h3> */}
 
@@ -1253,42 +1265,43 @@ const FeeHome = () => {
                                     <td>
                                       {formdata[student._id]?.[index]?.semFee == formdata[student._id]?.[index]?.paidAmount ? (
                                         'paid'
-                                      ):
-                                       <input
-                                        type="text"
-                                        style={{ border: '2px solid black', borderRadius: '5px' }}
-                                        value={row.thisPayment || ""}
-                                        onChange={(e) => {
-                                          const updated = { ...formdata };
-                                          updated[student._id] = [...updated[student._id]];
+                                      ) :
+                                        <input
+                                          type="text"
+                                          max={row.semFee}
+                                          style={{ border: '2px solid black', borderRadius: '5px' }}
+                                          value={row.thisPayment || ""}
+                                          onChange={(e) => {
+                                            const updated = { ...formdata };
+                                            updated[student._id] = [...updated[student._id]];
 
-                                          let thisPayment = e.target.value;
-                                          const semFee = Number(updated[student._id][index].semFee) || 0;
-                                          const alreadyPaid = Number(updated[student._id][index].paidAmount) || 0;
+                                            let thisPayment = e.target.value;
+                                            const semFee = Number(updated[student._id][index].semFee) || 0;
+                                            const alreadyPaid = Number(updated[student._id][index].paidAmount) || 0;
 
-                                          // If input cleared → revert pending to original
-                                          if (thisPayment === "") {
-                                            updated[student._id][index] = {
-                                              ...updated[student._id][index],
-                                              thisPayment: "",
-                                              pendingAmount: semFee - alreadyPaid, // ✅ revert
-                                            };
-                                          } else {
-                                            thisPayment = Number(thisPayment) || 0;
-                                            const totalPaid = alreadyPaid + thisPayment;
+                                            // If input cleared → revert pending to original
+                                            if (thisPayment === "") {
+                                              updated[student._id][index] = {
+                                                ...updated[student._id][index],
+                                                thisPayment: "",
+                                                pendingAmount: semFee - alreadyPaid, // ✅ revert
+                                              };
+                                            } else {
+                                              thisPayment = Number(thisPayment) || 0;
+                                              const totalPaid = alreadyPaid + thisPayment;
 
-                                            updated[student._id][index] = {
-                                              ...updated[student._id][index],
-                                              thisPayment,
-                                              pendingAmount: semFee - totalPaid < 0 ? 0 : semFee - totalPaid,
-                                            };
-                                          }
+                                              updated[student._id][index] = {
+                                                ...updated[student._id][index],
+                                                thisPayment,
+                                                pendingAmount: semFee - totalPaid < 0 ? 0 : semFee - totalPaid,
+                                              };
+                                            }
 
-                                          setFormData(updated);
-                                        }}
-                                      />
+                                            setFormData(updated);
+                                          }}
+                                        />
                                       }
-                                     
+
                                     </td>
 
                                     <td>
@@ -1309,26 +1322,49 @@ const FeeHome = () => {
                                       />
                                     </td>
                                     <td>
-                                      <input
-                                        type="date"
-                                        value={row.paymentDate}
-                                        onChange={(e) => {
-                                          const updated = { ...formdata };
-                                          updated[student._id] = [...updated[student._id]];
-                                          updated[student._id][index] = {
-                                            ...updated[student._id][index],
-                                            paymentDate: e.target.value
-                                          };
-                                          setFormData(updated);
-                                        }}
-                                      />
+                                      {formdata[student._id]?.[index]?.semFee == formdata[student._id]?.[index]?.paidAmount ?
+
+                                        <input
+                                          type="date"
+                                          disabled
+                                          style={{ cursor: 'not-allowed', color: 'gray' }}
+                                          value={row.paymentDate}
+                                          onChange={(e) => {
+                                            const updated = { ...formdata };
+                                            updated[student._id] = [...updated[student._id]];
+                                            updated[student._id][index] = {
+                                              ...updated[student._id][index],
+                                              paymentDate: e.target.value
+                                            };
+                                            setFormData(updated);
+                                          }}
+                                        />
+                                        :
+                                        <input
+                                          type="date"
+                                          value={row.paymentDate}
+                                          onChange={(e) => {
+                                            const updated = { ...formdata };
+                                            updated[student._id] = [...updated[student._id]];
+                                            updated[student._id][index] = {
+                                              ...updated[student._id][index],
+                                              paymentDate: e.target.value
+                                            };
+                                            setFormData(updated);
+                                          }}
+                                        />
+                                      }
                                     </td>
                                     <td>
                                       <div style={{ display: 'flex', gap: '10px' }}>
                                         {/* <FaEdit style={{ cursor: 'pointer', color: '#144196' }} 
                                         onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }} /> */}
+                                        {formdata[student._id]?.[index]?.semFee == formdata[student._id]?.[index]?.paidAmount ? (
+                                          <button className={styles.savebtn} disabled style={{ cursor: 'not-allowed', color: 'white', background: 'gray' }} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
 
-                                        <button className={styles.savebtn} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
+                                        ) :
+                                          <button className={styles.savebtn} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
+                                        }
                                         {/* <MdDelete
                                           style={{ cursor: 'pointer' }}
                                           onClick={() => {
@@ -1404,6 +1440,8 @@ const FeeHome = () => {
 
 
       </div>
+
+      <ToastContainer />
     </div>
   )
 }

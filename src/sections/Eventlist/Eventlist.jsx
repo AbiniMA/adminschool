@@ -110,8 +110,10 @@ const Eventlist = () => {
             <div className='px-4 pt-4 pb-[100px]'>
                 <div className="flex justify-between items-center lg:flex-row md:flex-row flex-col">
                     <h4 className='text-xl font-normal'>Events</h4>
-                    <div className=' flex items-center md:justify-around flex-wrap p-2 gap-2 '>
+                    <div className=' flex items-end md:justify-around flex-wrap p-2 gap-2 '>
                         <div style={{ width: '130px', }}>
+                                          <p style={{ fontSize: "14px", fontWeight: "500" }}>Batch</p>
+
                             <FormControl
                                 variant="outlined"
                                 size="small"

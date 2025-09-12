@@ -202,8 +202,9 @@ const Studentlist = () => {
       <div className='p-4 Outlet'>
         <div className="flex justify-between items-center lg:flex-row md:flex-row flex-col">
           <h4 className='text-xl font-normal'>Student Management</h4>
-          <div className=' flex items-center md:justify-around flex-wrap p-2 gap-2 '>
+          <div className=' flex items-end md:justify-around flex-wrap p-2 gap-2 '>
             <div style={{ width: '130px', }}>
+              <p style={{ fontSize: "14px", fontWeight: "500" }}>Active Status</p>
               <FormControl
                 variant="outlined"
                 size="small"
@@ -240,6 +241,8 @@ const Studentlist = () => {
               </FormControl>
             </div>
             <div >
+              <p style={{ fontSize: "14px", fontWeight: "500" }}>Status</p>
+
               <FormControl
                 variant="outlined"
                 size="small"
@@ -281,6 +284,8 @@ const Studentlist = () => {
               </FormControl>
             </div>
             <div >
+                            <p style={{ fontSize: "14px", fontWeight: "500" }}>Course</p>
+
               <FormControl
                 variant="outlined"
                 size="small"
@@ -318,6 +323,8 @@ const Studentlist = () => {
             </div>
 
             <div >
+                            <p style={{ fontSize: "14px", fontWeight: "500" }}>Batch</p>
+
               <FormControl
                 variant="outlined"
                 size="small"

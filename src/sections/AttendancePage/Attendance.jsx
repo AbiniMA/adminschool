@@ -217,6 +217,7 @@ const Attandance = () => {
         <div className={styles.attendanceright}>
           <div className={styles.attendancerightdiv}>
             <div className={styles.selectWrapper}>
+              <p style={{ fontSize: "14px", fontWeight: "500" }}>Status</p>
               <FormControl
                 variant="outlined"
                 size="small"
@@ -250,6 +251,8 @@ const Attandance = () => {
               </FormControl>
             </div>
             <div className={styles.selectWrapper}>
+              <p style={{ fontSize: "14px", fontWeight: "500" }}>Course</p>
+
               <FormControl
                 variant="outlined"
                 size="small"
@@ -286,6 +289,8 @@ const Attandance = () => {
               </FormControl>
             </div>
             <div className={styles.selectWrapper}>
+              <p style={{ fontSize: "14px", fontWeight: "500" }}>Batch</p>
+
               <FormControl
                 variant="outlined"
                 size="small"
@@ -324,7 +329,9 @@ const Attandance = () => {
                 </Select>
               </FormControl>
             </div>
+
             <div className={styles.dateWrapper}>
+
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   value={date ? dayjs(date, "YYYY-MM-DD") : null}   // keep ISO date format for binding
