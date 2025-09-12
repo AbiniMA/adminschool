@@ -30,7 +30,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    let navigate=useNavigate()
+    let navigate = useNavigate()
 
     const [Formdata, setFormdata] = useState({
         name: '',
@@ -243,11 +243,10 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
 
                 setErrors({})
                 closeModal()
-
-                
-                // setUser(res?.data);
-                if (onStudentAdded) onStudentAdded();
                 navigate("/students")
+                setUser((prev) => [res.data, ...prev]); // prepend new student
+                if (onStudentAdded) onStudentAdded();
+                // setUser(res?.data);
 
             } catch (err) {
                 // console.log(err.response?.data.message);
@@ -340,7 +339,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                     <h2 className={styles.title}>Add Student</h2>
                     <span className={styles.close_icon} onClick={closeModal}><AiOutlineClose /></span>
                 </div>
-            <p style={{ color: 'red', fontSize: '12px',marginTop:'1rem' }}>Note: File size should be less than 1MB*</p>
+                <p style={{ color: 'red', fontSize: '12px', marginTop: '1rem' }}>Note: File size should be less than 1MB*</p>
                 <form action="">
                     <div className={styles.form_body}>
 

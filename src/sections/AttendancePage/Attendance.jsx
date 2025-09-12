@@ -154,11 +154,11 @@ const Attandance = () => {
   useEffect(() => {
     if (!date) return;
     getAttendanceList()
-  }, [offset, searchText, courseId, batchId, date,status])
+  }, [offset, searchText, courseId, batchId, date, status])
   let getAttendanceList = async () => {
     setLoading(true);
     try {
-      let res = await getAttendance(limit, offset - 1, searchText, courseId, batchId, date,status)
+      let res = await getAttendance(limit, offset - 1, searchText, courseId, batchId, date, status)
       console.log(res.data?.data?.data, 'l')
       setList(res.data?.data?.data)
       settotal(res.data?.data?.totalCount)
@@ -243,8 +243,9 @@ const Attandance = () => {
                   }}
                 >
                   <MenuItem value={""}>All</MenuItem>
-                  <MenuItem value={true}>Absent</MenuItem>
                   <MenuItem value={false}>Present</MenuItem>
+                  <MenuItem value={true}>Absent</MenuItem>
+
                 </Select>
               </FormControl>
             </div>
