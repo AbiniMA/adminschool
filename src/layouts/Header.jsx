@@ -79,7 +79,7 @@ const Header = ({ setLoginUser }) => {
     console.log("Logout clicked");
     localStorage.removeItem('authToken');
     localStorage.removeItem('userId');
-    navigate('/login');
+    navigate('/login'); 
     setLoginUser(false);
   };
 

@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 import defaultimg from '../../../src/assets/profile.png'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Addstudent = ({ closeModal, onStudentAdded }) => {
 
@@ -31,7 +31,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
     const [loading, setLoading] = useState(false)
 
     let navigate = useNavigate()
-
+    const location = useLocation();
     const [Formdata, setFormdata] = useState({
         name: '',
         student_id: '',
@@ -243,13 +243,16 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
 
                 setErrors({})
                 closeModal()
-                navigate("/students")
-                setUser((prev) => [res.data, ...prev]); // prepend new student
-                if (onStudentAdded) onStudentAdded();
-                // setUser(res?.data);
+                if (location.pathname === "/students") {
+                   
+                    if (onStudentAdded) onStudentAdded(res.data);
+                } else {
+                    
+                    navigate("/students");
+                }
 
             } catch (err) {
-                // console.log(err.response?.data.message);
+                
                 showToast(err?.response?.data?.message, "error");
                 setLoading(false);
                 setMes(err?.response?.data?.message);
