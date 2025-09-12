@@ -148,12 +148,9 @@ const Updateevent = ({ closeModal, id, onevent }) => {
                   <MenuItem value="">All</MenuItem>
 
                   <MenuItem value="birthday">Birthday</MenuItem>
-                  <MenuItem value="anniversary">Anniversary</MenuItem>
+                  {/* <MenuItem value="anniversary">Anniversary</MenuItem> */}
                   <MenuItem value="function">Function</MenuItem>
                   <MenuItem value="meeting">Meeting</MenuItem>
-
-
-
                 </Select>
               </FormControl>
               <p className={styles.error}>{errors.eventType}</p>

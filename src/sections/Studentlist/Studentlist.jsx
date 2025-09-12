@@ -430,7 +430,7 @@ const Studentlist = () => {
                         <img src={user.profileURL || profile} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
                       </td>
                       <td className="px-4 py-2">{user.studentId}</td>
-                      <td className="px-4 py-2">{user.name}</td>
+                      <td className="px-4 py-2" style={{ textTransform: 'capitalize' }}>{user.name}</td>
                       <td className="px-4 py-2">{user.mobileNo}</td>
                       <td className="px-4 py-2">{user.email}</td>
                       <td className="px-4 py-2">{user?.courseDetails?.courseName}</td>

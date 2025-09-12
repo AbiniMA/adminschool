@@ -487,7 +487,7 @@ const FeeHome = () => {
           // If fee balance already exists, use it
           initialData[student._id] = student.feebalance.map((f) => ({
             noOfsem: f.noOfsem,
-            paymentDate: f.paymentDate ? f.paymentDate.split("T")[0] : "",
+            paymentDate:  "",
             semFee: f.semFee,
             paidAmount: f.paidAmount,
             pendingAmount: Math.max(0, Number(f.semFee) - Number(f.paidAmount)),
@@ -799,7 +799,7 @@ const FeeHome = () => {
                 <th>Total Fees</th>
                 <th>Paid Amount</th>
                 <th>Pending Fees</th>
-                <th style={{ width: "35%" }}>Payment Date</th>
+                <th style={{ width: "38%" }}>Payment Date</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -1389,6 +1389,7 @@ const FeeHome = () => {
                     <div className={styles.updatefeesearch}>
                       <div className={styles.img}>
                         <img src={nodata} alt="" />
+                        <p className="text-center text-gray-500 font-semibold">No Data Found</p>
                       </div>
                     </div>
                   )}

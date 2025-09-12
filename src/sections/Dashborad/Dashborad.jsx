@@ -495,7 +495,7 @@ const todayDate = new Date().toISOString().split("T")[0];
                                             <td class="px-4 py-3">
                                                 <img src={item?.profileURL} alt="Profile" class="rounded-full w-10 h-10" />                                           </td>
                                             <td class="px-4 py-3">{item?.studentId}</td>
-                                            <td class="px-4 py-3">{item?.name}</td>
+                                            <td class="px-4 py-3" style={{ textTransform: 'capitalize' }}>{item?.name}</td>
                                             <td class="px-4 py-3">{item?.mobileNo}</td>
                                             <td class="px-4 py-3">{item?.courseDetails?.courseName}</td>
                                             <td class="px-4 py-3">{item?.batchDetails?.batchName}</td>
