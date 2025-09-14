@@ -292,3 +292,13 @@ export const getTodayrate = () => {
 export const getDashboardAttendencerate = (date) => {
   return apiService.get(`/attendance/rate?date=${date}`);
 };
+
+// notification
+
+export const getNotification = () => {
+  return apiService.get(`/notification?notificationType=admin`);
+};
+
+export const updateNotification=(id,read) => {
+  return apiService.put(`/notification/${id}`,{'isRead':read});
+}

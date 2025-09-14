@@ -216,10 +216,12 @@
   display: flex;
   gap: 30px;
   align-items: center;
+  /* position: relative; */
 }
 
 .notification_icon {
   font-size: 25px;
+  position: relative;
 }
 
 .userdetails {
@@ -239,6 +241,58 @@
   font-size: 20px;
 }
 
+.notification{
+  position: relative;
+  /* right: 10px; */
+  top:70px;
+  /* background-color: #0b48b0; */
+  width: 100%;
+  left: 0;
+  display: flex;
+  justify-content: end;
+  padding: 0px 10px;
+}
+
+.notification_content{
+  width: 400px;
+  background-color: white;
+  height: 400px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 10px;
+  overflow: auto;
+  cursor: pointer;
+  padding: 10px 10px;
+}
+
+.notification_read {
+  color:blue;
+}
+.dot{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 9px;
+  height: 9px;
+  background:  linear-gradient(to bottom, #0b48b0, #061634);
+  border-radius: 50%;
+}
+.notification_box{
+  padding: 10px;
+  border-bottom: 1px solid rgba(215, 215, 215, 0.696);
+}
+.notification_title{
+  /* padding-left: 20px; */
+  font-size: 19px;
+ 
+  font-weight: 500;
+}
+.notification_header{
+ border-bottom:1px solid rgba(215, 215, 215, 0.696);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 @media screen and (max-width: 768px) {
   .aloschool {
     height: auto;

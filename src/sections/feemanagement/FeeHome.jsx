@@ -236,8 +236,22 @@ const FeeHome = () => {
   const [searchlist, setSearchList] = useState([])
   const [searchloading, setSearchLoading] = useState(false)
   const [studentId, setStudentId] = useState('')
+
+  const studentNameValidation = () => {
+    if (!enterName || enterName.trim() === "") {
+      setShowDivError("Please enter student ID");
+      return false;
+    } else {
+      setShowDivError("");
+      return true;
+    }
+  };
+
   const updateFee2 = async (e) => {
     e.preventDefault();
+    if (!studentNameValidation()) {
+      return; 
+    }
     setSearchLoading(true);
     try {
       let res = await getUserFilter(enterName);
@@ -435,51 +449,51 @@ const FeeHome = () => {
 
   const [savingRows, setSavingRows] = useState({});
   let updatebalacncefee = async (feeBalanceId, row) => {
-  setSavingRows((prev) => ({ ...prev, [feeBalanceId]: true }));
-  try {
-    const { _id, thisPayment, ...rest } = row;
+    setSavingRows((prev) => ({ ...prev, [feeBalanceId]: true }));
+    try {
+      const { _id, thisPayment, ...rest } = row;
 
-    const semFee = Number(row.semFee) || 0;
-    const alreadyPaid = Number(row.paidAmount) || 0;
-    const newPayment = Number(thisPayment) || 0;
+      const semFee = Number(row.semFee) || 0;
+      const alreadyPaid = Number(row.paidAmount) || 0;
+      const newPayment = Number(thisPayment) || 0;
 
-    const totalPaid = alreadyPaid + newPayment;
+      const totalPaid = alreadyPaid + newPayment;
 
-    
-    if (totalPaid > semFee) {
-      // alert("Error: Payment cannot exceed Semester Fee!");
-      toast.error(`Paid amount cannot be graeter than ${semFee} you have already paid ${alreadyPaid}`);
-      return; 
+
+      if (totalPaid > semFee) {
+        // alert("Error: Payment cannot exceed Semester Fee!");
+        toast.error(`Paid amount cannot be graeter than ${semFee} you have already paid ${alreadyPaid}`);
+        return;
+      }
+
+      const payload = {
+        ...rest,
+        noOfsem: Number(row.noOfsem),
+        semFee: semFee,
+        paidAmount: totalPaid,
+        pendingAmount: Math.max(0, semFee - totalPaid),
+        paymentDate: row.paymentDate,
+      };
+
+      let res = await updateBalanceFee(feeBalanceId, payload);
+      console.log("Update response:", res.data);
+
+      setFormData((prev) => {
+        const updated = { ...prev };
+        updated[row.userId] = updated[row.userId].map((item) =>
+          item._id === feeBalanceId
+            ? { ...item, paidAmount: totalPaid, pendingAmount: payload.pendingAmount, thisPayment: "" }
+            : item
+        );
+        return updated;
+      });
+
+    } catch (error) {
+      console.error("Error updating fee balance:", error);
+    } finally {
+      setSavingRows((prev) => ({ ...prev, [feeBalanceId]: false }));
     }
-
-    const payload = {
-      ...rest,
-      noOfsem: Number(row.noOfsem),
-      semFee: semFee,
-      paidAmount: totalPaid,
-      pendingAmount: Math.max(0, semFee - totalPaid),
-      paymentDate: row.paymentDate,
-    };
-
-    let res = await updateBalanceFee(feeBalanceId, payload);
-    console.log("Update response:", res.data);
-
-    setFormData((prev) => {
-      const updated = { ...prev };
-      updated[row.userId] = updated[row.userId].map((item) =>
-        item._id === feeBalanceId
-          ? { ...item, paidAmount: totalPaid, pendingAmount: payload.pendingAmount, thisPayment: "" }
-          : item
-      );
-      return updated;
-    });
-
-  } catch (error) {
-    console.error("Error updating fee balance:", error);
-  } finally {
-    setSavingRows((prev) => ({ ...prev, [feeBalanceId]: false }));
-  }
-};
+  };
 
 
 
@@ -577,7 +591,6 @@ const FeeHome = () => {
           <div className={styles.feeform}>
             <div className={styles.formselect1}>
               <div className={styles.selectWrapper}>
-                <p style={{ fontSize: "14px", fontWeight: "500" }}>Course</p>
 
                 <FormControl
                   variant="outlined"
@@ -617,7 +630,6 @@ const FeeHome = () => {
             </div>
             <div className={styles.formselect2}>
               <div className={styles.selectWrapper}>
-                <p style={{ fontSize: "14px", fontWeight: "500" }}>Batch</p>
 
                 <FormControl
                   variant="outlined"
@@ -661,7 +673,6 @@ const FeeHome = () => {
             </div>
             <div className={styles.formselect3}>
               <div className={styles.selectWrapper}>
-                <p style={{ fontSize: "14px", fontWeight: "500" }}>Semester</p>
 
                 <FormControl
                   variant="outlined"

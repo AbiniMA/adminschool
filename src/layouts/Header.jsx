@@ -24,6 +24,8 @@ import Addstudent from '../sections/Addstudent/Addstudent'
 import Modal from 'react-modal';
 import { FaMoneyBill } from "react-icons/fa";
 import LogoutModal from '../sections/Logout/LogoutModal';
+import { getNotification, updateNotification } from '../api/Serviceapi';
+import { IoMdCloseCircle } from "react-icons/io";
 
 
 const Header = ({ setLoginUser }) => {
@@ -31,7 +33,9 @@ const Header = ({ setLoginUser }) => {
   const navigate = useNavigate();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-
+  const [notification, setNotification] = useState(false)
+  const [notificationlist, setNotificationlist] = useState([])
+  const [isread, setIsread] = useState(false)
   const handleToggleNavbar = () => {
     setIsNavbarOpen(true);
   };
@@ -79,11 +83,42 @@ const Header = ({ setLoginUser }) => {
     console.log("Logout clicked");
     localStorage.removeItem('authToken');
     localStorage.removeItem('userId');
-    navigate('/login'); 
+    navigate('/login');
     setLoginUser(false);
   };
 
   let userName = localStorage.getItem('username');
+
+  useEffect(() => {
+    notificationget()
+  }, [])
+
+  const [count, setCount] = useState(0)
+
+  let notificationget = async () => {
+    try {
+      const res = await getNotification();
+      setNotificationlist(res?.data?.data?.data);
+      console.log(res?.data?.data?.fetchCount, 'ddd')
+      setCount(res?.data?.data?.fetchCount)
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+
+  }
+
+  let updatenotification = async (id) => {
+
+    try {
+      setIsread(true)
+      const res = await updateNotification(id, isread);
+      notificationget()
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  }
+
+
   return (
     <>
       <div className={styles.aloschool}>
@@ -154,13 +189,23 @@ const Header = ({ setLoginUser }) => {
               <h2 className={styles.welcome_text}>Welcome Back!</h2>
             </div>
             <div className={styles.login_details}>
-              <div className={styles.notification_icon}><GoBell /></div>
               <div className={styles.userdetails} onClick={() => setIsLogutOpen(true)} style={{ cursor: 'pointer' }}>
                 <div className={styles.user_image} style={{ cursor: 'pointer' }}>
                   <img src={user_image} alt="" height={"100%"} width={"100%"} />
                 </div>
                 <div className={styles.user_name}><p className={styles.admin_user} style={{ cursor: 'pointer' }} >{userName}</p></div>
+
               </div>
+              <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => setNotification(!notification)}>
+                <div>
+                  <GoBell />
+                  <div className={`${count == 0 && styles.dot}`}>
+
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           </div>
 
@@ -237,6 +282,25 @@ const Header = ({ setLoginUser }) => {
           closeModal={() => setIsLogutOpen(false)}
         />
       </Modal>
+      {notification &&
+        <div className={styles.notification}>
+          <div className={styles.notification_content}>
+            <div className={styles.notification_header}>
+              <p className={styles.notification_title}>Notifications</p>
+              <IoMdCloseCircle style={{ cursor: 'pointer',fontSize:'20px' }} onClick={() => setNotification(false)} />
+
+              {/* <p className={styles.notification_count}>{count}</p> */}
+            </div>
+            {notificationlist.map((item, index) =>
+              <div className={styles.notification_box} onClick={() => updatenotification(item?._id)}>
+                <p style={{ fontSize: '14px', textTransform: 'capitalize' }} className={`${item.isRead ? "" : styles.notification_read}`}>
+                  {item.message}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      }
 
 
     </>

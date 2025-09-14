@@ -369,17 +369,17 @@ const LeaveRequest = () => {
                           <td>{item?.userDetails?.name}</td>
                           <td>{item?.userDetails?.studentId}</td>
                           <td>{item?.userDetails?.mobileNo}</td>
-                          {item.isPermission ?
+                          {item.isPermission || item?.isEarlyPermission ?
                             <td>{formatTimehours(item?.permissionTime)}</td> :
                             <td>{item?.noOfDays} {item?.noOfDays > 1 ? 'days' : 'day'}</td>
 
                           }
-                          {item.isPermission ?
+                          {item.isPermission || item?.isEarlyPermission?
                             <td>{formatTime(item?.startTime)}</td>
                             :
                             <td>{item?.fromDate?.split("T")[0]}</td>
                           }
-                          {item.isPermission ?
+                          {item.isPermission|| item?.isEarlyPermission ?
                             <td>{formatTime(item?.endTime)}</td>
                             :
                             <td>{item?.toDate?.split("T")[0]}</td>
@@ -486,15 +486,15 @@ const LeaveRequest = () => {
               <div className={styles.grids}>
                 <div className={styles.grid2}>
                   <label for="">
-                    No of Days
+                    Duration
                   </label>
-                  {data?.isPermission ? 
+                  {data?.isPermission || data?.isEarlyPermission ? 
                   <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="no of days" value={formatTimehours(data?.permissionTime)} disabled /> :
                   <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="no of days" value={data?.noOfDays} disabled />}
                 </div>
                 <div className={styles.grid2}>
                   <label for="">From</label>
-                  {data?.isPermission ? <input disabled className={styles.dateinput} value={formatTime(data?.startTime)}
+                  {data?.isPermission || data?.isEarlyPermission ? <input disabled className={styles.dateinput} value={formatTime(data?.startTime)}
                   /> :
                     <input style={{ color: 'grey', cursor: 'not-allowed' }} disabled className={styles.dateinput} value={data?.fromDate ? data.fromDate.slice(0, 10) : ""}
                     />}
@@ -502,7 +502,7 @@ const LeaveRequest = () => {
                 </div>
                 <div className={styles.grid2}>
                   <label for="">To</label>
-                  {data?.isPermission ? <input style={{ color: 'grey', cursor: 'not-allowed' }} disabled className={styles.dateinput} value={formatTime(data?.endTime)}
+                  {data?.isPermission || data?.isEarlyPermission ? <input style={{ color: 'grey', cursor: 'not-allowed' }} disabled className={styles.dateinput} value={formatTime(data?.endTime)}
                   /> :
                     <input style={{ color: 'grey', cursor: 'not-allowed' }} disabled className={styles.dateinput} value={data?.toDate ? data.toDate.slice(0, 10) : ""}
                     />
