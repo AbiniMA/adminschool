@@ -43,7 +43,9 @@ const CourseTable = () => {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [studentTotalCount, setStudentTotalCount] = useState(0);
-
+  // Calculate visible range
+  const startIndex = (page - 1) * limit + 1;
+  const endIndex = Math.min(page * limit, totalItems);
   const handlePageChange = (event, value) => {
     setTableData([]);
     setPage(value);
@@ -144,9 +146,9 @@ const CourseTable = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold" style={{border:'none'}}>
+              <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold" style={{ border: 'none' }}>
                 <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
-                <p style={{textAlign:'center'}} className=" text-gray-500 font-semibold">No Data Found</p>
+                <p style={{ textAlign: 'center' }} className=" text-gray-500 font-semibold">No Data Found</p>
               </td>
             </tr>
           )}
@@ -154,19 +156,30 @@ const CourseTable = () => {
       </table>
 
       {/* ✅ Pagination Section */}
-      {totalPages > 1 && (
-        <ThemeProvider theme={theme}>
-          <div className="flex justify-end mt-4">
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              showFirstButton
-              showLastButton
-            />
+
+
+      <div className='flex justify-between items-end mx-2'>
+        {totalPages > 0 &&
+          <div className="flex justify-between items-center">
+            <p className="text-gray-600 text-sm">
+              Showing {startIndex} – {endIndex} of {totalItems} Courses
+            </p>
           </div>
-        </ThemeProvider>
-      )}
+        }
+        {totalPages > 0 && (
+          <ThemeProvider theme={theme}>
+            <div className="flex justify-end mt-4">
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                showFirstButton
+                showLastButton
+              />
+            </div>
+          </ThemeProvider>
+        )}
+      </div>
 
       {/* Modal Component */}
       <AddCourseModal

@@ -250,7 +250,7 @@ const FeeHome = () => {
   const updateFee2 = async (e) => {
     e.preventDefault();
     if (!studentNameValidation()) {
-      return; 
+      return;
     }
     setSearchLoading(true);
     try {
@@ -381,38 +381,82 @@ const FeeHome = () => {
     }
 
     try {
-      const data = {
+      const selectedSem = Number(formData.updatesemester); // e.g. "1"
+      const studentRows = formdata[student._id] || [];
+      const semRow = studentRows.find(r => Number(r.noOfsem) === selectedSem);
+
+      if (!semRow) {
+        toast.error("Selected semester row not found!");
+        return;
+      }
+
+      const semFee = Number(semRow.semFee) || 0;
+      const alreadyPaid = Number(semRow.paidAmount) || 0;
+      const newPayment = Number(formData.feeamountField) || 0;
+      const totalPaid = alreadyPaid + newPayment;
+
+      // ✅ Validation first
+      if (totalPaid > semFee) {
+        toast.error(
+          `Paid amount cannot exceed ${semFee}, you already paid ${alreadyPaid}`
+        );
+        return; // stop execution
+      }
+
+      // 1️⃣ Call createFee API
+      const feePayload = {
         name: student.name,
         email: student.email,
         courseId: student.courseDetails?._id,
         batchId: student.batchDetails?._id,
-        paidAmount: formData.feeamountField,
+        paidAmount: newPayment, // this payment only
         noOfsem: formData.updatesemester,
         modeOfPayment: formData.payment,
         userId: student._id,
         studentId: student.studentId
       };
+      await createFee(feePayload);
 
-      await createFee(data);
-      console.log("Fee updated:", data);
+      // 2️⃣ Call updateBalanceFee API
+      const balancePayload = {
+        ...semRow,
+        paidAmount: totalPaid,
+        pendingAmount: Math.max(0, semFee - totalPaid),
+        paymentDate: new Date().toISOString().slice(0, 10),
+      };
 
+      await updateBalanceFee(semRow._id, balancePayload);
+
+      // 🔄 Update local state
+      setFormData(prev => {
+        const updated = { ...prev };
+        updated[student._id] = updated[student._id].map(item =>
+          item._id === semRow._id
+            ? { ...item, ...balancePayload, thisPayment: "" }
+            : item
+        );
+        return updated;
+      });
+
+      // ✅ Reset
       setStudentFormData(prev => ({
         ...prev,
         [student._id]: { updatesemester: "", feeamountField: "", payment: "" }
       }));
-      setEntername('')
-      getfeelist();
-      setStudentFormData({});
+      setEntername("");
       setStudentErrors({});
       getfeelist();
-      calculation()
-      setShowDiv(false)
-    } catch (err) {
-      console.error(err);
-      toast.error(err?.response?.data?.message)
+      calculation();
+      setShowDiv(false);
 
+      console.log("Fee updated successfully for:", student.name);
+
+    } catch (err) {
+      console.error("Error in update:", err);
+      toast.error(err?.response?.data?.message);
     }
   };
+
 
 
 
@@ -444,6 +488,10 @@ const FeeHome = () => {
 
 
   }
+
+  // // Calculate visible range
+  // const startIndex = (offset - 1) * limit + 1;
+  // const endIndex = Math.min(offset * limit, totallist);
 
   const [balancefee, setBalancefee] = useState([])
 
@@ -723,7 +771,6 @@ const FeeHome = () => {
                     startAdornment: (
                       <InputAdornment position="start">
                         <BiSearchAlt style={{ fontSize: 18, color: '#555' }} />
-
                       </InputAdornment>
                     ),
                     endAdornment: searchText && (
@@ -849,7 +896,7 @@ const FeeHome = () => {
                         <td>{item.totalFeeAmount}</td>
                         <td>{item.paidAmount}</td>
                         <td style={{ color: item.pendingAmount === 0 ? "green" : "red" }}>{item.pendingAmount === 0 ? 'Completed' : item.pendingAmount}</td>
-                        <td style={{ color: item.pendingAmount === 0 ? "green" : "red" }}>{item.paymentDate?.split("T")[0]}</td>
+                        <td >{item.paymentDate?.split("T")[0]}</td>
                         <td
                           className={styles.viewBtn}
                           onClick={() => { item.pendingAmount === 0 && handlecompleted(item._id) }}
@@ -888,23 +935,32 @@ const FeeHome = () => {
           </table>
         </div>
 
-
-
-        {totalpages > 1 &&
-          <ThemeProvider theme={theme}>
-            <div style={{ marginLeft: "auto", marginTop: "20px" }}>
-              <Pagination
-
-                count={totalpages}
-                page={offset}
-                onChange={handlePageChange}
-                showFirstButton
-                showLastButton
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-              />
+        <div className='flex justify-between items-end mx-2'>
+          {/* {totalpages > 0 &&
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600 text-sm">
+                Showing {startIndex} – {endIndex} of {totallist} students
+              </p>
             </div>
-          </ThemeProvider>
-        }
+          } */}
+          {totalpages > 0 &&
+            <ThemeProvider theme={theme}>
+              <div style={{ marginLeft: "auto", marginTop: "20px" }}>
+                <Pagination
+
+                  count={totalpages}
+                  page={offset}
+                  onChange={handlePageChange}
+                  showFirstButton
+                  showLastButton
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                />
+              </div>
+            </ThemeProvider>
+          }
+        </div>
+
+
 
 
 
@@ -1160,14 +1216,36 @@ const FeeHome = () => {
                                 placeholder="Enter Fee amount"
                                 value={formData.feeamountField}
                                 onChange={(e) => {
-                                  handleInputChange(
-                                    student._id,
-                                    "feeamountField",
-                                    e.target.value
-                                  ), feeamountValidation(student._id, e.target.value);
-                                }
-                                }
+                                  const value = e.target.value;
+
+                                  // 1️⃣ update studentFormData state
+                                  handleInputChange(student._id, "feeamountField", value);
+                                  feeamountValidation(student._id, value);
+
+                                  // 2️⃣ also update the correct semester row in formdata
+                                  const selectedSem = Number(studentFormData[student._id]?.updatesemester);
+                                  if (selectedSem) {
+                                    setFormData((prev) => {
+                                      const updated = { ...prev };
+                                      updated[student._id] = updated[student._id].map((row) =>
+                                        Number(row.noOfsem) === selectedSem
+                                          ? {
+                                            ...row,
+                                            thisPayment: value, // temporary typing value
+                                            pendingAmount: Math.max(
+                                              0,
+                                              Number(row.semFee || 0) -
+                                              (Number(row.paidAmount || 0) + Number(value || 0))
+                                            ),
+                                          }
+                                          : row
+                                      );
+                                      return updated;
+                                    });
+                                  }
+                                }}
                               />
+
                               <p className={styles.stderror1}>{studentErrors[student._id]?.feeamountError}</p>
 
                             </div>
@@ -1228,13 +1306,13 @@ const FeeHome = () => {
                             <table>
                               <thead>
                                 <tr>
-                                  <th style={{ width: "10%" }}>Sem</th>
+                                  <th >Sem</th>
                                   <th>Sem Fee</th>
                                   <th>Paid Amount</th>
                                   <th>Pending Amount</th>
                                   <th>Payment Date</th>
 
-                                  <th>Action</th>
+                                  {/* <th>Action</th> */}
                                 </tr>
                               </thead>
                               <tbody>
@@ -1280,7 +1358,8 @@ const FeeHome = () => {
                                         <input
                                           type="text"
                                           max={row.semFee}
-                                          style={{ border: '2px solid black', borderRadius: '5px' }}
+                                          // style={{ border: '2px solid black', borderRadius: '5px' }}
+                                          disabled
                                           value={row.thisPayment || ""}
                                           onChange={(e) => {
                                             const updated = { ...formdata };
@@ -1366,26 +1445,18 @@ const FeeHome = () => {
                                         />
                                       }
                                     </td>
-                                    <td>
+                                    {/* <td>
                                       <div style={{ display: 'flex', gap: '10px' }}>
-                                        {/* <FaEdit style={{ cursor: 'pointer', color: '#144196' }} 
-                                        onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }} /> */}
+
                                         {formdata[student._id]?.[index]?.semFee == formdata[student._id]?.[index]?.paidAmount ? (
                                           <button className={styles.savebtn} disabled style={{ cursor: 'not-allowed', color: 'white', background: 'gray' }} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
 
                                         ) :
                                           <button className={styles.savebtn} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
                                         }
-                                        {/* <MdDelete
-                                          style={{ cursor: 'pointer' }}
-                                          onClick={() => {
-                                            const updated = { ...formdata };
-                                            updated[student._id] = updated[student._id].filter((_, i) => i !== index);
-                                            setFormData(updated);
-                                          }}
-                                        /> */}
+                                       
                                       </div>
-                                    </td>
+                                    </td> */}
                                   </tr>
                                 ))}
                               </tbody>

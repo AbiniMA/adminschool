@@ -48,7 +48,9 @@ const CourseDetails = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
-
+  // Calculate visible range
+  const startIndex = (page - 1) * limit + 1;
+  const endIndex = Math.min(page * limit, totalItems);
   const { id } = useParams();
   const navigate = useNavigate(); // ⬅️ Initialize useNavigate
   const [formData, setFormData] = useState([]);
@@ -268,7 +270,7 @@ const CourseDetails = () => {
                       className={`${styles.tableheadstatus} ${isComplete ? styles.complete : styles.ongoing
                         }`}
                     >
-                      {isComplete ? "Complete" : "Ongoing"}
+                      {isComplete ? "Completed" : "Ongoing"}
                     </div>
                   </div>
                 </div>
@@ -282,19 +284,28 @@ const CourseDetails = () => {
             </div>)}
         </div>
 
-        {totalPages > 1 && (
-          <ThemeProvider theme={theme}>
-            <div className="flex justify-end mt-4">
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={handlePageChange}
-                showFirstButton
-                showLastButton
-              />
+        <div className='flex justify-between items-end mx-2'>
+          {totalPages > 0 &&
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600 text-sm">
+                Showing {startIndex} – {endIndex} of {totalItems} Batches
+              </p>
             </div>
-          </ThemeProvider>
-        )}
+          }
+          {totalPages > 0 && (
+            <ThemeProvider theme={theme}>
+              <div className="flex justify-end mt-4">
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  showFirstButton
+                  showLastButton
+                />
+              </div>
+            </ThemeProvider>
+          )}
+        </div>
       </div>
 
       {/* Edit Course Modal */}

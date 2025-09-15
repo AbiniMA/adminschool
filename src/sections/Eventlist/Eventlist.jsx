@@ -45,7 +45,9 @@ const Eventlist = () => {
     const [showModal, setShowModal] = useState(false);
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    // Calculate visible range
+    const startIndex = (offset - 1) * limit + 1;
+    const endIndex = Math.min(offset * limit, totaluser);
     const statusChange = (event) => {
         setStatus(event.target.value);
         setoffset(1)
@@ -150,7 +152,7 @@ const Eventlist = () => {
                         </div>
 
                         <div className={styles.button}>
-                            <button onClick={() => setShowModal(true)}  className='text-[#FFFFFF] bg-gradient-to-b from-[#144196] to-[#061530]  px-[20px] w-fit py-2 rounded-md mr-2 flex items-center justify-between cursor-pointer'><PlusIcon className='w-4 h-4 text-[600]' />Add Events</button>
+                            <button onClick={() => setShowModal(true)} className='text-[#FFFFFF] bg-gradient-to-b from-[#144196] to-[#061530]  px-[20px] w-fit py-2 rounded-md mr-2 flex items-center justify-between cursor-pointer'><PlusIcon className='w-4 h-4 text-[600]' />Add Events</button>
                         </div>
 
                     </div>
@@ -215,11 +217,11 @@ const Eventlist = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                        <div className="flex justify-center h-[400px] items-center w-full my-auto flex-col text-gray-500 font-semibold">
-                                            <img src={nodata} alt="No Data" className="w-[200px] h-[200px]" />
-                                            <p>No Data Found</p>
+                                    <div className="flex justify-center h-[400px] items-center w-full my-auto flex-col text-gray-500 font-semibold">
+                                        <img src={nodata} alt="No Data" className="w-[200px] h-[200px]" />
+                                        <p>No Data Found</p>
 
-                                        </div>
+                                    </div>
                                 )}
                             </>
                         )}
@@ -227,19 +229,30 @@ const Eventlist = () => {
 
                     </div>
                 </div>
-                {totalpages > 1 &&
-                    <ThemeProvider theme={theme}>
-                        <div className="flex justify-end mt-4">
-                            <Pagination
-                                count={totalpages}
-                                page={offset}
-                                onChange={handlePageChange}
-                                showFirstButton
-                                showLastButton
-                            />
+
+
+                <div className='flex justify-between items-end mx-2'>
+                    {totalpages > 0 &&
+                        <div className="flex justify-between items-center">
+                            <p className="text-gray-600 text-sm">
+                                Showing {startIndex} – {endIndex} of {totaluser} Events
+                            </p>
                         </div>
-                    </ThemeProvider>
-                }
+                    }
+                    {totalpages > 0 &&
+                        <ThemeProvider theme={theme}>
+                            <div className="flex justify-end mt-4">
+                                <Pagination
+                                    count={totalpages}
+                                    page={offset}
+                                    onChange={handlePageChange}
+                                    showFirstButton
+                                    showLastButton
+                                />
+                            </div>
+                        </ThemeProvider>
+                    }
+                </div>
             </div>
 
             <Modal

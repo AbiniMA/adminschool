@@ -483,15 +483,15 @@ const Studentlist = () => {
         </div>
 
       </div>
-      {totalpages > 1 &&
-        <div className='flex justify-between items-end mx-2'>
-
-
+      <div className='flex justify-between items-end mx-2'>
+        {totalpages > 0 &&
           <div className="flex justify-between items-center">
             <p className="text-gray-600 text-sm">
               Showing {startIndex} – {endIndex} of {totaluser} students
             </p>
           </div>
+        }
+        {totalpages > 0 &&
 
           <ThemeProvider theme={theme}>
             <div className="flex justify-end ">
@@ -504,9 +504,9 @@ const Studentlist = () => {
               />
             </div>
           </ThemeProvider>
-        </div>
-      }
 
+        }
+      </div>
 
       <Modal
         isOpen={isOpen}

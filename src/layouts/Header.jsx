@@ -14,7 +14,7 @@ import { FaBullseye, FaPlus } from "react-icons/fa6";
 import { IoMenu } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { GoBell } from "react-icons/go";
-import user_image from '../assets/aloschoolimages/user_image.jpg'
+import user_image from '../assets/user.png'
 import { IoMdPerson } from "react-icons/io";
 import { RiFileList2Fill } from "react-icons/ri";
 import { PiFlagPennantFill } from "react-icons/pi";
@@ -196,15 +196,15 @@ const Header = ({ setLoginUser }) => {
                 <div className={styles.user_name}><p className={styles.admin_user} style={{ cursor: 'pointer' }} >{userName}</p></div>
 
               </div>
-              <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => setNotification(!notification)}>
+              {/* <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => setNotification(!notification)}>
                 <div>
                   <GoBell />
-                  <div className={`${count == 0 && styles.dot}`}>
+                  <div className={`${count > 0 && styles.dot}`}>
 
                   </div>
                 </div>
 
-              </div>
+              </div> */}
 
             </div>
           </div>

@@ -62,6 +62,9 @@ const Attandance = () => {
   const [status, setStatus] = useState('');
 
 
+  // Calculate visible range
+  const startIndex = (offset - 1) * limit + 1;
+  const endIndex = Math.min(offset * limit, totallist);
 
   function handleClick(date) {
     navigate(`/attendence/leaverequest/${date}`)
@@ -516,21 +519,32 @@ const Attandance = () => {
         </table>
       </div>
 
-      {totalpages > 1 &&
-        <ThemeProvider theme={theme}>
-          <div style={{ marginLeft: "auto" }}>
-            <Pagination
 
-              count={totalpages}
-              page={offset}
-              onChange={handlePageChange}
-              showFirstButton
-              showLastButton
-              sx={{ display: "flex", justifyContent: "flex-end" }}
-            />
+      <div className='flex justify-between items-end px-2 w-[100%]'>
+        {totalpages > 0 &&
+          <div className="flex justify-between items-center">
+            <p className="text-gray-600 text-sm">
+              Showing {startIndex} – {endIndex} of {totallist} students
+            </p>
           </div>
-        </ThemeProvider>
-      }
+        }
+
+        {totalpages > 0 &&
+          <ThemeProvider theme={theme}>
+            <div className="flex justify-end ">
+              <Pagination
+
+                count={totalpages}
+                page={offset}
+                onChange={handlePageChange}
+                showFirstButton
+                showLastButton
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              />
+            </div>
+          </ThemeProvider>
+        }
+      </div>
 
     </div>
   );
