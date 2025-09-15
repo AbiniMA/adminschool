@@ -92,7 +92,13 @@ const Header = ({ setLoginUser }) => {
 
   useEffect(() => {
     notificationget()
-  }, [])
+    const interval = setInterval(() => {
+      notificationget();
+    }, 600000);
+
+    // clear interval when component unmounts
+    return () => clearInterval(interval);
+  }, []);
 
   const [count, setCount] = useState(0)
 
