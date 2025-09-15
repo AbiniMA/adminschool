@@ -118,11 +118,10 @@ const Attandance = () => {
     getBatchnameid(selectedId);
   };
 
-  useEffect(() => {
-    const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
-    setDate(formattedDate);
-  }, []);
+ useEffect(() => {
+  setDate(dayjs().format("YYYY-MM-DD"));
+}, []);
+
 
   useEffect(() => {
     getBatchname()

@@ -266,6 +266,7 @@
 
 .notification_read {
   color:blue;
+  font-weight: 500;
 }
 .dot{
   position: absolute;
@@ -278,7 +279,7 @@
 }
 .notification_box{
   padding: 10px;
-  border-bottom: 1px solid rgba(215, 215, 215, 0.696);
+  border-bottom: 1px solid rgba(215, 215, 215, 0.345);
 }
 .notification_title{
   /* padding-left: 20px; */
@@ -287,8 +288,8 @@
   font-weight: 500;
 }
 .notification_header{
- border-bottom:1px solid rgba(215, 215, 215, 0.696);
-  padding: 10px;
+ /* border-bottom:1px solid rgba(215, 215, 215, 0.696); */
+  padding:10px 10px 15px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;

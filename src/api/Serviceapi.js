@@ -267,7 +267,7 @@ export const getDashboardEvents = (status) => {
 };
 
 export const getDashboardLeave = (status) => {
-  const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toLocaleDateString("en-CA");
 
   return apiService.get(`/leave?status=${status}&date=${today}&limit=5`);
 };
@@ -285,7 +285,7 @@ export const getAttendanceStudentList = (userId) => {
 };
 
 export const getTodayrate = () => {
-  const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toLocaleDateString("en-CA");
   return apiService.get(`/attendance/rate?date=${today}`);
 };
 

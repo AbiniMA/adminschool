@@ -30,8 +30,8 @@ export const Dashborad = () => {
     const [open, setOpen] = useState(false)
     const [status, setStatus] = useState('');
     const [leavestatus, setLeaveStatus] = useState('');
-   
-const todayDate = new Date().toISOString().split("T")[0];
+
+    const todayDate = new Date().toLocaleDateString("en-CA");
 
 
     const [Attendance, setAttendance] = useState([])
@@ -70,8 +70,8 @@ const todayDate = new Date().toISOString().split("T")[0];
     };
 
     useEffect(() => {
-        const today = new Date();
-        const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
+        
+        const formattedDate = new Date().toLocaleDateString("en-CA");
         setDate(formattedDate);
     }, []);
 
@@ -247,8 +247,8 @@ const todayDate = new Date().toISOString().split("T")[0];
                                     </Select>
                                 </FormControl>
                                 <div>
-                                    <Link to={`/attendence/leaverequest/${todayDate }//`}><img src={resizeicon} alt="resizeicon" /></Link>
-                                    </div>
+                                    <Link to={`/attendence/leaverequest/${todayDate}//`}><img src={resizeicon} alt="resizeicon" /></Link>
+                                </div>
 
                             </div>
                         </div>

@@ -26,6 +26,7 @@ import { FaMoneyBill } from "react-icons/fa";
 import LogoutModal from '../sections/Logout/LogoutModal';
 import { getNotification, updateNotification } from '../api/Serviceapi';
 import { IoMdCloseCircle } from "react-icons/io";
+import { format } from "date-fns";
 
 
 const Header = ({ setLoginUser }) => {
@@ -118,6 +119,15 @@ const Header = ({ setLoginUser }) => {
     }
   }
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = date.toLocaleString("en-US", { month: "short", timeZone: "UTC" }).toUpperCase();
+    const year = date.getUTCFullYear();
+    return { day, month, year };
+  };
+
+
 
   return (
     <>
@@ -196,7 +206,7 @@ const Header = ({ setLoginUser }) => {
                 <div className={styles.user_name}><p className={styles.admin_user} style={{ cursor: 'pointer' }} >{userName}</p></div>
 
               </div>
-              {/* <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => setNotification(!notification)}>
+              <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => setNotification(!notification)}>
                 <div>
                   <GoBell />
                   <div className={`${count > 0 && styles.dot}`}>
@@ -204,7 +214,7 @@ const Header = ({ setLoginUser }) => {
                   </div>
                 </div>
 
-              </div> */}
+              </div>
 
             </div>
           </div>
@@ -283,21 +293,40 @@ const Header = ({ setLoginUser }) => {
         />
       </Modal>
       {notification &&
+
         <div className={styles.notification}>
           <div className={styles.notification_content}>
             <div className={styles.notification_header}>
               <p className={styles.notification_title}>Notifications</p>
-              <IoMdCloseCircle style={{ cursor: 'pointer',fontSize:'20px' }} onClick={() => setNotification(false)} />
+              <IoMdCloseCircle style={{ cursor: 'pointer', fontSize: '20px' }} onClick={() => setNotification(false)} />
 
               {/* <p className={styles.notification_count}>{count}</p> */}
             </div>
-            {notificationlist.map((item, index) =>
-              <div className={styles.notification_box} onClick={() => updatenotification(item?._id)}>
-                <p style={{ fontSize: '14px', textTransform: 'capitalize' }} className={`${item.isRead ? "" : styles.notification_read}`}>
-                  {item.message}
-                </p>
-              </div>
-            )}
+            {notificationlist.map((item, index) => {
+              const { day, month, year } = formatDate(item.date);
+              const firstLetter = item.message?.charAt(0).toUpperCase(); // Get first letter
+
+              return (
+                <div className={styles.notification_box} onClick={() => updatenotification(item?._id)}>
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <div className="w-10 h-10 rounded-full bg-blue-900 flex items-center justify-center text-white font-semibold">
+                        {firstLetter}
+                      </div>
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '14px', textTransform: 'capitalize' }} className={`${item.isRead ? "" : styles.notification_read}`}>
+                        {item.message}
+                      </p>
+
+                      <span className="text-xs text-gray-400">
+                        {day} {month} {year}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       }

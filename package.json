@@ -23,6 +23,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "antd": "^5.26.6",
     "axios": "^1.11.0",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "lucide-react": "^0.540.0",
     "react": "^19.1.0",
