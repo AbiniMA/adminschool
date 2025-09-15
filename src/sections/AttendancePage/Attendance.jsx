@@ -67,9 +67,16 @@ const Attandance = () => {
   const startIndex = (offset - 1) * limit + 1;
   const endIndex = Math.min(offset * limit, totallist);
 
- function handleClick(date, courseId, batchId) {
-  navigate(`/attendence/leaverequest/${date}/${courseId}/${batchId}`);
-}
+  function handleClick(date, courseId, batchId) {
+    let url = "/attendence/leaverequest";
+
+    if (date) url += `/${date}`;
+    if (courseId) url += `/${courseId}`;
+    if (batchId) url += `/${batchId}`;
+
+    navigate(url);
+  }
+
 
 
   useEffect(() => {
@@ -470,7 +477,10 @@ const Attandance = () => {
                 <p>{rate.leaveRequestCount}</p>
               </div>
               <div>
-                <div className={styles.leaveReqIcon} onClick={() => handleClick(date,courseId,batchId)}>
+                <div className={styles.leaveReqIcon} onClick={() => {
+
+                  handleClick(date, courseId, batchId);
+                }}>
                   <FaArrowRight />
                 </div>
               </div>
@@ -506,7 +516,7 @@ const Attandance = () => {
 
 
                   <tr key={item._id}>
-                    <td style={{ color: item?.onLeave && "red",textTransform:"capitalize" }}>{item.userDetails?.name}</td>
+                    <td style={{ color: item?.onLeave && "red", textTransform: "capitalize" }}>{item.userDetails?.name}</td>
                     <td style={{ color: item?.onLeave && "red" }}>{item.userDetails?.studentId}</td>
                     <td style={{ color: item?.onLeave && "red" }}>{item.userDetails?.mobileNo}</td>
                     <td style={{ color: item?.onLeave && "red" }}>{item.courseDetails?.courseName}</td>

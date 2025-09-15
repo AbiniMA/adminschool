@@ -55,7 +55,7 @@ function App() {
 
         <Route path="/attendence" element={<Header />}>
           <Route index element={<Attendance />} />
-<Route path="leaverequest/:date/:courseId/:batchId" element={<LeaveRequest />} />
+          <Route path="leaverequest/:date?/:courseId?/:batchId?" element={<LeaveRequest />} />
         </Route>
 
         <Route path="/events" element={<Header />}>

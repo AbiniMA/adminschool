@@ -97,19 +97,19 @@ const LeaveRequest = () => {
 
   useEffect(() => {
     if (paramDate) {
-      setDate(paramDate); 
+      setDate(paramDate);
     }
   }, [paramDate]);
 
   useEffect(() => {
     if (paramCourse) {
-      setCourseId(paramCourse); 
+      setCourseId(paramCourse);
     }
   }, [paramCourse]);
 
   useEffect(() => {
     if (paramBatch) {
-      setBatchId(paramBatch); 
+      setBatchId(paramBatch);
     }
   }, [paramBatch]);
   const handleSearchChange = (e) => {
