@@ -181,26 +181,33 @@ const LeaveRequest = () => {
   };
 
   useEffect(() => {
+    if (paramCourse) {
+      setCourseId(paramCourse);
+      getBatchnameid(paramCourse);  // fetch batches immediately
+    }
+  }, [paramCourse]);
+
+  useEffect(() => {
     getBatchname()
   }, []);
 
   let getBatchnameid = async (id) => {
     try {
       const res = await getBatchbyid(id);
-      console.log(res?.data?.data, 'batchdasdasd')
       const course = res?.data?.data?.find(c => c._id === id);
-      setBatch(
-        course?.batches
-          ? Array.isArray(course.batches)
-            ? course.batches
-            : [course.batches]
-          : []
-      );
-      setBatchId("");
+      const batches = Array.isArray(course?.batches) ? course.batches : [];
+
+      setBatch(batches);
+
+      // ✅ If paramBatch exists and is in this course, bind it
+      if (paramBatch && batches.some(b => b._id === paramBatch)) {
+        setBatchId(paramBatch);
+      }
     } catch (error) {
       console.error("error", error.response?.data || error);
     }
   };
+
 
 
   let getBatchname = async () => {

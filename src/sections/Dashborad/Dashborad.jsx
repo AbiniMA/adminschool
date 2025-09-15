@@ -246,7 +246,9 @@ const todayDate = new Date().toISOString().split("T")[0];
 
                                     </Select>
                                 </FormControl>
-                                <div><Link to={`/attendence/leaverequest/${todayDate }`}><img src={resizeicon} alt="resizeicon" /></Link></div>
+                                <div>
+                                    <Link to={`/attendence/leaverequest/${todayDate }//`}><img src={resizeicon} alt="resizeicon" /></Link>
+                                    </div>
 
                             </div>
                         </div>
