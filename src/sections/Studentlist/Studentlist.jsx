@@ -57,6 +57,9 @@ const Studentlist = () => {
   const [status, setStatusName] = useState('')
   const [activestatus, setActiveStatus] = useState('');
 
+  // Calculate visible range
+  const startIndex = (offset - 1) * limit + 1;
+  const endIndex = Math.min(offset * limit, totaluser);
 
   const handleChange = (event) => {
     setBatchId(event.target.value);
@@ -229,7 +232,7 @@ const Studentlist = () => {
                     border: 'none'
                   }}
                 >
-                 
+
                   <MenuItem value="">All</MenuItem>
                   <MenuItem value="active">Active</MenuItem>
                   <MenuItem value="inactive">Inactive</MenuItem>
@@ -408,7 +411,10 @@ const Studentlist = () => {
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">ID No</th>
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Name</th>
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Mobile</th>
+
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Mail</th>
+                <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Password</th>
+
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Course</th>
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Batch</th>
                 <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold">Active</th>
@@ -434,6 +440,8 @@ const Studentlist = () => {
                       <td className="px-4 py-2" style={{ textTransform: 'capitalize' }}>{user.name}</td>
                       <td className="px-4 py-2">{user.mobileNo}</td>
                       <td className="px-4 py-2">{user.email}</td>
+                      <td className="px-4 py-2">{user.password}</td>
+
                       <td className="px-4 py-2">{user?.courseDetails?.courseName}</td>
                       <td className="px-4 py-2">{user?.batchDetails?.batchName || '-'} </td>
                       <td className="px-4 py-2" style={{ textTransform: 'capitalize', color: user.status === 'active' ? 'green' : 'red' }}>{user?.status || '-'} </td>
@@ -476,18 +484,30 @@ const Studentlist = () => {
 
       </div>
       {totalpages > 1 &&
-        <ThemeProvider theme={theme}>
-          <div className="flex justify-end ">
-            <Pagination
-              count={totalpages}
-              page={offset}
-              onChange={handlePageChange}
-              showFirstButton
-              showLastButton
-            />
+        <div className='flex justify-between items-end mx-2'>
+
+
+          <div className="flex justify-between items-center">
+            <p className="text-gray-600 text-sm">
+              Showing {startIndex} – {endIndex} of {totaluser} students
+            </p>
           </div>
-        </ThemeProvider>
+
+          <ThemeProvider theme={theme}>
+            <div className="flex justify-end ">
+              <Pagination
+                count={totalpages}
+                page={offset}
+                onChange={handlePageChange}
+                showFirstButton
+                showLastButton
+              />
+            </div>
+          </ThemeProvider>
+        </div>
       }
+
+
       <Modal
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(true)}
