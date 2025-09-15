@@ -142,7 +142,7 @@
 
 .trtd > td {
   /* text-align: center;  */
-  padding: 15px 0px;
+  padding: 15px 10px;
   font-size: 14px;
   /* font-weight: 400; */
   /* color: rgb(75, 74, 74);   */
@@ -316,6 +316,12 @@
   border-radius: 5px;
   outline: none;
   width: 100%;
+}
+.clear{
+  cursor: pointer;
+  margin-top: 10px;
+  /* margin-bottom: 10px; */
+
 }
 .dateinput {
   color: grey;

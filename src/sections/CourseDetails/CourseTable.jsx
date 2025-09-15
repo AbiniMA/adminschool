@@ -158,7 +158,7 @@ const CourseTable = () => {
       {/* ✅ Pagination Section */}
 
 
-      <div className='flex justify-between items-end mx-2'>
+      <div className='flex justify-between   items-end mx-2'>
         {totalPages > 0 &&
           <div className="flex justify-between items-center">
             <p className="text-gray-600 text-sm">

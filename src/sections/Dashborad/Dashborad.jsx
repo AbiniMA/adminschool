@@ -14,7 +14,7 @@ import {
 } from 'react-circular-progressbar';
 import nodata from '../../assets/trans.png'
 import 'react-circular-progressbar/dist/styles.css';
-import { Link } from 'react-router-dom'
+import { Link, Links } from 'react-router-dom'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -173,7 +173,7 @@ const todayDate = new Date().toISOString().split("T")[0];
                             </div>
 
                             <div className={dashboradcss.avatar_text}>
-                                {studentData?.userDetails?.[0]?.name}, {studentData?.userDetails?.[1]?.name}, {studentData?.userDetails?.[2]?.name} +{(studentData?.totalStudents || 0) - 3} others
+                                {studentData?.userDetails?.[0]?.name}, {studentData?.userDetails?.[1]?.name}, {studentData?.userDetails?.[2]?.name} +{(studentData?.totalStudents || 0) - 3} <span><Link to='/students'>others </Link></span>
                             </div>
                         </div>
                     </div>
@@ -193,7 +193,7 @@ const todayDate = new Date().toISOString().split("T")[0];
                             </div>
 
                             <div className={dashboradcss.avatar_text}>
-                                {studentData?.userDetails?.[0]?.name}, {studentData?.userDetails?.[1]?.name}, {studentData?.userDetails?.[2]?.name} +{(studentData?.activeStudents || 0) - 3} others
+                                {studentData?.userDetails?.[0]?.name}, {studentData?.userDetails?.[1]?.name}, {studentData?.userDetails?.[2]?.name} +{(studentData?.activeStudents || 0) - 3} <Link to='/students'>others </Link>
                             </div>
                         </div>
                     </div>
@@ -382,9 +382,9 @@ const todayDate = new Date().toISOString().split("T")[0];
                             </div>
 
                             <div className='flex justify-between '>
-                                <div style={{ color: 'green', fontSize: '14px' }}>No Of Student Present: {Attendance.fetchCount}</div>
+                                <div style={{ color: 'green', fontSize: '14px' }}>No of student present: {Attendance.fetchCount}</div>
 
-                                <div style={{ color: 'red', fontSize: '14px' }}>No Of Student Absent: {Attendance.leaveApproved}</div>
+                                <div style={{ color: 'red', fontSize: '14px' }}>No of student absent: {Attendance.leaveApproved}</div>
                             </div>
                         </div>
 

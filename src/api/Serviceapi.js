@@ -195,9 +195,9 @@ export const getAttendancerate = (date, courseId, batchId) => {
 
 // leave request
 
-export const getLeaveRequest = (limit, offset, date, status, value) => {
+export const getLeaveRequest = (limit, offset, date, status, value,courseId,batchId,leaveType) => {
   return apiService.get(
-    `/leave?limit=${limit}&offset=${offset}&date=${date}&status=${status}&value=${value}`
+    `/leave?limit=${limit}&offset=${offset}&date=${date}&status=${status}&value=${value}&courseId=${courseId}&batchId=${batchId}&leaveType=${leaveType}`
   );
 };
 

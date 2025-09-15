@@ -140,7 +140,7 @@ const Eventlist = () => {
                                         border: 'none'
                                     }}
                                 >
-                                    <MenuItem value="">All</MenuItem>
+                                    <MenuItem value="">Status</MenuItem>
 
                                     <MenuItem value="completed">Completed</MenuItem>
                                     <MenuItem value="upcoming">Upcoming</MenuItem>

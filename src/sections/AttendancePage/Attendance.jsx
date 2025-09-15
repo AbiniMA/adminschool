@@ -19,6 +19,7 @@ import nodata from '../../assets/nodata.jpg'
 import Loader from "../../component/loader/Loader";
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import { IoIosCloseCircle } from "react-icons/io";
 
 const theme = createTheme({
   components: {
@@ -66,10 +67,10 @@ const Attandance = () => {
   const startIndex = (offset - 1) * limit + 1;
   const endIndex = Math.min(offset * limit, totallist);
 
-  function handleClick(date) {
-    navigate(`/attendence/leaverequest/${date}`)
+ function handleClick(date, courseId, batchId) {
+  navigate(`/attendence/leaverequest/${date}/${courseId}/${batchId}`);
+}
 
-  }
 
   useEffect(() => {
     const totalPages = Math.ceil(totallist / limit);
@@ -211,6 +212,12 @@ const Attandance = () => {
     setStatus(event.target.value);
     setoffset(1)
   }
+
+  const handlefilterSearch = () => {
+    setStatus('');
+    setCourseId('');
+    setBatchId('');
+  }
   return (
     <div className={styles.container}>
       <div className={styles.attendancetop}>
@@ -219,6 +226,14 @@ const Attandance = () => {
         </div>
         <div className={styles.attendanceright}>
           <div className={styles.attendancerightdiv}>
+            <div>
+              {(status?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim()) && (
+                <button className={styles.clear} onClick={handlefilterSearch}>
+                  <IoIosCloseCircle />
+                </button>
+              )}
+
+            </div>
             <div className={styles.selectWrapper}>
               <FormControl
                 variant="outlined"
@@ -245,7 +260,7 @@ const Attandance = () => {
                     border: 'none'
                   }}
                 >
-                  <MenuItem value={""}>All</MenuItem>
+                  <MenuItem value={""}>Attendance</MenuItem>
                   <MenuItem value={false}>Present</MenuItem>
                   <MenuItem value={true}>Absent</MenuItem>
 
@@ -279,7 +294,7 @@ const Attandance = () => {
                     border: 'none'
                   }}
                 >
-                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="">Course</MenuItem>
                   {course.map((item, index) => {
                     return (
                       <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
@@ -319,7 +334,7 @@ const Attandance = () => {
                   disabled={!courseId}
                 // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
                 >
-                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="">Batch</MenuItem>
                   {Array.isArray(batch) &&
                     batch.map((item, index) => (
                       <MenuItem value={item._id} key={index}>
@@ -455,7 +470,7 @@ const Attandance = () => {
                 <p>{rate.leaveRequestCount}</p>
               </div>
               <div>
-                <div className={styles.leaveReqIcon} onClick={() => handleClick(date)}>
+                <div className={styles.leaveReqIcon} onClick={() => handleClick(date,courseId,batchId)}>
                   <FaArrowRight />
                 </div>
               </div>
@@ -491,7 +506,7 @@ const Attandance = () => {
 
 
                   <tr key={item._id}>
-                    <td style={{ color: item?.onLeave && "red" }}>{item.userDetails?.name}</td>
+                    <td style={{ color: item?.onLeave && "red",textTransform:"capitalize" }}>{item.userDetails?.name}</td>
                     <td style={{ color: item?.onLeave && "red" }}>{item.userDetails?.studentId}</td>
                     <td style={{ color: item?.onLeave && "red" }}>{item.userDetails?.mobileNo}</td>
                     <td style={{ color: item?.onLeave && "red" }}>{item.courseDetails?.courseName}</td>

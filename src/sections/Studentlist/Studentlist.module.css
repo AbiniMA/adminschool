@@ -31,3 +31,9 @@
   background: #d6d7d7fc;
   border: none;
 }
+
+.clear{
+  cursor: pointer;
+  margin-bottom: 10px;
+
+}

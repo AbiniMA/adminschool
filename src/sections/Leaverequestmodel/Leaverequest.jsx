@@ -10,7 +10,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { getLeaveRequest, getLeaveRequestById, updateLeaveRequest } from '../../api/Serviceapi';
+import { getBatchbyid, getBatchName, getLeaveRequest, getLeaveRequestById, updateLeaveRequest } from '../../api/Serviceapi';
 import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Modal from 'react-modal';
@@ -21,6 +21,8 @@ import Loader from '../../component/loader/Loader';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { IoIosCloseCircle } from "react-icons/io";
+
 
 const theme = createTheme({
   components: {
@@ -59,6 +61,16 @@ const LeaveRequest = () => {
   const [loading, setLoading] = useState(false)
   const adminId = localStorage.getItem('userId')
   const [reason, setReason] = useState('')
+  const [course, setCourse] = useState([])
+  const [batch, setBatch] = useState([])
+  const [batchId, setBatchId] = useState('')
+  const [courseId, setCourseId] = useState('')
+  const [leaveType, setLeaveType] = useState('')
+
+  // Calculate visible range
+  const startIndex = (offset - 1) * limit + 1;
+  const endIndex = Math.min(offset * limit, totallist);
+
   useEffect(() => {
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
@@ -80,13 +92,26 @@ const LeaveRequest = () => {
     }
   };
 
-  const { date: paramDate } = useParams()
+  const { date: paramDate, courseId: paramCourse, batchId: paramBatch } = useParams();
+
 
   useEffect(() => {
     if (paramDate) {
-      setDate(paramDate); // Set it once when param changes
+      setDate(paramDate); 
     }
   }, [paramDate]);
+
+  useEffect(() => {
+    if (paramCourse) {
+      setCourseId(paramCourse); 
+    }
+  }, [paramCourse]);
+
+  useEffect(() => {
+    if (paramBatch) {
+      setBatchId(paramBatch); 
+    }
+  }, [paramBatch]);
   const handleSearchChange = (e) => {
     setoffset(1)
     setSearchText(e.target.value);
@@ -94,6 +119,7 @@ const LeaveRequest = () => {
     setList([])
 
   };
+
 
   const handleClearSearch = () => {
     setList([])
@@ -104,12 +130,12 @@ const LeaveRequest = () => {
   useEffect(() => {
     if (!date) return;
     getleavelist()
-  }, [offset, date, status, searchText])
+  }, [offset, date, status, searchText, courseId, batchId, leaveType])
 
   let getleavelist = async () => {
     setLoading(true)
     try {
-      let res = await getLeaveRequest(limit, offset - 1, date, status, searchText)
+      let res = await getLeaveRequest(limit, offset - 1, date, status, searchText, courseId, batchId, leaveType)
       setList(res.data?.data?.result)
       settotal(res.data?.data?.totalCount)
 
@@ -125,6 +151,12 @@ const LeaveRequest = () => {
     setoffset(1)
     setList([])
   }
+
+  const handleLeaveChange = (e) => {
+    setLeaveType(e.target.value)
+    setoffset(1)
+    setList([])
+  }
   const handlegetbyClick = async (id) => {
     setUpdate(true)
     try {
@@ -136,22 +168,71 @@ const LeaveRequest = () => {
 
   }
 
+  const handleChange = (event) => {
+    setBatchId(event.target.value);
+  };
+
+  const handlecourseChange = (event) => {
+    const selectedId = event.target.value;
+    setCourseId(selectedId);
+    setoffset(1);
+    setBatchId("");
+    getBatchnameid(selectedId);
+  };
+
+  useEffect(() => {
+    getBatchname()
+  }, []);
+
+  let getBatchnameid = async (id) => {
+    try {
+      const res = await getBatchbyid(id);
+      console.log(res?.data?.data, 'batchdasdasd')
+      const course = res?.data?.data?.find(c => c._id === id);
+      setBatch(
+        course?.batches
+          ? Array.isArray(course.batches)
+            ? course.batches
+            : [course.batches]
+          : []
+      );
+      setBatchId("");
+    } catch (error) {
+      console.error("error", error.response?.data || error);
+    }
+  };
+
+
+  let getBatchname = async () => {
+    try {
+      const res = await getBatchName();
+
+
+      console.log(res?.data?.data, 'dasdasdada')
+      setCourse(Array.isArray(res?.data?.data) ? res.data.data : []);
+
+
+    } catch (error) {
+      console.error("error", error.response?.data || error);
+    }
+  };
+
   const [reasonerror, setReasonerror] = useState('')
 
   const validation = () => {
     if (reason.trim() === '') {
       setReasonerror('Reason is required');
-      return false; // ❌ invalid
+      return false;
     }
     setReasonerror('');
-    return true; // ✅ valid
+    return true;
   };
 
   const [idloading, setIdlloading] = useState(false)
 
   const handleUpdateClick = async (id, status, adminId, reason) => {
     if (!validation()) {
-      return; // stop execution if reason is empty
+      return;
     }
     setIdlloading(true)
     try {
@@ -204,6 +285,12 @@ const LeaveRequest = () => {
   };
 
 
+  const handlefilterSearch = () => {
+    setStatus('');
+    setCourseId('');
+    setBatchId('');
+    setLeaveType('');
+  }
 
 
   return (
@@ -219,8 +306,131 @@ const LeaveRequest = () => {
               <h3 className={styles.attendance_h3}>Leave Request</h3>
             </div>
             <div className={styles.header_container2}>
+              <div>
+                {(status?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim() || leaveType?.toString().trim()) && (
+                  <button className={styles.clear} onClick={handlefilterSearch}>
+                    <IoIosCloseCircle />
+                  </button>
+                )}
+
+              </div>
+              <div className={styles.selectWrapper}>
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    minWidth: 120,
+                    backgroundColor: '#F6F6F6', // match the image background
+                    borderRadius: '6px',
+                    border: 'none'
+                  }}
+                >
+                  <Select
+                    value={leaveType}
+                    onChange={handleLeaveChange}
+                    displayEmpty
+                    IconComponent={KeyboardArrowDownIcon}
+                    sx={{
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      fontSize: '14px',
+                      padding: '4px 10px',
+                      height: '36px',
+                      border: 'none',
+
+                    }}
+                  >
+                    <MenuItem value="">Leave Type</MenuItem>
+                    <MenuItem value="Casual">Casual</MenuItem>
+                    <MenuItem value="Sick">Sick</MenuItem>
+                    <MenuItem value="permission">Permission</MenuItem>
+                    <MenuItem value="earlyPermission">Early Permission</MenuItem>
+
+                  </Select>
+
+                </FormControl>
+              </div>
+              <div className={styles.selectWrapper}>
+
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    minWidth: 120,
+                    backgroundColor: '#F6F6F6', // match the image background
+                    borderRadius: '6px',
+                    border: 'none'
+                  }}
+                >
+                  <Select
+                    value={courseId}
+                    onChange={handlecourseChange}
+                    displayEmpty
+                    IconComponent={KeyboardArrowDownIcon}
+                    sx={{
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      fontSize: '14px',
+                      padding: '4px 10px',
+                      height: '36px',
+                      border: 'none'
+                    }}
+                  >
+                    <MenuItem value="">Course</MenuItem>
+                    {course.map((item, index) => {
+                      return (
+                        <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
+                      )
+                    })}
+                  </Select>
+
+                </FormControl>
+              </div>
+              <div className={styles.selectWrapper}>
+
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    minWidth: 120,
+                    backgroundColor: '#F6F6F6', // match the image background
+                    borderRadius: '6px',
+                    border: 'none'
+                  }}
+                >
+
+                  <Select
+                    value={batchId}
+                    onChange={handleChange}
+                    displayEmpty
+                    IconComponent={KeyboardArrowDownIcon}
+                    sx={{
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      fontSize: '14px',
+                      padding: '4px 10px',
+                      height: '36px',
+                      border: 'none'
+                    }}
+                    disabled={!courseId}
+                  // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
+                  >
+                    <MenuItem value="">Batch</MenuItem>
+                    {Array.isArray(batch) &&
+                      batch.map((item, index) => (
+                        <MenuItem value={item._id} key={index}>
+                          {item.batchName}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </div>
               <div className={styles.dropdown}>
                 <div className={styles.dropdownWrapper}>
+
                   <div className={styles.selectWrapper}>
                     <FormControl
                       variant="outlined"
@@ -248,7 +458,7 @@ const LeaveRequest = () => {
 
                         }}
                       >
-                        <MenuItem value="">All</MenuItem>
+                        <MenuItem value="">Status</MenuItem>
                         <MenuItem value="Created">Created</MenuItem>
                         <MenuItem value="Approved">Approved</MenuItem>
                         <MenuItem value="Rejected">Rejected</MenuItem>
@@ -282,7 +492,8 @@ const LeaveRequest = () => {
                             height: '35px',
                             outline: 'none',
                             width: '100%',
-                            backgroundColor: ' #f2f2f2'
+                            backgroundColor: ' #f2f2f2',
+                            width: '150px'
                           },
                           '& fieldset': {
                             border: 'none',
@@ -350,7 +561,9 @@ const LeaveRequest = () => {
                 <th>Name</th>
                 <th>ID No</th>
                 <th>Mobile</th>
-                <th>No of Days</th>
+                <th>Leave Type</th>
+
+                <th>Duration</th>
                 <th>From</th>
                 <th>To</th>
                 <th>Status</th>
@@ -366,20 +579,22 @@ const LeaveRequest = () => {
                     Array.isArray(list) && list.length > 0 ?
                       list.map((item) => (
                         <tr key={item._id} className={styles.trtd}>
-                          <td>{item?.userDetails?.name}</td>
+                          <td style={{ textTransform: 'capitalize' }}>{item?.userDetails?.name}</td>
                           <td>{item?.userDetails?.studentId}</td>
                           <td>{item?.userDetails?.mobileNo}</td>
+                          <td style={{ textTransform: 'capitalize' }}>{item?.leaveType}</td>
+
                           {item.isPermission || item?.isEarlyPermission ?
                             <td>{formatTimehours(item?.permissionTime)}</td> :
                             <td>{item?.noOfDays} {item?.noOfDays > 1 ? 'days' : 'day'}</td>
 
                           }
-                          {item.isPermission || item?.isEarlyPermission?
+                          {item.isPermission || item?.isEarlyPermission ?
                             <td>{formatTime(item?.startTime)}</td>
                             :
                             <td>{item?.fromDate?.split("T")[0]}</td>
                           }
-                          {item.isPermission|| item?.isEarlyPermission ?
+                          {item.isPermission || item?.isEarlyPermission ?
                             <td>{formatTime(item?.endTime)}</td>
                             :
                             <td>{item?.toDate?.split("T")[0]}</td>
@@ -411,21 +626,33 @@ const LeaveRequest = () => {
             </table>
           </div>
         </div>
-        {totalpages > 1 &&
-          <ThemeProvider theme={theme}>
-            <div style={{ marginTop: '20px' }}>
-              <Pagination
 
-                count={totalpages}
-                page={offset}
-                onChange={handlePageChange}
-                showFirstButton
-                showLastButton
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-              />
+        <div className='flex justify-between items-end px-2 w-[100%]'>
+          {totalpages > 0 &&
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600 text-sm">
+                Showing {startIndex} – {endIndex} of {totallist} students
+              </p>
             </div>
-          </ThemeProvider>
-        }
+          }
+
+          {totalpages > 0 &&
+            <ThemeProvider theme={theme}>
+              <div style={{ marginTop: '20px' }}>
+                <Pagination
+
+                  count={totalpages}
+                  page={offset}
+                  onChange={handlePageChange}
+                  showFirstButton
+                  showLastButton
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                />
+              </div>
+            </ThemeProvider>
+          }
+        </div>
+
       </div>
 
       <Modal
@@ -488,9 +715,9 @@ const LeaveRequest = () => {
                   <label for="">
                     Duration
                   </label>
-                  {data?.isPermission || data?.isEarlyPermission ? 
-                  <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="no of days" value={formatTimehours(data?.permissionTime)} disabled /> :
-                  <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="no of days" value={data?.noOfDays} disabled />}
+                  {data?.isPermission || data?.isEarlyPermission ?
+                    <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="no of days" value={formatTimehours(data?.permissionTime)} disabled /> :
+                    <input type="text" style={{ color: 'grey', cursor: 'not-allowed' }} placeholder="no of days" value={data?.noOfDays} disabled />}
                 </div>
                 <div className={styles.grid2}>
                   <label for="">From</label>

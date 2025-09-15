@@ -27,6 +27,7 @@ import Loader from "../../component/loader/Loader";
 import Skeleton from '@mui/material/Skeleton';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { IoIosCloseCircle } from "react-icons/io";
 
 const theme = createTheme({
   components: {
@@ -239,7 +240,7 @@ const FeeHome = () => {
 
   const studentNameValidation = () => {
     if (!enterName || enterName.trim() === "") {
-      setShowDivError("Enter Student ID");
+      setShowDivError("Enter Student Name/ID");
       return false;
     } else {
       setShowDivError("");
@@ -372,13 +373,16 @@ const FeeHome = () => {
     }));
   };
 
+  const [updating, setUpdating] = useState(false)
   const update = async (student) => {
     const formData = studentFormData[student._id] || {};
 
+    setUpdating(true)
     if (!validateStudentForm(student._id, formData)) {
       console.log("Validation failed for student:", student._id);
       return;
     }
+
 
     try {
       const selectedSem = Number(formData.updatesemester); // e.g. "1"
@@ -454,6 +458,8 @@ const FeeHome = () => {
     } catch (err) {
       console.error("Error in update:", err);
       toast.error(err?.response?.data?.message);
+    } finally {
+      setUpdating(false)
     }
   };
 
@@ -629,6 +635,11 @@ const FeeHome = () => {
   //   }
   // };
 
+   const handlefilterSearch = () => {
+    setSemester('');
+    setCourseId('');
+    setBatchId('');
+  }
   return (
     <div className={styles.container}>
       <div className={styles.feemanagement}>
@@ -637,6 +648,14 @@ const FeeHome = () => {
             <p>Fee Management</p>
           </div>
           <div className={styles.feeform}>
+            <div>
+              {(semester?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim()) && (
+                <button className={styles.clear} onClick={handlefilterSearch}>
+                  <IoIosCloseCircle />
+                </button>
+              )}
+
+            </div>
             <div className={styles.formselect1}>
               <div className={styles.selectWrapper}>
 
@@ -665,7 +684,7 @@ const FeeHome = () => {
                       border: 'none'
                     }}
                   >
-                    <MenuItem value="">All</MenuItem>
+                    <MenuItem value="">Course</MenuItem>
                     {course.map((item, index) => {
                       return (
                         <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
@@ -707,7 +726,7 @@ const FeeHome = () => {
                     disabled={!courseId}
                   // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
                   >
-                    <MenuItem value="">All</MenuItem>
+                    <MenuItem value="">Batch</MenuItem>
                     {Array.isArray(batch) &&
                       batch.map((item, index) => (
                         <MenuItem value={item._id} key={index}>
@@ -748,7 +767,7 @@ const FeeHome = () => {
 
                     }}
                   >
-                    <MenuItem value="">All</MenuItem>
+                    <MenuItem value="">Semester</MenuItem>
                     <MenuItem value="1">Semester 1</MenuItem>
 
                     <MenuItem value="2">Semester 2</MenuItem>
@@ -889,7 +908,7 @@ const FeeHome = () => {
                     list.map((item) => (
                       <tr key={item._id}>
                         <td>{item.receiptId}</td>
-                        <td>{item.userDetails?.name}</td>
+                        <td style={{ textTransform: 'capitalize' }}>{item.userDetails?.name}</td>
                         <td>{item.userDetails?.studentId}</td>
                         <td>{item.userDetails?.mobileNo}</td>
                         <td>{item.courseDetails?.courseName}</td>
@@ -1019,14 +1038,14 @@ const FeeHome = () => {
               <form className={styles.updatefeeinput}>
                 <div className={styles.updatefeeinputlabel}>
                   <label htmlFor="">
-                    Select Student ID <sup style={{ color: "red" }}>*</sup>
+                    Enter Student Name/ID <sup style={{ color: "red" }}>*</sup>
                   </label>
                 </div>
                 <div className={styles.updatefeeinputinput}>
                   <div className={styles.searchdiv}>
                     <input
                       type="text"
-                      placeholder="Enter Student ID"
+                      placeholder="Enter Student Name/ID"
                       value={enterName}
                       onChange={(e) => {
                         // studentNameValidation(e.target.value);
@@ -1196,7 +1215,7 @@ const FeeHome = () => {
                                   }}
 
                                 >
-                                  {/* <MenuItem value="">All</MenuItem> */}
+                                  {/* <MenuItem value="">Select Semester</MenuItem> */}
                                   <MenuItem value="1">Semester 1</MenuItem>
                                   <MenuItem value="2">Semester 2</MenuItem>
                                 </Select>
@@ -1289,7 +1308,7 @@ const FeeHome = () => {
                                   }}
 
                                 >
-                                  {/* <MenuItem value="">All</MenuItem> */}
+                                  <MenuItem value="">Select Payment</MenuItem>
                                   <MenuItem value="Online">Online</MenuItem>
                                   <MenuItem value="Cash">Cash</MenuItem>
                                 </Select>
@@ -1494,12 +1513,8 @@ const FeeHome = () => {
                             </div>
                           </div>
                           <div className={styles.updatefeebtn} >
-                            <button onClick={() => update(student)}>Update</button>
+                            <button onClick={() => update(student)}>{updating ? "Updating..." : "Update"}</button>
                           </div>
-
-
-
-
                         </div>
                       );
                     })
