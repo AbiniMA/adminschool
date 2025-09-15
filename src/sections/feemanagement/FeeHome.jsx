@@ -239,7 +239,7 @@ const FeeHome = () => {
 
   const studentNameValidation = () => {
     if (!enterName || enterName.trim() === "") {
-      setShowDivError("Please enter student ID");
+      setShowDivError("Enter Student ID");
       return false;
     } else {
       setShowDivError("");
@@ -462,7 +462,7 @@ const FeeHome = () => {
 
       if (totalPaid > semFee) {
         // alert("Error: Payment cannot exceed Semester Fee!");
-        toast.error(`Paid amount cannot be graeter than ${semFee} you have already paid ${alreadyPaid}`);
+        toast.error(`Paid amount cannot be greater than ${semFee} you have already paid ${alreadyPaid}`);
         return;
       }
 
