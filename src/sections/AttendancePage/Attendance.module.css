@@ -5,7 +5,7 @@
   align-items: center;
   position: relative;
   margin-top: 13px;
-  padding:0  0 100px 0;
+  padding: 0 0 100px 0;
 }
 .attendancetop {
   width: 97%;
@@ -71,7 +71,7 @@
   border-radius: 4px;
   border: none;
   background-color: #f2f2f2;
-  color:  #000 !important;
+  color: #000 !important;
   -webkit-appearance: none;
   /* -moz-appearance: textfield; */
   width: 98%;
@@ -228,9 +228,8 @@
   background: linear-gradient(to bottom, #144196, #061530);
   color: white;
 }
-.attendancemiddlediv1 div:nth-child(2):hover{
-      background: #154682fc;
-
+.attendancemiddlediv1 div:nth-child(2):hover {
+  background: #154682fc;
 }
 @media screen and (max-width: 767px) {
   .attendancemiddle {
@@ -278,10 +277,10 @@
   text-align: left;
 }
 
-.clear{
+.clear {
   cursor: pointer;
   margin-bottom: 10px;
-
+  color: red;
 }
 
 .table td {
@@ -363,7 +362,6 @@
   padding-left: 45px !important;
   font-size: 0.9rem;
 }
-
 
 .table1 {
   width: 100%;

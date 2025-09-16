@@ -201,7 +201,7 @@ const Studentlist = () => {
 
   const [id, setId] = useState('')
 
-   const handlefilterSearch = () => {
+  const handlefilterSearch = () => {
     setActiveStatus('');
     setCourseId('');
     setBatchId('');
@@ -217,14 +217,7 @@ const Studentlist = () => {
           <div className="flex justify-between items-center lg:flex-row md:flex-row flex-col">
             <h4 className='text-xl font-normal'>Student Management</h4>
             <div className=' flex items-end md:justify-around  p-2 gap-1 '>
-              <div>
-                {(activestatus?.toString().trim() || status|| courseId?.toString().trim() || batchId?.toString().trim()) && (
-                  <button className={styles.clear} onClick={handlefilterSearch}>
-                    <IoIosCloseCircle />
-                  </button>
-                )}
 
-              </div>
               <div style={{ width: '130px', }}>
                 <FormControl
                   variant="outlined"
@@ -414,6 +407,14 @@ const Studentlist = () => {
                     minWidth: 120,
                   }}
                 />
+              </div>
+              <div>
+                {(activestatus?.toString().trim() || status || courseId?.toString().trim() || batchId?.toString().trim()) && (
+                  <button className={styles.clear} onClick={handlefilterSearch}>
+                    <IoIosCloseCircle />
+                  </button>
+                )}
+
               </div>
               <div className={styles.button}>
                 <button onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-[#FFFFFF] bg-gradient-to-b from-[#144196] to-[#061530]  px-[20px] w-fit py-2 rounded-md mr-2 flex items-center justify-between'><PlusIcon className='w-4 h-4 text-[600]' />Add Student</button>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./Modal.module.css";
-import { emailFee } from "../../api/Serviceapi";
+import { emailFee, updateFeeEmail } from "../../api/Serviceapi";
 const Modal = ({
   isOpen,
   onClose,
@@ -8,7 +8,8 @@ const Modal = ({
   sendReqColor,
   setReqSendColor,
   status,
-  id
+  id,
+  list
 }) => {
   if (!isOpen) return null;
   function close() {
@@ -18,10 +19,22 @@ const Modal = ({
     onClose();
     setReqSendColor(true);
     email()
+    update()
+    list()
     status('Requested Fee')
   }
 
+ let update = async () => {
 
+    try {
+      let res = await updateFeeEmail(id)
+      console.log(res)
+    }
+    catch (err) {
+      console.log(err)
+    }
+
+  }
 
   let email = async () => {
 

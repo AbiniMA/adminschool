@@ -259,9 +259,12 @@ export const updateBalanceFee = (userId, payload) => {
 };
 
 export const emailFee = (userId) => {
-  return apiService.get(`/fee/mail`, { userId: userId });
+  return apiService.post(`/fee/mail`, { '_id': userId });
 };
 
+export const updateFeeEmail = (id) => {
+  return apiService.put(`/fee/${id}`, {'mailStatus':'Sent'});
+};
 
 export const getDashboardUser = () => {
   return apiService.get(`/user?limit=3&inStatus=ongoing&status=active`);

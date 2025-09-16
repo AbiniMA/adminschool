@@ -232,14 +232,7 @@ const Attandance = () => {
         </div>
         <div className={styles.attendanceright}>
           <div className={styles.attendancerightdiv}>
-            <div>
-              {(status?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim()) && (
-                <button className={styles.clear} onClick={handlefilterSearch}>
-                  <IoIosCloseCircle />
-                </button>
-              )}
-
-            </div>
+            
             <div className={styles.selectWrapper}>
               <FormControl
                 variant="outlined"
@@ -430,6 +423,14 @@ const Attandance = () => {
                   minWidth: 120,
                 }}
               />
+            </div>
+            <div>
+              {(status?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim()) && (
+                <button className={styles.clear} onClick={handlefilterSearch}>
+                  <IoIosCloseCircle />
+                </button>
+              )}
+
             </div>
           </div>
         </div>

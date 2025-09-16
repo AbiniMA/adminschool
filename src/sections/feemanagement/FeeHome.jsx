@@ -602,14 +602,7 @@ const FeeHome = () => {
             <p>Fee Management</p>
           </div>
           <div className={styles.feeform}>
-            <div>
-              {(semester?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim()) && (
-                <button className={styles.clear} onClick={handlefilterSearch}>
-                  <IoIosCloseCircle />
-                </button>
-              )}
 
-            </div>
             <div className={styles.formselect1}>
               <div className={styles.selectWrapper}>
 
@@ -770,6 +763,15 @@ const FeeHome = () => {
                   }}
                 />
               </div>
+
+            </div>
+            <div>
+              {(semester?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim()) && (
+                <button className={styles.clear} onClick={handlefilterSearch}>
+                  <IoIosCloseCircle />
+                </button>
+              )}
+
             </div>
             <div className={styles.formbtn}>
               <button onClick={updateFee}>
@@ -841,11 +843,11 @@ const FeeHome = () => {
                 <th>Name</th>
                 <th>ID No</th>
                 <th>Mobile</th>
-                <th style={{ width: "49%" }}>Course</th>
+                <th style={{ width: "45%" }}>Course</th>
                 <th>Total Fees</th>
                 <th>Paid Amount</th>
                 <th>Pending Fees</th>
-                <th style={{ width: "38%" }}>Payment Date</th>
+                <th >Payment Date</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -886,18 +888,22 @@ const FeeHome = () => {
                           ) : (
                             <p
                               style={{
-                                color: feeStatus === "Requested Fee" && feeId === item?._id
+                                color: item?.mailStatus === 'Sent'
                                   ? "blue"
                                   : "red",
+
+                                  cursor:item?.mailStatus === 'Sent'?'not-allowed':'pointer'
                               }}
                               onClick={() => {
+                                if (item?.mailStatus === "Sent") return;
                                 setFeeID(item?._id);
                                 setShowModal(true);
                               }}
                             >
-                              {feeId === item.userDetails?._id && feeStatus === "Requested Fee"
+                              {item?.mailStatus === 'Sent'
                                 ? "Requested Fee"
-                                : feeStatus}
+                                : 'Request Sent'
+                                }
                             </p>
                           )}
 
@@ -972,6 +978,8 @@ const FeeHome = () => {
           setReqSendColor={setReqSendColor}
           status={setFeeStatus}
           id={feeId}
+          list={getfeelist}
+
         ></Modal>
         {/* req send end */}
 
@@ -1511,7 +1519,7 @@ const FeeHome = () => {
                             </div>
                           </div>
                           <div className={styles.updatefeebtn} >
-                            <button onClick={() => update(student)}>{updating? "Updating..." : "Update"}</button>
+                            <button onClick={() => update(student)}>{updating ? "Updating..." : "Update"}</button>
                           </div>
                         </div>
                       );

@@ -313,14 +313,7 @@ const LeaveRequest = () => {
               <h3 className={styles.attendance_h3}>Leave Request</h3>
             </div>
             <div className={styles.header_container2}>
-              <div>
-                {(status?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim() || leaveType?.toString().trim()) && (
-                  <button className={styles.clear} onClick={handlefilterSearch}>
-                    <IoIosCloseCircle />
-                  </button>
-                )}
-
-              </div>
+             
               <div className={styles.selectWrapper}>
                 <FormControl
                   variant="outlined"
@@ -555,6 +548,14 @@ const LeaveRequest = () => {
                     minWidth: 120,
                   }}
                 />
+              </div>
+               <div>
+                {(status?.toString().trim() || courseId?.toString().trim() || batchId?.toString().trim() || leaveType?.toString().trim()) && (
+                  <button className={styles.clear} onClick={handlefilterSearch}>
+                    <IoIosCloseCircle />
+                  </button>
+                )}
+
               </div>
             </div>
           </div>
