@@ -70,7 +70,7 @@ export const Dashborad = () => {
     };
 
     useEffect(() => {
-        
+
         const formattedDate = new Date().toLocaleDateString("en-CA");
         setDate(formattedDate);
     }, []);
@@ -173,8 +173,20 @@ export const Dashborad = () => {
                             </div>
 
                             <div className={dashboradcss.avatar_text}>
-                                {studentData?.userDetails?.[0]?.name}, {studentData?.userDetails?.[1]?.name}, {studentData?.userDetails?.[2]?.name} +{(studentData?.totalStudents || 0) - 3} <span><Link to='/students'>others </Link></span>
+                                {studentData?.userDetails?.slice(0, 3).map((s, i) => (
+                                    <Link to="/students"> <span key={i}>
+                                        {s.name}
+                                        {i < Math.min(studentData?.userDetails?.length, 3) - 1 && ", "}
+                                    </span></Link>
+                                ))}
+
+                                {studentData?.totalStudents > 3 && (
+                                    <>
+                                        , +{studentData?.totalStudents - 3} <span><Link to="/students">others</Link></span>
+                                    </>
+                                )}
                             </div>
+
                         </div>
                     </div>
                     <div className={dashboradcss.dashcard}>
@@ -193,7 +205,18 @@ export const Dashborad = () => {
                             </div>
 
                             <div className={dashboradcss.avatar_text}>
-                                {studentData?.userDetails?.[0]?.name}, {studentData?.userDetails?.[1]?.name}, {studentData?.userDetails?.[2]?.name} +{(studentData?.activeStudents || 0) - 3} <Link to='/students'>others </Link>
+                                {studentData?.userDetails?.slice(0, 3).map((s, i) => (
+                                    <Link to="/students"> <span key={i}>
+                                        {s.name}
+                                        {i < Math.min(studentData?.userDetails?.length, 3) - 1 && ", "}
+                                    </span></Link>
+                                ))}
+
+                                {studentData?.totalStudents > 3 && (
+                                    <>
+                                        , +{studentData?.totalStudents - 3} <span><Link to="/students">others</Link></span>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

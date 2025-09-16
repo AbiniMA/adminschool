@@ -212,11 +212,10 @@ const Header = ({ setLoginUser }) => {
                 <div className={styles.user_name}><p className={styles.admin_user} style={{ cursor: 'pointer' }} >{userName}</p></div>
 
               </div>
-              <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => setNotification(!notification)}>
+              <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => notificationlist.length>0 && setNotification(!notification)}>
                 <div>
                   <GoBell />
                   <div className={`${count > 0 && styles.dot}`}>
-
                   </div>
                 </div>
 

@@ -259,7 +259,7 @@ const Attandance = () => {
                     border: 'none'
                   }}
                 >
-                  <MenuItem value={""}>Attendance</MenuItem>
+                  <MenuItem value={""}>All</MenuItem>
                   <MenuItem value={false}>Present</MenuItem>
                   <MenuItem value={true}>Absent</MenuItem>
 
@@ -293,7 +293,7 @@ const Attandance = () => {
                     border: 'none'
                   }}
                 >
-                  <MenuItem value="">Course</MenuItem>
+                  <MenuItem value="">All</MenuItem>
                   {course.map((item, index) => {
                     return (
                       <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
@@ -333,7 +333,7 @@ const Attandance = () => {
                   disabled={!courseId}
                 // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
                 >
-                  <MenuItem value="">Batch</MenuItem>
+                  <MenuItem value="">All</MenuItem>
                   {Array.isArray(batch) &&
                     batch.map((item, index) => (
                       <MenuItem value={item._id} key={index}>

@@ -631,7 +631,7 @@ const FeeHome = () => {
                       border: 'none'
                     }}
                   >
-                    <MenuItem value="">Course</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     {course.map((item, index) => {
                       return (
                         <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
@@ -673,7 +673,7 @@ const FeeHome = () => {
                     disabled={!courseId}
                   // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
                   >
-                    <MenuItem value="">Batch</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     {Array.isArray(batch) &&
                       batch.map((item, index) => (
                         <MenuItem value={item._id} key={index}>
@@ -714,7 +714,7 @@ const FeeHome = () => {
 
                     }}
                   >
-                    <MenuItem value="">Semester</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     <MenuItem value="1">Semester 1</MenuItem>
 
                     <MenuItem value="2">Semester 2</MenuItem>
@@ -1110,7 +1110,7 @@ const FeeHome = () => {
                           <div className={styles.nameemaildiv1}>
                             <div className={styles.namediv1}>
                               <label className={styles.updatefeeinputlabel}>
-                                Course <sup style={{ color: "red" }}>*</sup>
+                                Course 
                               </label>
                               <select
                                 className={styles.select_field}
@@ -1151,7 +1151,7 @@ const FeeHome = () => {
                             </div>
 
                             <div className={styles.namediv1}>
-                              <label className={styles.updatefeeinputlabel}>Payment Date</label>
+                              <label className={styles.updatefeeinputlabel}>Payment Date <sup style={{ color: "red" }}>*</sup></label>
                               <input
                                 type="date"
                                 value={formData.paymentDate || ""}

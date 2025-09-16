@@ -15,7 +15,7 @@ const AddEventModal = ({ closeModal, onevent }) => {
     description: "",
     date: "",
     time: "",
-    eventType: "birthday"
+    eventType: ""
   })
 
   const [errors, setErrors] = useState({
@@ -118,7 +118,7 @@ const AddEventModal = ({ closeModal, onevent }) => {
                 //  placeholder="Event Type"
 
                 >
-                  {/* <MenuItem value="">All</MenuItem> */}
+                  <MenuItem value="">Select Event Type</MenuItem>
 
                   <MenuItem value="birthday">Birthday</MenuItem>
                   {/* <MenuItem value="anniversary">Anniversary</MenuItem> */}

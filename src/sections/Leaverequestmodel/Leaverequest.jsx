@@ -341,7 +341,7 @@ const LeaveRequest = () => {
 
                     }}
                   >
-                    <MenuItem value="">Leave Type</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     <MenuItem value="Casual">Casual</MenuItem>
                     <MenuItem value="Sick">Sick</MenuItem>
                     <MenuItem value="permission">Permission</MenuItem>
@@ -378,7 +378,7 @@ const LeaveRequest = () => {
                       border: 'none'
                     }}
                   >
-                    <MenuItem value="">Course</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     {course.map((item, index) => {
                       return (
                         <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
@@ -418,7 +418,7 @@ const LeaveRequest = () => {
                     disabled={!courseId}
                   // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
                   >
-                    <MenuItem value="">Batch</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     {Array.isArray(batch) &&
                       batch.map((item, index) => (
                         <MenuItem value={item._id} key={index}>
@@ -458,7 +458,7 @@ const LeaveRequest = () => {
 
                         }}
                       >
-                        <MenuItem value="">Status</MenuItem>
+                        <MenuItem value="">All</MenuItem>
                         <MenuItem value="Created">Created</MenuItem>
                         <MenuItem value="Approved">Approved</MenuItem>
                         <MenuItem value="Rejected">Rejected</MenuItem>

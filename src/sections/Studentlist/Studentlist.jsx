@@ -245,7 +245,7 @@ const Studentlist = () => {
                     }}
                   >
 
-                    <MenuItem value="">Status</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     <MenuItem value="active">Active</MenuItem>
                     <MenuItem value="inactive">Inactive</MenuItem>
 
@@ -279,7 +279,7 @@ const Studentlist = () => {
                       border: 'none'
                     }}
                   >
-                    <MenuItem value="">Status</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     <MenuItem value="completed">Completed</MenuItem>
                     <MenuItem value="ongoing">Ongoing</MenuItem>
                     <MenuItem value="placed">Placed</MenuItem>
@@ -321,7 +321,7 @@ const Studentlist = () => {
                       border: 'none'
                     }}
                   >
-                    <MenuItem value="">Course</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     {course.map((item, index) => {
                       return (
                         <MenuItem value={item._id} key={index}>{item.courseName}</MenuItem>
@@ -362,7 +362,7 @@ const Studentlist = () => {
                     disabled={!courseId}
                   // style={{ cursor: courseId ? 'pointer' : 'not-allowed' }}
                   >
-                    <MenuItem value="">Batch</MenuItem>
+                    <MenuItem value="">All</MenuItem>
                     {batch.map((item, index) => {
                       return (
                         <MenuItem value={item._id} key={index}>{item.batchName}</MenuItem>
@@ -514,7 +514,7 @@ const Studentlist = () => {
           {totalpages > 0 &&
 
             <ThemeProvider theme={theme}>
-              <div className="flex justify-end ">
+              <div className="flex justify-center ">
                 <Pagination
                   count={totalpages}
                   page={offset}
