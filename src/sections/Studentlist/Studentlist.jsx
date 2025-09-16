@@ -503,7 +503,7 @@ const Studentlist = () => {
           </div>
 
         </div>
-        <div className='flex justify-between items-end mx-2'>
+        <div className='flex justify-between items-end mx-2'>  
           {totalpages > 0 &&
             <div className="flex justify-between items-center">
               <p className="text-gray-600 text-sm">
