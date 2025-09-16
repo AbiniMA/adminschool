@@ -495,7 +495,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
 
                                     </div>
 
-                                    <input type="date" className={styles.inputfield} value={Formdata.student_dob} onChange={(e) => { setFormdata({ ...Formdata, student_dob: e.target.value }), setErrors({ ...Errors, student_dob: '' }) }} />
+                                    <input type="date" max={new Date().toISOString().split("T")[0]} className={styles.inputfield} value={Formdata.student_dob} onChange={(e) => { setFormdata({ ...Formdata, student_dob: e.target.value }), setErrors({ ...Errors, student_dob: '' }) }} />
                                     <p className={styles.error}>{Errors.student_dob}</p>
 
                                 </div>

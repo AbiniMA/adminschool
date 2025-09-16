@@ -1,12 +1,14 @@
 import { useState } from "react";
 import styles from "./Modal.module.css";
+import { emailFee } from "../../api/Serviceapi";
 const Modal = ({
   isOpen,
   onClose,
   children,
   sendReqColor,
   setReqSendColor,
-  status
+  status,
+  id
 }) => {
   if (!isOpen) return null;
   function close() {
@@ -15,7 +17,22 @@ const Modal = ({
   function sendReq() {
     onClose();
     setReqSendColor(true);
-   status('Requested Fee');
+    email()
+    status('Requested Fee')
+  }
+
+
+
+  let email = async () => {
+
+    try {
+      let res = await emailFee(id)
+      console.log(res)
+    }
+    catch (err) {
+      console.log(err)
+    }
+
   }
   return (
     <div className={styles.overlay}>

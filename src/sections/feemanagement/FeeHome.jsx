@@ -232,6 +232,7 @@ const FeeHome = () => {
     setShowDiv(false);
     setEntername(''),
       setSearchList([])
+    setStudentErrors({})
   }
 
   const [searchlist, setSearchList] = useState([])
@@ -269,6 +270,7 @@ const FeeHome = () => {
         };
       });
       setStudentFormData(initialData);
+      setStudentErrors({});
 
     } catch (err) {
       console.log(err);
@@ -302,6 +304,25 @@ const FeeHome = () => {
       [studentId]: {
         ...prev[studentId],
         payError: error,
+      },
+    }));
+
+    return !error;
+  }
+
+  function dateValidation(studentId, value) {
+    const trimmedValue = value.trim();
+    let error = "";
+
+    if (!trimmedValue) {
+      error = "This should not be empty";
+    }
+
+    setStudentErrors((prev) => ({
+      ...prev,
+      [studentId]: {
+        ...prev[studentId],
+        dateError: error,
       },
     }));
 
@@ -351,7 +372,8 @@ const FeeHome = () => {
   const [studentFormData, setStudentFormData] = useState({
     updatesemester: '',
     payment: '',
-    feeamountField: ''
+    feeamountField: '',
+    paymentDate: ''
 
   });
 
@@ -359,7 +381,9 @@ const FeeHome = () => {
     const isFeeValid = feeamountValidation(studentId, formData.feeamountField || "");
     const isSemValid = semValidation(studentId, formData.updatesemester || "");
     const isPayValid = payValidation(studentId, formData.payment || "");
-    return isFeeValid && isSemValid && isPayValid;
+    const isPayDate = dateValidation(studentId, formData.paymentDate || "");
+
+    return isFeeValid && isSemValid && isPayValid && isPayDate;
   }
 
 
@@ -377,13 +401,12 @@ const FeeHome = () => {
   const update = async (student) => {
     const formData = studentFormData[student._id] || {};
 
-    setUpdating(true)
     if (!validateStudentForm(student._id, formData)) {
       console.log("Validation failed for student:", student._id);
       return;
     }
 
-
+    setUpdating(true)
     try {
       const selectedSem = Number(formData.updatesemester); // e.g. "1"
       const studentRows = formdata[student._id] || [];
@@ -417,16 +440,17 @@ const FeeHome = () => {
         noOfsem: formData.updatesemester,
         modeOfPayment: formData.payment,
         userId: student._id,
-        studentId: student.studentId
+        studentId: student.studentId,
+        paymentDate: formData.paymentDate,
       };
       await createFee(feePayload);
 
-      // 2️⃣ Call updateBalanceFee API
+      // 2️⃣ Call updateBalanceFee API 
       const balancePayload = {
         ...semRow,
         paidAmount: totalPaid,
         pendingAmount: Math.max(0, semFee - totalPaid),
-        paymentDate: new Date().toISOString().slice(0, 10),
+        paymentDate: formData.paymentDate,
       };
 
       await updateBalanceFee(semRow._id, balancePayload);
@@ -502,55 +526,6 @@ const FeeHome = () => {
   const [balancefee, setBalancefee] = useState([])
 
   const [savingRows, setSavingRows] = useState({});
-  let updatebalacncefee = async (feeBalanceId, row) => {
-    setSavingRows((prev) => ({ ...prev, [feeBalanceId]: true }));
-    try {
-      const { _id, thisPayment, ...rest } = row;
-
-      const semFee = Number(row.semFee) || 0;
-      const alreadyPaid = Number(row.paidAmount) || 0;
-      const newPayment = Number(thisPayment) || 0;
-
-      const totalPaid = alreadyPaid + newPayment;
-
-
-      if (totalPaid > semFee) {
-        // alert("Error: Payment cannot exceed Semester Fee!");
-        toast.error(`Paid amount cannot be greater than ${semFee} you have already paid ${alreadyPaid}`);
-        return;
-      }
-
-      const payload = {
-        ...rest,
-        noOfsem: Number(row.noOfsem),
-        semFee: semFee,
-        paidAmount: totalPaid,
-        pendingAmount: Math.max(0, semFee - totalPaid),
-        paymentDate: row.paymentDate,
-      };
-
-      let res = await updateBalanceFee(feeBalanceId, payload);
-      console.log("Update response:", res.data);
-
-      setFormData((prev) => {
-        const updated = { ...prev };
-        updated[row.userId] = updated[row.userId].map((item) =>
-          item._id === feeBalanceId
-            ? { ...item, paidAmount: totalPaid, pendingAmount: payload.pendingAmount, thisPayment: "" }
-            : item
-        );
-        return updated;
-      });
-
-    } catch (error) {
-      console.error("Error updating fee balance:", error);
-    } finally {
-      setSavingRows((prev) => ({ ...prev, [feeBalanceId]: false }));
-    }
-  };
-
-
-
 
   const [formdata, setFormData] = useState({});
 
@@ -612,34 +587,13 @@ const FeeHome = () => {
 
 
 
-  // const handleSave = async (studentId) => {
-
-  //   try {
-  //     const payload = formdata[studentId].map((row) => ({
-  //       ...row,
-  //       noOfsem: Number(row.noOfsem),
-  //       semFee: Number(row.semFee),
-  //       paidAmount: Number(row.paidAmount) || 0,
-  //       pendingAmount: Number(row.pendingAmount) || 0,
-  //       paymentDate: row.paymentDate ? new Date(row.paymentDate).toISOString() : null
-  //     }));
-
-  //     console.log("Final payload:", payload);
-
-  //     const response = await createBalanceFee(payload);
-  //     console.log("API response:", response);
-  //     getfeelist()
-  //     setShowDiv(false)
-  //   } catch (error) {
-  //     console.error("Error saving balance fee:", error);
-  //   }
-  // };
-
-   const handlefilterSearch = () => {
+  const handlefilterSearch = () => {
     setSemester('');
     setCourseId('');
     setBatchId('');
   }
+
+  const [feeId, setFeeID] = useState('')
   return (
     <div className={styles.container}>
       <div className={styles.feemanagement}>
@@ -920,22 +874,33 @@ const FeeHome = () => {
                           className={styles.viewBtn}
                           onClick={() => { item.pendingAmount === 0 && handlecompleted(item._id) }}
                         >
-                          {item.pendingAmount === 0 ? <div>
-                            <FontAwesomeIcon
-                              icon={faEye}
-                              style={{ marginRight: "5px" }}
-                              className={styles.viewIcon}
-                            />
-                            <span className={styles.viewText}>View</span>
-                          </div>
-                            :
-                            <p style={{
-                              color: feeStatus === "Requested Fee"
-                                ? "blue" : 'red'
+                          {item.pendingAmount === 0 ? (
+                            <div>
+                              <FontAwesomeIcon
+                                icon={faEye}
+                                style={{ marginRight: "5px" }}
+                                className={styles.viewIcon}
+                              />
+                              <span className={styles.viewText}>View</span>
+                            </div>
+                          ) : (
+                            <p
+                              style={{
+                                color: feeStatus === "Requested Fee" && feeId === item?._id
+                                  ? "blue"
+                                  : "red",
+                              }}
+                              onClick={() => {
+                                setFeeID(item?._id);
+                                setShowModal(true);
+                              }}
+                            >
+                              {feeId === item.userDetails?._id && feeStatus === "Requested Fee"
+                                ? "Requested Fee"
+                                : feeStatus}
+                            </p>
+                          )}
 
-
-                            }} onClick={() => (setShowModal(true))}>{feeStatus}</p>
-                          }
                         </td>
                       </tr>
                     ))
@@ -1006,6 +971,7 @@ const FeeHome = () => {
           sendReqColor={sendReqColor}
           setReqSendColor={setReqSendColor}
           status={setFeeStatus}
+          id={feeId}
         ></Modal>
         {/* req send end */}
 
@@ -1175,7 +1141,37 @@ const FeeHome = () => {
                                 </option>
                               </select>
                             </div>
+
+                            <div className={styles.namediv1}>
+                              <label className={styles.updatefeeinputlabel}>Payment Date</label>
+                              <input
+                                type="date"
+                                value={formData.paymentDate || ""}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+
+                                  handleInputChange(student._id, "paymentDate", value);
+                                  dateValidation(student._id, value);
+
+                                  const selectedSem = Number(studentFormData[student._id]?.updatesemester);
+                                  if (selectedSem) {
+                                    setFormData((prev) => {
+                                      const updated = { ...prev };
+                                      updated[student._id] = updated[student._id].map((row) =>
+                                        Number(row.noOfsem) === selectedSem
+                                          ? { ...row, paymentDate: value }
+                                          : row
+                                      );
+                                      return updated;
+                                    });
+                                  }
+                                }}
+                              />
+                              <p className={styles.stderror1}>{studentErrors[student._id]?.dateError}</p>
+                            </div>
+
                           </div>
+
                           {/* Semester, Fee, Payment */}
                           <div className={styles.nameemaildiv1}>
                             <div className={styles.namediv2}>
@@ -1193,32 +1189,43 @@ const FeeHome = () => {
                                 }}
                               >
                                 <Select
-                                  value={formData.updatesemester}
+                                  value={studentFormData[student._id]?.updatesemester || ""}
                                   onChange={(e) => {
-                                    handleInputChange(
-                                      student._id,
-                                      "updatesemester",
-                                      e.target.value
-                                    ), semValidation(student._id, e.target.value);
+                                    const newSem = e.target.value;
+                                    const prevSem = studentFormData[student._id]?.updatesemester;
+
+                                    // 1️⃣ Reset input fields
+                                    handleInputChange(student._id, "updatesemester", newSem);
+                                    handleInputChange(student._id, "feeamountField", "");
+                                    handleInputChange(student._id, "paymentDate", "");
+
+                                    // 2️⃣ Clear old semester row values
+                                    if (prevSem) {
+                                      setFormData((prev) => {
+                                        const updated = { ...prev };
+                                        updated[student._id] = updated[student._id].map((row) =>
+                                          Number(row.noOfsem) === Number(prevSem)
+                                            ? { ...row, thisPayment: "", paymentDate: "" } // 🔄 reset
+                                            : row
+                                        );
+                                        return updated;
+                                      });
+                                    }
                                   }}
                                   displayEmpty
                                   IconComponent={KeyboardArrowDownIcon}
                                   sx={{
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                      border: 'none',
-                                    },
-                                    fontSize: '14px',
-                                    padding: '4px 10px',
-                                    height: '43px',
-                                    border: 'none',
-
+                                    "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                    fontSize: "14px",
+                                    padding: "4px 10px",
+                                    height: "43px",
                                   }}
-
                                 >
-                                  {/* <MenuItem value="">Select Semester</MenuItem> */}
+                                  <MenuItem value="">Select Semester</MenuItem>
                                   <MenuItem value="1">Semester 1</MenuItem>
                                   <MenuItem value="2">Semester 2</MenuItem>
                                 </Select>
+
                               </FormControl>
 
                               <p className={styles.stderror1}>{studentErrors[student._id]?.semError}</p>
@@ -1290,8 +1297,8 @@ const FeeHome = () => {
                                       student._id,
                                       "payment",
                                       e.target.value
-                                    ),
-                                      payValidation(student._id, e.target.value);
+                                    )
+                                    payValidation(student._id, e.target.value);
                                   }
                                   }
                                   displayEmpty
@@ -1329,7 +1336,7 @@ const FeeHome = () => {
                                   <th>Sem Fee</th>
                                   <th>Paid Amount</th>
                                   <th>Pending Amount</th>
-                                  <th>Payment Date</th>
+                                  {/* <th>Payment Date</th> */}
 
                                   {/* <th>Action</th> */}
                                 </tr>
@@ -1430,23 +1437,14 @@ const FeeHome = () => {
                                       // }}
                                       />
                                     </td>
-                                    <td>
+                                    {/* <td>
                                       {formdata[student._id]?.[index]?.semFee == formdata[student._id]?.[index]?.paidAmount ?
 
                                         <input
                                           type="date"
                                           disabled
                                           style={{ cursor: 'not-allowed', color: 'gray' }}
-                                          value={row.paymentDate}
-                                          onChange={(e) => {
-                                            const updated = { ...formdata };
-                                            updated[student._id] = [...updated[student._id]];
-                                            updated[student._id][index] = {
-                                              ...updated[student._id][index],
-                                              paymentDate: e.target.value
-                                            };
-                                            setFormData(updated);
-                                          }}
+
                                         />
                                         :
                                         <input
@@ -1463,19 +1461,19 @@ const FeeHome = () => {
                                           }}
                                         />
                                       }
-                                    </td>
-                                    {/* <td>
-                                      <div style={{ display: 'flex', gap: '10px' }}>
-
-                                        {formdata[student._id]?.[index]?.semFee == formdata[student._id]?.[index]?.paidAmount ? (
-                                          <button className={styles.savebtn} disabled style={{ cursor: 'not-allowed', color: 'white', background: 'gray' }} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
-
-                                        ) :
-                                          <button className={styles.savebtn} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
-                                        }
-                                       
-                                      </div>
                                     </td> */}
+                                    {/* <td>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+
+                                          {formdata[student._id]?.[index]?.semFee == formdata[student._id]?.[index]?.paidAmount ? (
+                                            <button className={styles.savebtn} disabled style={{ cursor: 'not-allowed', color: 'white', background: 'gray' }} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
+
+                                          ) :
+                                            <button className={styles.savebtn} onClick={() => { updatebalacncefee(row._id, row), console.log("Editing row with _id:", row._id); }}> {savingRows[row._id] ? "Saving..." : "Save"}</button>
+                                          }
+                                        
+                                        </div>
+                                      </td> */}
                                   </tr>
                                 ))}
                               </tbody>
@@ -1484,36 +1482,36 @@ const FeeHome = () => {
                             {/* Add Row only for this student */}
                             <div className={styles.addfeebtn}>
                               {/* <button
-                                type="button"
-                                onClick={() => {
-                                  const updated = { ...formdata };
-                                  updated[student._id] = [
-                                    ...updated[student._id],
-                                    {
-                                      noOfsem: '',
-                                      paymentDate: '',
-                                      semFee: '',
-                                      paidAmount: '',
-                                      pendingAmount: '',
-                                      createdBy: localStorage.getItem('userId'),
-                                      userId: student._id,
-                                      studentId: student?.studentId,
-                                      courseId: student?.courseDetails?._id,
-                                      batchId: student?.batchDetails?._id
-                                    }
-                                  ];
-                                  setFormData(updated);
-                                }}
-                              >
-                                <FontAwesomeIcon icon={faPlus} /> Add Row
-                              </button> */}
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = { ...formdata };
+                                    updated[student._id] = [
+                                      ...updated[student._id],
+                                      {
+                                        noOfsem: '',
+                                        paymentDate: '',
+                                        semFee: '',
+                                        paidAmount: '',
+                                        pendingAmount: '',
+                                        createdBy: localStorage.getItem('userId'),
+                                        userId: student._id,
+                                        studentId: student?.studentId,
+                                        courseId: student?.courseDetails?._id,
+                                        batchId: student?.batchDetails?._id
+                                      }
+                                    ];
+                                    setFormData(updated);
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon={faPlus} /> Add Row
+                                </button> */}
                               {/* {!student.feebalance?.length && (
-                                <button onClick={() => handleSave(student._id)}>Save</button>
-                              )} */}
+                                  <button onClick={() => handleSave(student._id)}>Save</button>
+                                )} */}
                             </div>
                           </div>
                           <div className={styles.updatefeebtn} >
-                            <button onClick={() => update(student)}>{updating ? "Updating..." : "Update"}</button>
+                            <button onClick={() => update(student)}>{updating? "Updating..." : "Update"}</button>
                           </div>
                         </div>
                       );

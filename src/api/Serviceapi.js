@@ -258,6 +258,11 @@ export const updateBalanceFee = (userId, payload) => {
   return apiService.put(`/feeBalance/${userId}`, payload);
 };
 
+export const emailFee = (userId) => {
+  return apiService.get(`/fee/mail`, { userId: userId });
+};
+
+
 export const getDashboardUser = () => {
   return apiService.get(`/user?limit=3&inStatus=ongoing&status=active`);
 };
