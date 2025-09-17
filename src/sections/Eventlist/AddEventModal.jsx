@@ -75,6 +75,24 @@ const AddEventModal = ({ closeModal, onevent }) => {
     }
   };
 
+  const titlevalidation = (value) => {
+    let error = "";
+
+    if (!value.trim()) {
+      error = "Event title is required"
+    }
+
+    setErrors(prev => ({ ...prev, title: error }));
+  };
+  const disvalidation = (value) => {
+    let error = "";
+
+    if (!value.trim()) {
+      error = "Event description is required";
+    }
+
+    setErrors(prev => ({ ...prev, description: error }));
+  };
   return (
     <div className={styles.modal_overlay}>
       <div className={styles.modal_content}>
@@ -87,7 +105,7 @@ const AddEventModal = ({ closeModal, onevent }) => {
 
             <div className={styles.input_group}>
               <label htmlFor="title">Event Title<span className={styles.required}>*</span></label>
-              <input type="text" value={formdata.title} id="title" placeholder="Enter event title" onChange={(e) => { setFormdata({ ...formdata, title: e.target.value }), setErrors({ ...errors, title: '' }) }} />
+              <input type="text" value={formdata.title} id="title" placeholder="Enter event title" onChange={(e) => { setFormdata({ ...formdata, title: e.target.value }), titlevalidation(e.target.value) }} />
               <p className={styles.error}>{errors.title}</p>
             </div>
             <div className={styles.input_group} style={{ width: '100%', height: '100%' }}>
@@ -141,7 +159,7 @@ const AddEventModal = ({ closeModal, onevent }) => {
 
           <div className={styles.input_group}>
             <label htmlFor="description">Description<span className={styles.required}>*</span></label>
-            <textarea id="description" value={formdata.description} placeholder="Event description here..." onChange={(e) => { setFormdata({ ...formdata, description: e.target.value }), setErrors({ ...errors, description: '' }) }}></textarea>
+            <textarea id="description" value={formdata.description} placeholder="Event description here..." onChange={(e) => { setFormdata({ ...formdata, description: e.target.value }), disvalidation(e.target.value) }}></textarea>
             <p className={styles.error}>{errors.description}</p>
           </div>
 

@@ -375,6 +375,87 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
         setFormdata(prev => ({ ...prev, inStatus: e.target.value }))
         // setErrors({ ...Errors, student_bloodgroup: '' })
     }
+
+    const namevalidation = (value) => {
+        let error = "";
+
+        if (!value.trim()) {
+            error = "Student Name is required";
+        } else if (!/^(?!.*\d).+$/.test(value.trim())) {
+            error = "Enter a valid name without numbers";
+        }
+
+        setErrors(prev => ({ ...prev, name: error }));
+    };
+
+    const mobilevalidation = (value) => {
+        let error = "";
+
+        if (!value.trim()) {
+            error = "Mobile number is required";
+        } else if (!/^\d{10}$/.test(value.trim())) {
+            error = "Enter a valid 10-digit phone number";
+        }
+
+        setErrors(prev => ({ ...prev, student_mobile: error }));
+    };
+
+    const othervalidation = (value) => {
+        let error = "";
+
+        if (!value.trim()) {
+            error = "Mobile number is required";
+        } else if (!/^\d{10}$/.test(value.trim())) {
+            error = "Enter a valid 10-digit phone number";
+        }
+
+        setErrors(prev => ({ ...prev, parent_number: error }));
+    };
+
+
+    const emailvalidation = (value) => {
+        let error = "";
+
+        if (!value.trim()) {
+            error = "Email is required";
+        } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(value.trim())) {
+            error = "Enter a valid email address";
+        }
+
+        setErrors(prev => ({ ...prev, student_email: error }));
+    };
+
+    const fathervalidation = (value) => {
+        let error = "";
+
+        if (!value.trim()) {
+            error = "Father's Name is required";
+        } else if (!/^(?!.*\d).+$/.test(value.trim())) {
+            error = "Enter a valid Father's name without numbers";
+        }
+
+        setErrors(prev => ({ ...prev, student_father: error }));
+    };
+
+    const addressvalidation = (value) => {
+        let error = "";
+
+        if (!value.trim()) {
+            error = "Address is required";
+        }
+
+        setErrors(prev => ({ ...prev, student_address: error }));
+    };
+
+    const qualivalidation = (value) => {
+        let error = "";
+
+        if (!value.trim()) {
+            error = "Qualification is required";
+        }
+
+        setErrors(prev => ({ ...prev, student_qualification: error }));
+    };
     return (
         <>
 
@@ -417,7 +498,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                                 <input className={styles.input_field} value={Formdata.name}
                                     onChange={(e) => {
                                         setFormdata({ ...Formdata, name: e.target.value });
-                                        setErrors({ ...Errors, name: '' });
+                                        namevalidation(e.target.value);
                                     }} id='name' type="text" placeholder='Enter name' />
                                 <p className={styles.error}>{Errors.name}</p>
                             </div>
@@ -430,31 +511,31 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                         <div className={styles.second_detail}>
                             <div className={styles.student_phone}>
                                 <label htmlFor="student_phone">Mobile Number<span className={styles.important}>*</span></label>
-                                <input className={styles.input_field} inputMode='numeric' maxLength={10} onChange={(e) => { setFormdata({ ...Formdata, student_mobile: e.target.value }), setErrors({ ...Errors, student_mobile: '' }) }} value={Formdata.student_mobile} id='student_phone' type="tel" placeholder='Enter number' />
+                                <input className={styles.input_field} inputMode='numeric' maxLength={10} onChange={(e) => { setFormdata({ ...Formdata, student_mobile: e.target.value }), mobilevalidation(e.target.value) }} value={Formdata.student_mobile} id='student_phone' type="tel" placeholder='Enter number' />
                                 <p className={styles.error}>{Errors.student_mobile}</p>
                             </div>
                             <div className={styles.student_email}>
                                 <label htmlFor="email">E-Mail<span className={styles.important}>*</span></label>
-                                <input className={styles.input_field} disabled style={{ color: 'grey', cursor: 'not-allowed' }} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), setErrors({ ...Errors, student_email: '' }) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
+                                <input className={styles.input_field} disabled style={{ color: 'grey', cursor: 'not-allowed' }} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), emailvalidation(e.target.value) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
                                 <p className={styles.error}>{Errors.student_email}</p>
                             </div>
                         </div>
                         <div className={styles.third_detail}>
                             <div className={styles.student_father}>
                                 <label htmlFor="father_name">Father Name<span className={styles.important}>*</span></label>
-                                <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_father: e.target.value }), setErrors({ ...Errors, student_father: '' }) }} value={Formdata.student_father} id='father_name' type="text" placeholder='Enter name' />
+                                <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_father: e.target.value }), fathervalidation(e.target.value) }} value={Formdata.student_father} id='father_name' type="text" placeholder='Enter name' />
                                 <p className={styles.error}>{Errors.student_father}</p>
                             </div>
                             <div className={styles.student_mobile}>
                                 <label htmlFor="mobile">Parent Number<span className={styles.important}>*</span></label>
-                                <input className={styles.input_field} inputMode='numeric' maxLength={10} onChange={(e) => { setFormdata({ ...Formdata, parent_number: e.target.value }), setErrors({ ...Errors, parent_number: '' }) }} value={Formdata.parent_number} id='mobile' type="tel" placeholder='Enter Parent Number' />
+                                <input className={styles.input_field} inputMode='numeric' maxLength={10} onChange={(e) => { setFormdata({ ...Formdata, parent_number: e.target.value }), othervalidation(e.target.value) }} value={Formdata.parent_number} id='mobile' type="tel" placeholder='Enter Parent Number' />
                                 <p className={styles.error}>{Errors.parent_number}</p>
                             </div>
                         </div>
                         <div className={styles.fourth_detail}>
                             <div className={styles.student_address}>
                                 <label htmlFor="address">Address<span className={styles.important}>*</span></label>
-                                <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_address: e.target.value }), setErrors({ ...Errors, student_address: '' }) }} value={Formdata.student_address} id='address' type="text" placeholder='Enter Address' />
+                                <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_address: e.target.value }), addressvalidation(e.target.value) }} value={Formdata.student_address} id='address' type="text" placeholder='Enter Address' />
                                 <p className={styles.error}>{Errors.student_address}</p>
                             </div>
                             <div className={styles.student_status}>
@@ -550,7 +631,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                             </div>
                             <div className={styles.student_qualification}>
                                 <label htmlFor="qualification">Qualification<span className={styles.important}>*</span></label>
-                                <input type="text" id="qualification" onChange={(e) => { setFormdata({ ...Formdata, student_qualification: e.target.value }), setErrors({ ...Errors, student_qualification: '' }) }} value={Formdata.student_qualification} placeholder='Enter qualification' className={styles.input_field} />
+                                <input type="text" id="qualification" onChange={(e) => { setFormdata({ ...Formdata, student_qualification: e.target.value }), qualivalidation(e.target.value) }} value={Formdata.student_qualification} placeholder='Enter qualification' className={styles.input_field} />
                                 <p className={styles.error}>{Errors.student_qualification}</p>
                             </div>
                         </div>

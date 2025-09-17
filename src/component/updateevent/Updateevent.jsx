@@ -39,7 +39,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
     if (!formdata.description.trim()) newErrors.description = "Event description is required";
     if (!formdata.date) newErrors.date = "Event date is required";
     if (!formdata.eventType.trim()) newErrors.eventType = "Event Type is required";
-        if (!formdata.time.trim()) newErrors.time = "Time is required";
+    if (!formdata.time.trim()) newErrors.time = "Time is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -81,7 +81,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
     geteventbyid(id);
   }, [id]);
 
-  const[loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,13 +97,31 @@ const Updateevent = ({ closeModal, id, onevent }) => {
         toast.success('Event Updated successfully');
       } catch (err) {
         console.log(err.response?.data.message);
-      }finally{
+      } finally {
         setLoading(false)
       }
       closeModal();
     }
   };
 
+  const titlevalidation = (value) => {
+    let error = "";
+
+    if (!value.trim()) {
+      error = "Event title is required"
+    }
+
+    setErrors(prev => ({ ...prev, title: error }));
+  };
+  const disvalidation = (value) => {
+    let error = "";
+
+    if (!value.trim()) {
+      error = "Event description is required";
+    }
+
+    setErrors(prev => ({ ...prev, description: error }));
+  };
 
   return (
     <div className={styles.modal_overlay}>
@@ -117,7 +135,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
 
             <div className={styles.input_group}>
               <label htmlFor="title">Event Title<span className={styles.required}>*</span></label>
-              <input type="text" value={formdata.title} id="title" placeholder="Seminar on UI/UX" onChange={(e) => { setFormdata({ ...formdata, title: e.target.value }), setErrors({ ...errors, title: '' }) }} />
+              <input type="text" value={formdata.title} id="title" placeholder="Seminar on UI/UX" onChange={(e) => { setFormdata({ ...formdata, title: e.target.value }), titlevalidation(e.target.value) }} />
               <p className={styles.error}>{errors.title}</p>
             </div>
             <div className={styles.input_group} style={{ width: '100%', height: '100%' }}>
@@ -165,7 +183,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
 
           <div className={styles.input_group}>
             <label htmlFor="description">Description<span className={styles.required}>*</span></label>
-            <textarea id="description" value={formdata.description} placeholder="Event description here..." onChange={(e) => { setFormdata({ ...formdata, description: e.target.value }), setErrors({ ...errors, description: '' }) }}></textarea>
+            <textarea id="description" value={formdata.description} placeholder="Event description here..." onChange={(e) => { setFormdata({ ...formdata, description: e.target.value }), disvalidation(e.target.value) }}></textarea>
             <p className={styles.error}>{errors.description}</p>
           </div>
 
