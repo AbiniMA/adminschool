@@ -1,9 +1,8 @@
-
 import { React, useState, useEffect } from "react";
 import { Modal } from "antd";
 import styles from "./AddCourse.module.css";
 import { editCouse } from "../../api/Serviceapi";
-
+import { toast } from "react-toastify";
 
 const EditCourseModal = ({ visible, onCancel, onUpdate, formData,id }) => {
   const [courseName, setcoursename] = useState("");
@@ -157,6 +156,7 @@ const EditCourseModal = ({ visible, onCancel, onUpdate, formData,id }) => {
           // Refresh parent data
           onUpdate();
           onCancel();
+          toast.success("Course updated successfully!");
         } catch (error) {
           console.error("Error updating course:", error);
         }finally{

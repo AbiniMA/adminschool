@@ -242,18 +242,24 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                 const res = await addUser(Formdata);
 
                 setErrors({})
+                toast.success("Student added successfully!");
+
                 closeModal()
+
                 if (location.pathname === "/students") {
-                   
+
                     if (onStudentAdded) onStudentAdded(res.data);
+
+
                 } else {
-                    
+
                     navigate("/students");
+
                 }
 
             } catch (err) {
-                
-                showToast(err?.response?.data?.message, "error");
+
+                // toast.error(err?.response?.data?.message);
                 setLoading(false);
                 setMes(err?.response?.data?.message);
             }
@@ -584,7 +590,7 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                                             <label htmlFor="documentupload" className={styles.custom_file_upload}>
                                                 <span className={styles.filename}>{original}</span>
                                                 <span className={styles.download_icon} onClick={() => setFormdata({ ...Formdata, student_original: null })}><IoMdCloseCircle />
-                                                </span>
+                                                        </span>
                                             </label>
                                         </div>
                                         : <div>
@@ -604,18 +610,17 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
                         <div className={styles.submit_button}>
                             <input type="submit" value={loading ? "Loading..." : "Add Student"} style={{ cursor: "pointer" }} className={styles.submit} onClick={handleSubmit} />
                         </div>
+                        <p style={{color:"red",fontSize:"12px",marginTop:"10px"}}>{mes}</p>
                     </div>
                 </form>
             </div>
-            <div className={styles.toastWrapper}>
+            {/* <div className={styles.toastWrapper}>
                 <ToastContainer
                     position="bottom-center"
                     newestOnTop
                     className={styles.customContainer}
                 />
-            </div>
-
-
+            </div> */}
 
         </>
     )

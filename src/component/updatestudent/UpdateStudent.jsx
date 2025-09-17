@@ -19,7 +19,6 @@ import dayjs from 'dayjs';
 import defaultimg from '../../../src/assets/profile.png'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { grey } from '@mui/material/colors';
 const UpdateStudent = ({ closeModal, id, onSuccess }) => {
     const [user, setUser] = useState([])
     const [file, setFileName] = useState('');
@@ -245,6 +244,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                 const res = await updateUser(payload, id);
 
                 setErrors({})
+                toast.success("Student updated successfully!");
                 closeModal()
                 // setUser(res?.data);
                 if (onSuccess) onSuccess();
@@ -376,277 +376,282 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
         // setErrors({ ...Errors, student_bloodgroup: '' })
     }
     return (
-        <div className={styles.add_student}>
-            <div className={styles.header}>
-                <h2 className={styles.title}>Update Student</h2>
-                <span className={styles.close_icon} onClick={closeModal}><AiOutlineClose /></span>
-            </div>
-            <p style={{ color: 'red', fontSize: '12px', marginTop: '1rem' }}>Note: File size should be less than 1MB*</p>
+        <>
 
-            <form action="">
-                <div className={styles.form_body}>
+            <div className={styles.add_student}>
 
-                    <div className={styles.profile}>
-                        <label htmlFor="photoUpload">Profile<span className={styles.important}>*</span></label>
-                        {Formdata.student_profile ?
-                            <div className={styles.profile_img}>
-                                <img src={Formdata.student_profile} alt="" width={'100%'} height={'100%'} />
-                                <span className={styles.close} onClick={() => setFormdata({ ...Formdata, student_profile: null })}><MdCancel />
+                <div className={styles.header}>
+                    <h2 className={styles.title}>Update Student</h2>
+                    <span className={styles.close_icon} onClick={closeModal}><AiOutlineClose /></span>
+                </div>
+                <p style={{ color: 'red', fontSize: '12px', marginTop: '1rem' }}>Note: File size should be less than 1MB*</p>
 
-                                </span>
+                <form action="">
+                    <div className={styles.form_body}>
 
-                            </div> :
-                            <div className={styles.student_image}>
-                                <label htmlFor="photoUpload" className={styles.customUpload}>
-                                    <img src={defaultimg} className={styles.defaultimg} alt="" width={'100%'} height={'100%'} />
+                        <div className={styles.profile}>
+                            <label htmlFor="photoUpload">Profile<span className={styles.important}>*</span></label>
+                            {Formdata.student_profile ?
+                                <div className={styles.profile_img}>
+                                    <img src={Formdata.student_profile} alt="" width={'100%'} height={'100%'} />
+                                    <span className={styles.close} onClick={() => setFormdata({ ...Formdata, student_profile: null })}><MdCancel />
 
-                                </label>
-                                <input type="file" id="photoUpload" className={styles.hiddenInput} onChange={Profilefile} />
-                                <p className={styles.error}>{Errors.student_profile}</p>
-                            </div>
-                        }
-                    </div>
+                                    </span>
 
-                    <div className={styles.first_detail}>
-                        <div className={styles.student_name}>
-                            <label htmlFor="name">Student Name<span className={styles.important}>*</span></label>
-
-                            <input className={styles.input_field} value={Formdata.name}
-                                onChange={(e) => {
-                                    setFormdata({ ...Formdata, name: e.target.value });
-                                    setErrors({ ...Errors, name: '' });
-                                }} id='name' type="text" placeholder='Enter name' />
-                            <p className={styles.error}>{Errors.name}</p>
-                        </div>
-                        <div className={styles.student_id}>
-                            <label htmlFor="id">ID</label>
-                            <input className={styles.input_field} style={{ color: 'grey', cursor: 'not-allowed' }} disabled onChange={(e) => setFormdata({ ...Formdata, student_id: e.target.value })} value={Formdata.student_id} id='id' type="text" placeholder='0245687' />
-                            {/* <p>{Errors.student_id}</p> */}
-                        </div>
-                    </div>
-                    <div className={styles.second_detail}>
-                        <div className={styles.student_phone}>
-                            <label htmlFor="student_phone">Mobile Number<span className={styles.important}>*</span></label>
-                            <input className={styles.input_field} inputMode='numeric' maxLength={10} onChange={(e) => { setFormdata({ ...Formdata, student_mobile: e.target.value }), setErrors({ ...Errors, student_mobile: '' }) }} value={Formdata.student_mobile} id='student_phone' type="tel" placeholder='Enter number' />
-                            <p className={styles.error}>{Errors.student_mobile}</p>
-                        </div>
-                        <div className={styles.student_email}>
-                            <label htmlFor="email">E-Mail<span className={styles.important}>*</span></label>
-                            <input className={styles.input_field} disabled style={{ color: 'grey', cursor: 'not-allowed' }} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), setErrors({ ...Errors, student_email: '' }) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
-                            <p className={styles.error}>{Errors.student_email}</p>
-                        </div>
-                    </div>
-                    <div className={styles.third_detail}>
-                        <div className={styles.student_father}>
-                            <label htmlFor="father_name">Father Name<span className={styles.important}>*</span></label>
-                            <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_father: e.target.value }), setErrors({ ...Errors, student_father: '' }) }} value={Formdata.student_father} id='father_name' type="text" placeholder='Enter name' />
-                            <p className={styles.error}>{Errors.student_father}</p>
-                        </div>
-                        <div className={styles.student_mobile}>
-                            <label htmlFor="mobile">Parent Number<span className={styles.important}>*</span></label>
-                            <input className={styles.input_field} inputMode='numeric' maxLength={10} onChange={(e) => { setFormdata({ ...Formdata, parent_number: e.target.value }), setErrors({ ...Errors, parent_number: '' }) }} value={Formdata.parent_number} id='mobile' type="tel" placeholder='Enter Parent Number' />
-                            <p className={styles.error}>{Errors.parent_number}</p>
-                        </div>
-                    </div>
-                    <div className={styles.fourth_detail}>
-                        <div className={styles.student_address}>
-                            <label htmlFor="address">Address<span className={styles.important}>*</span></label>
-                            <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_address: e.target.value }), setErrors({ ...Errors, student_address: '' }) }} value={Formdata.student_address} id='address' type="text" placeholder='Enter Address' />
-                            <p className={styles.error}>{Errors.student_address}</p>
-                        </div>
-                        <div className={styles.student_status}>
-                            <div  >
-                                <label htmlFor="inStatus">Status<span className={styles.important}>*</span></label>
-                                <div className={styles.select_container}>
-                                    <select className={styles.select_field} id="inStatus" onChange={handleStatus} value={Formdata.inStatus || ''} name="inStatus">
-                                        <option value="" disabled>Status</option>
-
-                                        <option value="completed">Completed</option>
-                                        <option value="ongoing">Ongoing</option>
-                                        <option value="placed">Placed</option>
-                                        {/* <option value="dropout">Dropout</option> */}
-
-
-                                    </select>
-                                    <FaChevronDown className={styles.selectIcon} />
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.fifth_detail}>
-                        <div className={styles.student_bloodgroup}>
-                            <label htmlFor="blood-group">Blood<span className={styles.important}>*</span></label>
-                            <div className={styles.select_container}>
-                                <select className={styles.select_field} onChange={handleBloodgroup} id="blood-group" value={Formdata.student_bloodgroup} name="blood-group">
-                                    <option value="" disabled>Select a bloodgroup</option>
-
-                                    <option value="A+">A+</option>
-                                    <option value="A-">A−</option>
-                                    <option value="B+">B+</option>
-                                    <option value="B-">B−</option>
-                                    <option value="AB+">AB+</option>
-                                    <option value="AB-">AB−</option>
-                                    <option value="O+">O+</option>
-                                    <option value="O-">O−</option>
-                                    <option value="A1B+">A1B+</option>
-
-                                </select>
-                                <FaChevronDown className={styles.selectIcon} />
-                            </div>
-                            <p className={styles.error}>{Errors.student_bloodgroup}</p>
-                        </div>
-                        <div className={styles.student_dob}>
-                            <div className={styles.datepicker_wrapper}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <div>
-                                        <div >
-                                            <label htmlFor="date">D.O.B<span className={styles.important}>*</span></label>
-
-                                        </div>
-
-                                        <DatePicker
-                                            open={open}
-                                            onOpen={() => setOpen(true)}
-                                            onClose={() => setOpen(false)}
-                                            value={Formdata.student_dob} // must be dayjs or null
-                                            maxDate={dayjs()}
-                                            onAccept={(newValue) => {
-                                                setFormdata({ ...Formdata, student_dob: newValue });
-                                                setErrors({ ...Errors, student_dob: "" });
-                                                setOpen(false);
-                                            }}
-                                            format="DD/MM/YYYY"
-
-                                            slotProps={{
-                                                textField: {
-                                                    fullWidth: true,
-                                                    placeholder: "DD/MM/YYYY",
-                                                    onClick: () => setOpen(true),
-                                                    error: Boolean(Errors?.student_dob),
-                                                    sx: {
-                                                        "& .MuiPickersOutlinedInput-root": {
-                                                            height: "40px",
-                                                            marginTop: "5px",
-                                                            outline: "none",
-                                                            backgroundColor: "#f2f2f2",
-                                                        },
-                                                        "& fieldset": { border: "none" },
-                                                    },
-                                                },
-                                            }}
-                                        />
-
-
-                                        <div >
-                                            <p className={styles.error}>{Errors.student_dob}</p>
-                                        </div>
-                                    </div>
-                                </LocalizationProvider>
-                            </div>
-                        </div>
-                        <div className={styles.student_qualification}>
-                            <label htmlFor="qualification">Qualification<span className={styles.important}>*</span></label>
-                            <input type="text" id="qualification" onChange={(e) => { setFormdata({ ...Formdata, student_qualification: e.target.value }), setErrors({ ...Errors, student_qualification: '' }) }} value={Formdata.student_qualification} placeholder='Enter qualification' className={styles.input_field} />
-                            <p className={styles.error}>{Errors.student_qualification}</p>
-                        </div>
-                    </div>
-                    <div className={styles.sixth_detail}>
-                        <div className={styles.course_batch_row}>
-                            <div className={styles.student_course}>
-                                <label htmlFor="course">Select Course<span className={styles.important}>*</span></label>
-                                <div className={styles.select_container}>
-                                    <select className={styles.select_field} onChange={handleCourseName} value={Formdata.student_course} id="course" name="course">
-                                        <option value="" >Select a course</option>
-                                        {course.map((course) => (
-                                            <option value={course._id} key={course._id}>{course.courseName}</option>
-
-                                        ))}
-
-                                    </select>
-
-                                    <FaChevronDown className={styles.selectIcon} />
-                                    <p className={styles.error}>{Errors.student_course}</p>
-                                </div>
-                            </div>
-                            <div className={styles.student_batch}>
-                                <label htmlFor="batch">Select Batch<span className={styles.important}>*</span></label>
-                                <div className={styles.select_container}>
-                                    <select onChange={handleBatchName} className={styles.select_field} disabled={!Formdata.student_course} style={{ cursor: Formdata.student_course ? 'pointer' : 'not-allowed' }} value={Formdata.student_batch} id="batch" name="batch">
-                                        <option value="" >Select a batch</option>
-                                        {Array.isArray(batch) &&
-                                            batch.map((batch) => (
-
-                                                <option value={batch._id} key={batch._id} >{batch.batchName}</option>
-                                            ))}
-                                    </select>
-                                    <FaChevronDown className={styles.selectIcon} />
-                                    <p className={styles.error}>{Errors.student_batch}</p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className={styles.document_upload_row}>
-                            {Formdata.student_aadhar ?
-                                <div className={styles.student_aadhar}>
-                                    <label htmlFor="aadharupload">Aadhar card<span className={styles.important}>*</span></label>
-                                    <label htmlFor="aadharupload" className={styles.custom_file_upload}>
-                                        <span className={styles.filename}>{file}</span>
-                                        <span className={styles.download_icon} onClick={() => setFormdata({ ...Formdata, student_aadhar: null })}><IoMdCloseCircle />
-                                        </span>
-                                    </label>
                                 </div> :
-                                <div className={styles.student_aadhar}>
-                                    <label htmlFor="aadharupload">Aadhar card<span className={styles.important}>*</span></label>
-                                    <input
-                                        type="file"
-                                        id="aadharupload"
-                                        className={styles.hidden_file_input}
+                                <div className={styles.student_image}>
+                                    <label htmlFor="photoUpload" className={styles.customUpload}>
+                                        <img src={defaultimg} className={styles.defaultimg} alt="" width={'100%'} height={'100%'} />
 
-                                        onChange={aadharfile}
-                                    />
-
-                                    <label htmlFor="aadharupload" className={styles.custom_file_upload}>
-                                        Upload document
-                                        <span className={styles.download_icon}><FiDownload /></span>
                                     </label>
-
-                                    <p className={styles.error}>{Errors.student_aadhar}</p>
+                                    <input type="file" id="photoUpload" className={styles.hiddenInput} onChange={Profilefile} />
+                                    <p className={styles.error}>{Errors.student_profile}</p>
                                 </div>
                             }
+                        </div>
 
-                            <div className={styles.student_document}>
-                                <label htmlFor="documentupload">Document<span className={styles.important}>*</span></label>
-                                {Formdata.student_original ?
-                                    <div>
+                        <div className={styles.first_detail}>
+                            <div className={styles.student_name}>
+                                <label htmlFor="name">Student Name<span className={styles.important}>*</span></label>
 
-                                        <label htmlFor="documentupload" className={styles.custom_file_upload}>
-                                            <span className={styles.filename}>{original}</span>
-                                            <span className={styles.download_icon} onClick={() => setFormdata({ ...Formdata, student_original: null })}><IoMdCloseCircle />
+                                <input className={styles.input_field} value={Formdata.name}
+                                    onChange={(e) => {
+                                        setFormdata({ ...Formdata, name: e.target.value });
+                                        setErrors({ ...Errors, name: '' });
+                                    }} id='name' type="text" placeholder='Enter name' />
+                                <p className={styles.error}>{Errors.name}</p>
+                            </div>
+                            <div className={styles.student_id}>
+                                <label htmlFor="id">ID</label>
+                                <input className={styles.input_field} style={{ color: 'grey', cursor: 'not-allowed' }} disabled onChange={(e) => setFormdata({ ...Formdata, student_id: e.target.value })} value={Formdata.student_id} id='id' type="text" placeholder='0245687' />
+                                {/* <p>{Errors.student_id}</p> */}
+                            </div>
+                        </div>
+                        <div className={styles.second_detail}>
+                            <div className={styles.student_phone}>
+                                <label htmlFor="student_phone">Mobile Number<span className={styles.important}>*</span></label>
+                                <input className={styles.input_field} inputMode='numeric' maxLength={10} onChange={(e) => { setFormdata({ ...Formdata, student_mobile: e.target.value }), setErrors({ ...Errors, student_mobile: '' }) }} value={Formdata.student_mobile} id='student_phone' type="tel" placeholder='Enter number' />
+                                <p className={styles.error}>{Errors.student_mobile}</p>
+                            </div>
+                            <div className={styles.student_email}>
+                                <label htmlFor="email">E-Mail<span className={styles.important}>*</span></label>
+                                <input className={styles.input_field} disabled style={{ color: 'grey', cursor: 'not-allowed' }} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), setErrors({ ...Errors, student_email: '' }) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
+                                <p className={styles.error}>{Errors.student_email}</p>
+                            </div>
+                        </div>
+                        <div className={styles.third_detail}>
+                            <div className={styles.student_father}>
+                                <label htmlFor="father_name">Father Name<span className={styles.important}>*</span></label>
+                                <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_father: e.target.value }), setErrors({ ...Errors, student_father: '' }) }} value={Formdata.student_father} id='father_name' type="text" placeholder='Enter name' />
+                                <p className={styles.error}>{Errors.student_father}</p>
+                            </div>
+                            <div className={styles.student_mobile}>
+                                <label htmlFor="mobile">Parent Number<span className={styles.important}>*</span></label>
+                                <input className={styles.input_field} inputMode='numeric' maxLength={10} onChange={(e) => { setFormdata({ ...Formdata, parent_number: e.target.value }), setErrors({ ...Errors, parent_number: '' }) }} value={Formdata.parent_number} id='mobile' type="tel" placeholder='Enter Parent Number' />
+                                <p className={styles.error}>{Errors.parent_number}</p>
+                            </div>
+                        </div>
+                        <div className={styles.fourth_detail}>
+                            <div className={styles.student_address}>
+                                <label htmlFor="address">Address<span className={styles.important}>*</span></label>
+                                <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_address: e.target.value }), setErrors({ ...Errors, student_address: '' }) }} value={Formdata.student_address} id='address' type="text" placeholder='Enter Address' />
+                                <p className={styles.error}>{Errors.student_address}</p>
+                            </div>
+                            <div className={styles.student_status}>
+                                <div  >
+                                    <label htmlFor="inStatus">Status<span className={styles.important}>*</span></label>
+                                    <div className={styles.select_container}>
+                                        <select className={styles.select_field} id="inStatus" onChange={handleStatus} value={Formdata.inStatus || ''} name="inStatus">
+                                            <option value="" disabled>Status</option>
+
+                                            <option value="completed">Completed</option>
+                                            <option value="ongoing">Ongoing</option>
+                                            <option value="placed">Placed</option>
+                                            {/* <option value="dropout">Dropout</option> */}
+
+
+                                        </select>
+                                        <FaChevronDown className={styles.selectIcon} />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.fifth_detail}>
+                            <div className={styles.student_bloodgroup}>
+                                <label htmlFor="blood-group">Blood<span className={styles.important}>*</span></label>
+                                <div className={styles.select_container}>
+                                    <select className={styles.select_field} onChange={handleBloodgroup} id="blood-group" value={Formdata.student_bloodgroup} name="blood-group">
+                                        <option value="" disabled>Select a bloodgroup</option>
+
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A−</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B−</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB−</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O−</option>
+                                        <option value="A1B+">A1B+</option>
+
+                                    </select>
+                                    <FaChevronDown className={styles.selectIcon} />
+                                </div>
+                                <p className={styles.error}>{Errors.student_bloodgroup}</p>
+                            </div>
+                            <div className={styles.student_dob}>
+                                <div className={styles.datepicker_wrapper}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <div>
+                                            <div >
+                                                <label htmlFor="date">D.O.B<span className={styles.important}>*</span></label>
+
+                                            </div>
+
+                                            <DatePicker
+                                                open={open}
+                                                onOpen={() => setOpen(true)}
+                                                onClose={() => setOpen(false)}
+                                                value={Formdata.student_dob} // must be dayjs or null
+                                                maxDate={dayjs()}
+                                                onAccept={(newValue) => {
+                                                    setFormdata({ ...Formdata, student_dob: newValue });
+                                                    setErrors({ ...Errors, student_dob: "" });
+                                                    setOpen(false);
+                                                }}
+                                                format="DD/MM/YYYY"
+
+                                                slotProps={{
+                                                    textField: {
+                                                        fullWidth: true,
+                                                        placeholder: "DD/MM/YYYY",
+                                                        onClick: () => setOpen(true),
+                                                        error: Boolean(Errors?.student_dob),
+                                                        sx: {
+                                                            "& .MuiPickersOutlinedInput-root": {
+                                                                height: "40px",
+                                                                marginTop: "5px",
+                                                                outline: "none",
+                                                                backgroundColor: "#f2f2f2",
+                                                            },
+                                                            "& fieldset": { border: "none" },
+                                                        },
+                                                    },
+                                                }}
+                                            />
+
+
+                                            <div >
+                                                <p className={styles.error}>{Errors.student_dob}</p>
+                                            </div>
+                                        </div>
+                                    </LocalizationProvider>
+                                </div>
+                            </div>
+                            <div className={styles.student_qualification}>
+                                <label htmlFor="qualification">Qualification<span className={styles.important}>*</span></label>
+                                <input type="text" id="qualification" onChange={(e) => { setFormdata({ ...Formdata, student_qualification: e.target.value }), setErrors({ ...Errors, student_qualification: '' }) }} value={Formdata.student_qualification} placeholder='Enter qualification' className={styles.input_field} />
+                                <p className={styles.error}>{Errors.student_qualification}</p>
+                            </div>
+                        </div>
+                        <div className={styles.sixth_detail}>
+                            <div className={styles.course_batch_row}>
+                                <div className={styles.student_course}>
+                                    <label htmlFor="course">Select Course<span className={styles.important}>*</span></label>
+                                    <div className={styles.select_container}>
+                                        <select className={styles.select_field} onChange={handleCourseName} value={Formdata.student_course} id="course" name="course">
+                                            <option value="" >Select a course</option>
+                                            {course.map((course) => (
+                                                <option value={course._id} key={course._id}>{course.courseName}</option>
+
+                                            ))}
+
+                                        </select>
+
+                                        <FaChevronDown className={styles.selectIcon} />
+                                        <p className={styles.error}>{Errors.student_course}</p>
+                                    </div>
+                                </div>
+                                <div className={styles.student_batch}>
+                                    <label htmlFor="batch">Select Batch<span className={styles.important}>*</span></label>
+                                    <div className={styles.select_container}>
+                                        <select onChange={handleBatchName} className={styles.select_field} disabled={!Formdata.student_course} style={{ cursor: Formdata.student_course ? 'pointer' : 'not-allowed' }} value={Formdata.student_batch} id="batch" name="batch">
+                                            <option value="" >Select a batch</option>
+                                            {Array.isArray(batch) &&
+                                                batch.map((batch) => (
+
+                                                    <option value={batch._id} key={batch._id} >{batch.batchName}</option>
+                                                ))}
+                                        </select>
+                                        <FaChevronDown className={styles.selectIcon} />
+                                        <p className={styles.error}>{Errors.student_batch}</p>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={styles.document_upload_row}>
+                                {Formdata.student_aadhar ?
+                                    <div className={styles.student_aadhar}>
+                                        <label htmlFor="aadharupload">Aadhar card<span className={styles.important}>*</span></label>
+                                        <label htmlFor="aadharupload" className={styles.custom_file_upload}>
+                                            <span className={styles.filename}>{file}</span>
+                                            <span className={styles.download_icon} onClick={() => setFormdata({ ...Formdata, student_aadhar: null })}><IoMdCloseCircle />
                                             </span>
                                         </label>
-                                    </div>
-                                    : <div>
-                                        <input type="file" id="documentupload" className={styles.hidden_file_input} onChange={originalFile} />
-                                        <label htmlFor="documentupload" className={styles.custom_file_upload}>
+                                    </div> :
+                                    <div className={styles.student_aadhar}>
+                                        <label htmlFor="aadharupload">Aadhar card<span className={styles.important}>*</span></label>
+                                        <input
+                                            type="file"
+                                            id="aadharupload"
+                                            className={styles.hidden_file_input}
+
+                                            onChange={aadharfile}
+                                        />
+
+                                        <label htmlFor="aadharupload" className={styles.custom_file_upload}>
                                             Upload document
                                             <span className={styles.download_icon}><FiDownload /></span>
                                         </label>
-                                        <p className={styles.error}>{Errors.student_original}</p>
+
+                                        <p className={styles.error}>{Errors.student_aadhar}</p>
                                     </div>
                                 }
 
+                                <div className={styles.student_document}>
+                                    <label htmlFor="documentupload">Document<span className={styles.important}>*</span></label>
+                                    {Formdata.student_original ?
+                                        <div>
+
+                                            <label htmlFor="documentupload" className={styles.custom_file_upload}>
+                                                <span className={styles.filename}>{original}</span>
+                                                <span className={styles.download_icon} onClick={() => setFormdata({ ...Formdata, student_original: null })}><IoMdCloseCircle />
+                                                </span>
+                                            </label>
+                                        </div>
+                                        : <div>
+                                            <input type="file" id="documentupload" className={styles.hidden_file_input} onChange={originalFile} />
+                                            <label htmlFor="documentupload" className={styles.custom_file_upload}>
+                                                Upload document
+                                                <span className={styles.download_icon}><FiDownload /></span>
+                                            </label>
+                                            <p className={styles.error}>{Errors.student_original}</p>
+                                        </div>
+                                    }
+
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className={styles.submit_button}>
-                        <input type="submit" value={loading ? "Updating..." : "Update Student"} className={styles.submit} onClick={handleSubmit} />
+                        <div className={styles.submit_button}>
+                            <input type="submit" value={loading ? "Updating..." : "Update Student"} className={styles.submit} onClick={handleSubmit} />
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        </>
+
     )
 }
 

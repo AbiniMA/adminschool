@@ -11,7 +11,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import Skeleton from '@mui/material/Skeleton';
 import nodata from '../../assets/trans.png'
 import { Switch } from 'antd';
-
+import { toast, ToastContainer } from 'react-toastify';
 
 const Studentdetails = () => {
     const { id } = useParams();
@@ -127,7 +127,7 @@ const Studentdetails = () => {
 
     return (
         <>
-
+        <ToastContainer/>
             <div className={styles.spacing}>
 
                 <div class="flex gap-[10px] items-center pb-[10px]">

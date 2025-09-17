@@ -17,6 +17,9 @@ body {
 ::-webkit-scrollbar {
   display: none;
 }
+.Toastify__toast-container {
+  z-index: 999999 !important;
+}
 .add-student-toast-wrapper 
   .Toastify__toast-container--bottom-center {
     bottom: auto; /* reset */

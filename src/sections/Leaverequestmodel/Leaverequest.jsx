@@ -22,6 +22,7 @@ import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { IoIosCloseCircle } from "react-icons/io";
+import { toast, ToastContainer } from 'react-toastify';
 
 
 const theme = createTheme({
@@ -248,10 +249,16 @@ const LeaveRequest = () => {
       setUpdate(false)
       getleavelist()
       setReason('')
+      if (status === 'Rejected'){
+        toast.error('Leave Rejected')
+      }else if (status === 'Approved'){
+        toast.success('Leave Approved')
+      }
 
     }
     catch (err) {
       console.log(err)
+      toast.error(err?.response?.data?.message)
     } finally {
       setIdlloading(false)
     }
@@ -302,6 +309,7 @@ const LeaveRequest = () => {
 
   return (
     <>
+    <ToastContainer/>
       <div className={styles.container}>
         <div className={styles.attendance_container}>
           <div className={styles.header_container}>
@@ -635,15 +643,8 @@ const LeaveRequest = () => {
           </div>
         </div>
 
-        <div className='flex justify-between items-end px-2 w-[100%]'>
-          {totalpages > 0 &&
-            <div className="flex justify-between items-center">
-              <p className="text-gray-600 text-sm">
-                Showing {startIndex} – {endIndex} of {totallist} students
-              </p>
-            </div>
-          }
-
+        <div className='flex justify-between items-end px-2 ms-auto w-[50%]'>
+         
           {totalpages > 0 &&
             <ThemeProvider theme={theme}>
               <div style={{ marginTop: '20px' }}>
@@ -658,6 +659,13 @@ const LeaveRequest = () => {
                 />
               </div>
             </ThemeProvider>
+          }
+           {totalpages > 0 &&
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600 text-sm">
+                Showing {startIndex} – {endIndex} of {totallist} students
+              </p>
+            </div>
           }
         </div>
 

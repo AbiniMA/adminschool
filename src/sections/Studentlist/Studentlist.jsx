@@ -20,7 +20,8 @@ import styles from './Studentlist.module.css'
 import nodata from '../../assets/nodata.jpg'
 import Loader from '../../component/loader/Loader';
 import { IoIosCloseCircle } from "react-icons/io";
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
   components: {
@@ -212,6 +213,10 @@ const Studentlist = () => {
   return (
 
     <>
+      <ToastContainer
+       
+      />
+
       <div style={{ paddingBottom: '100px' }}>
         <div className='p-4  Outlet' >
           <div className="flex justify-between items-center lg:flex-row md:flex-row flex-col">
@@ -503,14 +508,8 @@ const Studentlist = () => {
           </div>
 
         </div>
-        <div className='flex justify-between items-end mx-2'>  
-          {totalpages > 0 &&
-            <div className="flex justify-between items-center">
-              <p className="text-gray-600 text-sm">
-                Showing {startIndex} – {endIndex} of {totaluser} students
-              </p>
-            </div>
-          }
+        <div className='flex justify-between items-end ms-auto w-[50%]'>
+
           {totalpages > 0 &&
 
             <ThemeProvider theme={theme}>
@@ -525,6 +524,13 @@ const Studentlist = () => {
               </div>
             </ThemeProvider>
 
+          }
+          {totalpages > 0 &&
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600 text-sm">
+                Showing {startIndex} – {endIndex} of {totaluser} students
+              </p>
+            </div>
           }
         </div>
 

@@ -8,17 +8,18 @@ const LogoutModal = ({ closeModal, onConfirmLogout }) => {
         <p className={styles.message}>Are You Sure You Want to Logout Now?</p>
 
         <div className={styles.actions}>
-          <button
-            className={`${styles.btn} ${styles.confirm}`}
-            onClick={onConfirmLogout} 
-          >
-            Yes
-          </button>
+
           <button
             className={`${styles.btn} ${styles.cancel}`}
             onClick={closeModal}
           >
             No
+          </button>
+          <button
+            className={`${styles.btn} ${styles.confirm}`}
+            onClick={onConfirmLogout}
+          >
+            Yes
           </button>
         </div>
       </div>

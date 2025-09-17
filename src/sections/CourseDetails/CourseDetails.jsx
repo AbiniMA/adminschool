@@ -13,6 +13,8 @@ import {
   updateCourseBatch,
   getCourseBatchByCourseId,
 } from "../../api/Serviceapi";
+import { toast, ToastContainer } from 'react-toastify';
+
 
 import EditCourseModal from "./EditCourseModel";
 import CreateBatchModal from "./CreateBatchModal";
@@ -143,6 +145,8 @@ const CourseDetails = () => {
 
   return (
     <div className={styles.container}>
+                    <ToastContainer />
+      
       {/* ⬅️ Updated Header */}
       <div className={styles.header}>
         <button className={styles.backBtn} onClick={goBack}>
@@ -284,14 +288,8 @@ const CourseDetails = () => {
             </div>)}
         </div>
 
-        <div className='flex justify-between items-end mx-2'>
-          {totalPages > 0 &&
-            <div className="flex justify-between items-center">
-              <p className="text-gray-600 text-sm">
-                Showing {startIndex} – {endIndex} of {totalItems} Batches
-              </p>
-            </div>
-          }
+        <div className='flex justify-between items-end ms-auto w-[50%]'>
+         
           {totalPages > 0 && (
             <ThemeProvider theme={theme}>
               <div className="flex justify-end mt-4">
@@ -305,6 +303,13 @@ const CourseDetails = () => {
               </div>
             </ThemeProvider>
           )}
+           {totalPages > 0 &&
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600 text-sm">
+                Showing {startIndex} – {endIndex} of {totalItems} Batches
+              </p>
+            </div>
+          }
         </div>
       </div>
 

@@ -6,6 +6,8 @@ import { MdAccessTimeFilled } from "react-icons/md";
 import { updateEvent, getEventById } from '../../api/Serviceapi';
 import { FormControl, InputLabel, MenuItem, Select, IconButton } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { toast, ToastContainer } from 'react-toastify';
+
 const Updateevent = ({ closeModal, id, onevent }) => {
   const [formdata, setFormdata] = useState({
     title: "",
@@ -37,6 +39,8 @@ const Updateevent = ({ closeModal, id, onevent }) => {
     if (!formdata.description.trim()) newErrors.description = "Event description is required";
     if (!formdata.date) newErrors.date = "Event date is required";
     if (!formdata.eventType.trim()) newErrors.eventType = "Event Type is required";
+        if (!formdata.time.trim()) newErrors.time = "Time is required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -90,6 +94,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
         };
         const res = await updateEvent(formattedData, id);
         if (onevent) onevent();
+        toast.success('Event Updated successfully');
       } catch (err) {
         console.log(err.response?.data.message);
       }finally{
@@ -172,7 +177,7 @@ const Updateevent = ({ closeModal, id, onevent }) => {
             </div>
 
             <div className={`${styles.input_group} ${styles.input_icon}`} style={{ flex: 1 }}>
-              <label htmlFor="time">Time </label>
+              <label htmlFor="time">Time<span className={styles.required}>*</span> </label>
               <input type="time" id="time" value={formdata.time} onChange={(e) => { setFormdata({ ...formdata, time: e.target.value }), setErrors({ ...errors, time: '' }) }} />
               <p className={styles.error}>{errors.time}</p>
             </div>

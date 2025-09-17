@@ -13,6 +13,7 @@ import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import nodata from '../../assets/nodata.jpg'
 import Loader from '../../component/loader/Loader';
+import { toast, ToastContainer } from 'react-toastify';
 
 const theme = createTheme({
     components: {
@@ -106,6 +107,8 @@ const Eventlist = () => {
 
     return (
         <>
+              <ToastContainer />
+        
             {showModal && <AddEventModal closeModal={() => setShowModal(false)} onevent={getevents} />}
             {updateevent && <Updateevent closeModal={() => setUpdate(false)} onevent={getevents} id={id} />}
 
@@ -158,7 +161,7 @@ const Eventlist = () => {
                     </div>
                 </div>
                 <div className='mt-4'>
-                    <div className='h-[470px]  overflow-x-auto py-[0px]'>
+                    <div className=' overflow-x-auto py-[0px]'>
                         {loading ? (
                             <div className='text-center'><Loader /></div>
                         ) : (
@@ -189,6 +192,9 @@ const Eventlist = () => {
                                                 </p>
                                                 <p className="text-[14px] text-[#000] font-[500]  pb-3">
                                                     Date : {item.date.split('T')[0]}, {item.day}
+                                                </p>
+                                                <p className="text-[14px] text-[#000] font-[500]  pb-3">
+                                                    Time : {item.time}
                                                 </p>
                                                 <div className="flex items-center justify-between mt-3">
                                                     <div>
@@ -231,14 +237,8 @@ const Eventlist = () => {
                 </div>
 
 
-                <div className='flex justify-between items-end mx-2'>
-                    {totalpages > 0 &&
-                        <div className="flex justify-between items-center">
-                            <p className="text-gray-600 text-sm">
-                                Showing {startIndex} – {endIndex} of {totaluser} Events
-                            </p>
-                        </div>
-                    }
+                <div className='flex justify-between items-end ms-auto w-[50%]'>
+
                     {totalpages > 0 &&
                         <ThemeProvider theme={theme}>
                             <div className="flex justify-end mt-4">
@@ -251,6 +251,13 @@ const Eventlist = () => {
                                 />
                             </div>
                         </ThemeProvider>
+                    }
+                    {totalpages > 0 &&
+                        <div className="flex justify-end items-center">
+                            <p className="text-gray-600 text-sm">
+                                Showing {startIndex} – {endIndex} of {totaluser} Events
+                            </p>
+                        </div>
                     }
                 </div>
             </div>

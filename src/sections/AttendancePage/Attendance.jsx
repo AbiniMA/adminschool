@@ -545,14 +545,8 @@ const Attandance = () => {
       </div>
 
 
-      <div className='flex justify-between items-end px-2 w-[100%]'>
-        {totalpages > 0 &&
-          <div className="flex justify-between items-center">
-            <p className="text-gray-600 text-sm">
-              Showing {startIndex} – {endIndex} of {totallist} students
-            </p>
-          </div>
-        }
+      <div className='flex justify-between items-end px-2 ms-auto w-[50%]'>
+      
 
         {totalpages > 0 &&
           <ThemeProvider theme={theme}>
@@ -568,6 +562,13 @@ const Attandance = () => {
               />
             </div>
           </ThemeProvider>
+        }
+          {totalpages > 0 &&
+          <div className="flex justify-between items-center">
+            <p className="text-gray-600 text-sm">
+              Showing {startIndex} – {endIndex} of {totallist} students
+            </p>
+          </div>
         }
       </div>
 

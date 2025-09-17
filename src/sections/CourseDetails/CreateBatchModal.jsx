@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import styles from "./CreateBatchModel.module.css";
 import { postCourseBatch } from "../../api/Serviceapi";
 import { updateCourseBatch } from "../../api/Serviceapi";
+import { toast } from "react-toastify";
+
 
 const CreateBatchModal = ({
   visible,
@@ -155,10 +157,12 @@ const CreateBatchModal = ({
 
         const resedit = await updateCourseBatch(batchData._id, updatePayload);
         console.log("Update response:", resedit);
+        toast.success("Batch updated successfully!");
 
       } else {
         res = await postCourseBatch(payload);
         console.log("Batch created:", res.data.data);
+        toast.success("Batch created successfully!");
       }
       if (onBatchCreated) onBatchCreated();
 

@@ -13,6 +13,8 @@ import Eventlist from './sections/Eventlist/Eventlist';
 import FeeHome from './sections/feemanagement/FeeHome';
 import LeaveRequest from './sections/Leaverequestmodel/Leaverequest';
 import CourseDetails from './sections/CourseDetails/CourseDetails';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
@@ -28,51 +30,56 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={<Login setLoginUser={setIsAuthenticated} />}
-      />
-
-      <Route
-        element={
-          <PrivateRoute isAuthenticated={isAuthenticated} loading={loading} />
-        }
-      >
-        <Route path="/dashboard" element={<Header />}>
-          <Route index element={<Dashborad />} />
-        </Route>
-
-        <Route path="/students" element={<Header />}>
-          <Route index element={<Studentlist />} />
-          <Route path="studentview/:id" element={<Studentdetails />} />
-          <Route path="addstudent" element={<Addstudent />} />
-        </Route>
-
-        <Route path="/Fees" element={<Header />}>
-          <Route index element={<FeeHome />} />
-        </Route>
-
-        <Route path="/attendence" element={<Header />}>
-          <Route index element={<Attendance />} />
-          <Route path="leaverequest/:date?/:courseId?/:batchId?" element={<LeaveRequest />} />
-        </Route>
-
-        <Route path="/events" element={<Header />}>
-          <Route index element={<Eventlist />} />
-        </Route>
+    <>
+      <Routes>
 
         <Route
-          path="/course"
-          element={<Header setLoginUser={setIsAuthenticated} />}
-        >
-          <Route index element={<CourseTable />} />
-          <Route path="coursedetails/:id" element={<CourseDetails />} />
-        </Route>
-      </Route>
+          path="/login"
+          element={<Login setLoginUser={setIsAuthenticated} />}
+        />
 
-      <Route path="*" element={<Navigate to="/login" />} />
-    </Routes>
+        <Route
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated} loading={loading} />
+          }
+        >
+          <Route path="/dashboard" element={<Header />}>
+            <Route index element={<Dashborad />} />
+          </Route>
+
+          <Route path="/students" element={<Header />}>
+            <Route index element={<Studentlist />} />
+            <Route path="studentview/:id" element={<Studentdetails />} />
+            <Route path="addstudent" element={<Addstudent />} />
+          </Route>
+
+          <Route path="/Fees" element={<Header />}>
+            <Route index element={<FeeHome />} />
+          </Route>
+
+          <Route path="/attendence" element={<Header />}>
+            <Route index element={<Attendance />} />
+            <Route path="leaverequest/:date?/:courseId?/:batchId?" element={<LeaveRequest />} />
+          </Route>
+
+          <Route path="/events" element={<Header />}>
+            <Route index element={<Eventlist />} />
+          </Route>
+
+          <Route
+            path="/course"
+            element={<Header setLoginUser={setIsAuthenticated} />}
+          >
+            <Route index element={<CourseTable />} />
+            <Route path="coursedetails/:id" element={<CourseDetails />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+      <ToastContainer />
+    </>
+
   );
 }
 export default App

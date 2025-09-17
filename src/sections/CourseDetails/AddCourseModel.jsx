@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal } from "antd";
 import styles from "./AddCourse.module.css";
 import { postCourse } from "../../api/Serviceapi";
+import { toast, ToastContainer } from 'react-toastify';
 
 const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
   const [courseName, setCourseName] = useState("");
@@ -141,6 +142,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
       setSecondSemFee("");
       setDuplicate("");
       onCancel();
+      toast.success("Course added successfully!");
     } catch (error) {
       console.error("Error posting course:", error);
     } finally {

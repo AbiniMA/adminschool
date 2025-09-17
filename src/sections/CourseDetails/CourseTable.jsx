@@ -158,14 +158,8 @@ const CourseTable = () => {
       {/* ✅ Pagination Section */}
 
 
-      <div className='flex justify-between   items-end mx-2'>
-        {totalPages > 0 &&
-          <div className="flex justify-between items-center">
-            <p className="text-gray-600 text-sm">
-              Showing {startIndex} – {endIndex} of {totalItems} Courses
-            </p>
-          </div>
-        }
+      <div className='flex justify-between  items-end ms-auto w-[50%]'>
+       
         {totalPages > 0 && (
           <ThemeProvider theme={theme}>
             <div className="flex justify-end mt-4">
@@ -179,6 +173,13 @@ const CourseTable = () => {
             </div>
           </ThemeProvider>
         )}
+         {totalPages > 0 &&
+          <div className="flex justify-between items-center">
+            <p className="text-gray-600 text-sm">
+              Showing {startIndex} – {endIndex} of {totalItems} Courses
+            </p>
+          </div>
+        }
       </div>
 
       {/* Modal Component */}

@@ -476,6 +476,7 @@ const FeeHome = () => {
       getfeelist();
       calculation();
       setShowDiv(false);
+      toast.success("Fee updated successfully!");
 
       console.log("Fee updated successfully for:", student.name);
 
@@ -596,6 +597,7 @@ const FeeHome = () => {
   const [feeId, setFeeID] = useState('')
   return (
     <div className={styles.container}>
+      <ToastContainer/>
       <div className={styles.feemanagement}>
         <div className={styles.feehead}>
           <div className={styles.feetitle}>
@@ -1544,7 +1546,6 @@ const FeeHome = () => {
 
       </div>
 
-      <ToastContainer />
     </div>
   )
 }

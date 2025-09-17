@@ -6,6 +6,7 @@ import { MdAccessTimeFilled } from "react-icons/md";
 import { getEventcreate } from '../../api/Serviceapi';
 import { FormControl, InputLabel, MenuItem, Select, IconButton } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { toast, ToastContainer } from 'react-toastify';
 
 
 const AddEventModal = ({ closeModal, onevent }) => {
@@ -44,11 +45,13 @@ const AddEventModal = ({ closeModal, onevent }) => {
     if (!formdata.description.trim()) newErrors.description = "Event description is required";
     if (!formdata.date) newErrors.date = "Event date is required";
     if (!formdata.eventType.trim()) newErrors.status = "Event Type is required";
+    if (!formdata.time.trim()) newErrors.time = "Time is required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const[loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,9 +64,10 @@ const AddEventModal = ({ closeModal, onevent }) => {
         };
         const res = await getEventcreate(formattedData);
         if (onevent) onevent();
+        toast.success('Event Added successfully');
       } catch (err) {
         console.log(err.response?.data.message);
-      }finally{
+      } finally {
         setLoading(false)
       }
       console.log("Submitting event:", formdata);
@@ -149,7 +153,7 @@ const AddEventModal = ({ closeModal, onevent }) => {
             </div>
 
             <div className={`${styles.input_group} ${styles.input_icon}`} style={{ flex: 1 }}>
-              <label htmlFor="time">Time </label>
+              <label htmlFor="time">Time<span className={styles.required}>*</span> </label>
               <input type="time" id="time" value={formdata.time} onChange={(e) => { setFormdata({ ...formdata, time: e.target.value }), setErrors({ ...errors, time: '' }) }} />
               <p className={styles.error}>{errors.time}</p>
             </div>
