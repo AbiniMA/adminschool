@@ -56,14 +56,11 @@ const Eventlist = () => {
     const handlePageChange = (event, value) => {
         setEvents([]);
         if (value === offset) {
-            // same page clicked -> call API again
             getevents();
         } else {
-            setoffset(value); // triggers useEffect when page changes
+            setoffset(value); 
         }
     };
-
-
 
     useEffect(() => {
         const totalPages = Math.ceil(totaluser / limit);
@@ -71,8 +68,7 @@ const Eventlist = () => {
     }, [totaluser, limit]);
 
     let getevents = async () => {
-        setLoading(true); // start loading
-
+        setLoading(true); 
         try {
             const res = await getEvents(limit, offset - 1, status);
             console.log(res?.data?.data?.totalCount, 'events')

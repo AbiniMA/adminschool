@@ -167,22 +167,22 @@ export const Dashborad = () => {
                         <div class="flex justify-between items-center">
 
                             <div className={dashboradcss.avatars}>
-                                {studentData?.userDetails?.slice(0, 4).map((user, i) => (
+                                {studentData?.userDetails?.slice(0, 3).map((user, i) => (
                                     <img key={i} src={user.profileURL} alt={user.name} width={'100%'} />
                                 ))}
                             </div>
 
                             <div className={dashboradcss.avatar_text}>
-                                {studentData?.userDetails?.slice(0, 3).map((s, i) => (
+                                {studentData?.userDetails?.slice(0, 2).map((s, i) => (
                                     <Link to="/students"> <span key={i}>
                                         {s.name}
                                         {i < Math.min(studentData?.userDetails?.length, 3) - 1 && ", "}
                                     </span></Link>
                                 ))}
 
-                                {studentData?.totalStudents > 3 && (
+                                {studentData?.totalStudents > 2 && (
                                     <>
-                                        , +{studentData?.totalStudents - 3} <span><Link to="/students">others</Link></span>
+                                         +{studentData?.totalStudents - 2} <span><Link to="/students">others</Link></span>
                                     </>
                                 )}
                             </div>
@@ -199,22 +199,22 @@ export const Dashborad = () => {
                         <div class="flex justify-between items-center">
 
                             <div className={dashboradcss.avatars}>
-                                {studentData?.userDetails?.slice(0, 4).map((user, i) => (
+                                {studentData?.userDetails?.slice(0, 3).map((user, i) => (
                                     <img key={i} src={user.profileURL} alt={user.name} width={'100%'} />
                                 ))}
                             </div>
 
                             <div className={dashboradcss.avatar_text}>
-                                {studentData?.userDetails?.slice(0, 3).map((s, i) => (
+                                {studentData?.userDetails?.slice(0, 2).map((s, i) => (
                                     <Link to="/students"> <span key={i}>
                                         {s.name}
                                         {i < Math.min(studentData?.userDetails?.length, 3) - 1 && ", "}
                                     </span></Link>
                                 ))}
 
-                                {studentData?.totalStudents > 3 && (
+                                {studentData?.totalStudents > 2 && (
                                     <>
-                                        , +{studentData?.totalStudents - 3} <span><Link to="/students">others</Link></span>
+                                         +{studentData?.totalStudents - 2} <span><Link to="/students">others</Link></span>
                                     </>
                                 )}
                             </div>

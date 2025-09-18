@@ -28,7 +28,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-
+    const [mes, setMes] = useState('')
     const [Formdata, setFormdata] = useState({
         name: '',
         student_id: '',
@@ -180,6 +180,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
 
         } catch (error) {
             console.error("File upload failed", error.response?.data || error);
+            setMes(error?.response?.data?.message)
         }
     };
 
@@ -253,7 +254,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
             } catch (err) {
                 console.log(err.response?.data.message)
 
-                toast.error(err?.response?.data?.message)
+                // toast.error(err?.response?.data?.message)
                 setLoading(false)
 
             }
@@ -516,7 +517,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                             </div>
                             <div className={styles.student_email}>
                                 <label htmlFor="email">E-Mail<span className={styles.important}>*</span></label>
-                                <input className={styles.input_field} disabled style={{ color: 'grey', cursor: 'not-allowed' }} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), emailvalidation(e.target.value) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
+                                <input className={styles.input_field} onChange={(e) => { setFormdata({ ...Formdata, student_email: e.target.value }), emailvalidation(e.target.value) }} value={Formdata.student_email} id='email' type="email" placeholder='Enter mail' />
                                 <p className={styles.error}>{Errors.student_email}</p>
                             </div>
                         </div>
@@ -728,6 +729,8 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
                         <div className={styles.submit_button}>
                             <input type="submit" value={loading ? "Updating..." : "Update Student"} className={styles.submit} onClick={handleSubmit} />
                         </div>
+                        <p style={{ color: "red", fontSize: "12px", marginTop: "10px" }}>{mes}</p>
+
                     </div>
                 </form>
             </div>
