@@ -243,12 +243,12 @@ const Addstudent = ({ closeModal, onStudentAdded }) => {
 
                 setErrors({})
                 toast.success("Student added successfully!");
-
                 closeModal()
+
 
                 if (location.pathname === "/students") {
 
-                    if (onStudentAdded) onStudentAdded(res.data);
+                    if (onStudentAdded) onStudentAdded();
 
 
                 } else {
