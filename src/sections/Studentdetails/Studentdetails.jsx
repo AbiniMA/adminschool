@@ -62,7 +62,7 @@ const Studentdetails = () => {
         try {
             let res = await getStudentAttendencemonth(id)
             setTotalcount(res?.data?.data)
-            console.log(res?.data?.data)
+            // console.log(res?.data?.data)
         } catch (err) {
             console.log(err)
         }
@@ -130,7 +130,7 @@ const Studentdetails = () => {
         <ToastContainer/>
             <div className={styles.spacing}>
 
-                <div class="flex gap-[10px] items-center pb-[10px]">
+                <div className="flex gap-[10px] items-center pb-[10px]">
                     <div >
                         <IoMdArrowRoundBack style={{ cursor: 'pointer', fontSize: '20px', marginTop: '2px' }} onClick={() => window.history.back()} />
 
@@ -152,7 +152,7 @@ const Studentdetails = () => {
                                     </div>
                                 </div>
                                 <div className='w-[85%]'>
-                                    <div class="flex justify-between items-center pb-[10px]">
+                                    <div className="flex justify-between items-center pb-[10px]">
                                         <Skeleton variant="text" width={80} height={40} />
 
                                         <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }} className='text-transparent bg-clip-text bg-gradient-to-b 
@@ -301,8 +301,6 @@ const Studentdetails = () => {
                                         <div className='flex justify-between items-center'>
                                             <h4>Aadhar card</h4>
                                             <Skeleton variant="text" width={80} height={20} />
-
-
                                         </div>
 
 
@@ -311,7 +309,6 @@ const Studentdetails = () => {
                                         <div className='flex justify-between items-center'>
                                             <h4>Original</h4>
                                             <Skeleton variant="text" width={80} height={20} />
-
                                         </div>
 
                                     </div>
@@ -358,15 +355,13 @@ const Studentdetails = () => {
                                     </div>
                                 </div>
                                 <div className='w-[85%]'>
-                                    <div class="flex justify-between items-center pb-[10px]">
+                                    <div className="flex justify-between items-center pb-[10px]">
                                         <h2 className='text-[22px] font-[500] text-center md:text-left'>{user?.name?.replace(/\b\w/g, (char) => char.toUpperCase())}</h2>
                                         <div className="flex justify-between items-center pb-[10px]">
-                                            <div onClick={() => setIsOpen(true)} className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-[500] px-[40px] p-2 '>
+                                            <div onClick={() => setIsOpen(true)} className='text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] flex items-center font-[500] px-[40px] p-2 cursor-pointer '>
                                                 <EditOutlinedIcon  className="text-[#144196]" sx={{ fontSize: '14px', cursor: 'pointer' }} /> Edit</div>
                                             <div>
-                                                <Switch value={status} onChange={onChange} style={{
-
-                                                }} size="small" />
+                                                <Switch value={status} onChange={onChange}  size="small" />
                                             </div>
                                         </div>
                                     </div>
@@ -484,7 +479,7 @@ const Studentdetails = () => {
                                         <div className='flex justify-between items-center'>
                                             <h4>Aadhar card</h4>
                                             <button className='flex items-center cursor-pointer text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530]' onClick={() => handleDownload(user.aadharURL)
-                                            }>Download <img src={Import} alt="" class="px-2" /></button>
+                                            }>Download <img src={Import} alt="" className="px-2" /></button>
 
                                         </div>
 
@@ -494,7 +489,7 @@ const Studentdetails = () => {
                                         <div className='flex justify-between items-center'>
                                             <h4>Original</h4>
                                             <button className='flex items-center text-transparent bg-clip-text bg-gradient-to-b cursor-pointer from-[#144196] to-[#061530]' onClick={() => handleDownload(user.certificateURL)
-                                            }>Download <img src={Import} alt="" class="px-2" /></button>
+                                            }>Download <img src={Import} alt="" className="px-2" /></button>
                                         </div>
 
                                     </div>

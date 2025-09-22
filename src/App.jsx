@@ -15,6 +15,9 @@ import LeaveRequest from './sections/Leaverequestmodel/Leaverequest';
 import CourseDetails from './sections/CourseDetails/CourseDetails';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Enquiry from './sections/Enquiry/Enquiry';
+import Application from './sections/Application/Application';
+import Details from './sections/details/Details';
 
 
 function App() {
@@ -64,6 +67,13 @@ function App() {
 
           <Route path="/events" element={<Header />}>
             <Route index element={<Eventlist />} />
+          </Route>
+          <Route path="/enquiry" element={<Header />}>
+            <Route index element={<Enquiry />} />
+          </Route>
+          <Route path="/application" element={<Header />}>
+            <Route index element={<Application />} />
+            <Route path="details/:id" element={<Details />} />
           </Route>
 
           <Route

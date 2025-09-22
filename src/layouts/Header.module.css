@@ -16,7 +16,7 @@
 }
 
 .navbar {
-  width: 20vw;
+  width: 17vw;
   background: linear-gradient(to bottom, #0b48b0, #061634);
   /* padding-top: 25px; */
   padding-left: 20px;
@@ -189,7 +189,7 @@
 }
 
 .content {
-  width: 80vw;
+  width: 90vw;
   /* background-color: aqua; */
 }
 

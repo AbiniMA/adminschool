@@ -10,7 +10,6 @@ import { updateUser } from '../../api/Serviceapi';
 import { uploadFile } from '../../api/Serviceapi';
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdCancel } from "react-icons/md";
-
 import { getBatchbyid, getBatchName, getUserId } from '../../api/Serviceapi';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -275,7 +274,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
         try {
             const res = await getUserId(id);
             const userData = res?.data?.data?.data?.[0] || {};
-            console.log(userData, 'ss')
+            // console.log(userData, 'ss')
             setFormdata({
                 name: userData.name || '',
                 student_id: userData.studentId || '',
@@ -316,7 +315,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
 
             // Extract imageURL from backend response
 
-            console.log(res?.data?.data, 'batch')
+            // console.log(res?.data?.data, 'batch')
             const course = res?.data?.data?.find(c => c._id === id);
 
             // store only the batches array
@@ -338,7 +337,7 @@ const UpdateStudent = ({ closeModal, id, onSuccess }) => {
 
             // Extract imageURL from backend response
 
-            console.log(res?.data?.data)
+            // console.log(res?.data?.data)
             setCourse(Array.isArray(res?.data?.data) ? res.data.data : []);
 
 

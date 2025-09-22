@@ -153,18 +153,18 @@ export const Dashborad = () => {
     return (
         <>
             <div className={dashboradcss.dashboradcontainer}>
-                <div class="flex justify-between items-center">
-                    <h4 class=' m-[10px] text-xl font-normal'>Dashboard Overview</h4>
+                <div className="flex justify-between items-center">
+                    <h4 className=' m-[10px] text-xl font-normal'>Dashboard Overview</h4>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 ">
+                <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 ">
                     <div className={dashboradcss.dashcard}>
                         <div className="flex justify-between items-center">
                             <div><p className=' text-lg font-normal'>Total Students</p></div>
                             <div className={dashboradcss.profileicon}><img src={profileicon} alt="" width={'100%'} /></div>
                         </div>
                         <div className={dashboradcss.dashcount}>{studentData?.totalStudents ?? 0}</div>
-                        <div class="flex justify-between items-center">
+                        <div className="flex justify-between items-center">
 
                             <div className={dashboradcss.avatars}>
                                 {studentData?.userDetails?.slice(0, 3).map((user, i) => (
@@ -174,7 +174,7 @@ export const Dashborad = () => {
 
                             <div className={dashboradcss.avatar_text}>
                                 {studentData?.userDetails?.slice(0, 2).map((s, i) => (
-                                    <Link to="/students"> <span key={i}>
+                                    <Link to="/students" key={i}> <span key={i}>
                                         {s.name}
                                         {i < Math.min(studentData?.userDetails?.length, 3) - 1 && ", "}
                                     </span></Link>
@@ -190,13 +190,13 @@ export const Dashborad = () => {
                         </div>
                     </div>
                     <div className={dashboradcss.dashcard}>
-                        <div class="flex justify-between items-center">
+                        <div className="flex justify-between items-center">
                             <div><p className=' text-lg font-normal'>Active Students</p></div>
                             <div className={dashboradcss.profileicon}><img src={profileicon} alt="" width={'100%'} /></div>
                         </div>
                         <div className={dashboradcss.dashcount}>      {studentData?.activeStudents ?? 0}
                         </div>
-                        <div class="flex justify-between items-center">
+                        <div className="flex justify-between items-center">
 
                             <div className={dashboradcss.avatars}>
                                 {studentData?.userDetails?.slice(0, 3).map((user, i) => (
@@ -206,7 +206,7 @@ export const Dashborad = () => {
 
                             <div className={dashboradcss.avatar_text}>
                                 {studentData?.userDetails?.slice(0, 2).map((s, i) => (
-                                    <Link to="/students"> <span key={i}>
+                                    <Link to="/students" key={i}> <span key={i}>
                                         {s.name}
                                         {i < Math.min(studentData?.userDetails?.length, 3) - 1 && ", "}
                                     </span></Link>
@@ -225,14 +225,14 @@ export const Dashborad = () => {
                             <div><p className=' text-lg font-normal'>Attendance rate</p><p className={dashboradcss.dashdate}>{displayDate}</p></div>
                             <div className={dashboradcss.profileicon}><img src={profileicon} alt="" width={'100%'} /></div>
                         </div>
-                        <div class="flex justify-between items-center pt-[20px]">
+                        <div className="flex justify-between items-center pt-[20px]">
                             <div className={dashboradcss.dashcount}>{todayAttendance?.attendanceRate}</div>
                             <Link to='/attendence'><div className={dashboradcss.avatar_text}>ViewDetails</div></Link>
                         </div>
                     </div>
 
                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 ">
+                <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 ">
                     <div className={dashboradcss.dashcard} style={{ height: '420px', overflowY: 'hidden' }} >
                         <div className="flex justify-between items-center mx-2 mb-[20px]">
                             <div><h4 className=' text-lg font-normal'>Leave Request</h4></div>
@@ -501,30 +501,30 @@ export const Dashborad = () => {
                             <div><Link to='/students'><img src={resizeicon} alt="resizeicon" /></Link></div>
                         </div>
 
-                        <div class="overflow-x-auto " style={{ height: '300px', overflowY: 'scroll', paddingBottom: '60px' }}>
-                            <table class="min-w-full text-sm text-left rounded-[10px] overflow-hidden">
-                                <thead class="bg-[#ffff]">
+                        <div className="overflow-x-auto " style={{ height: '300px', overflowY: 'scroll', paddingBottom: '60px' }}>
+                            <table className="min-w-full text-sm text-left rounded-[10px] overflow-hidden">
+                                <thead className="bg-[#ffff]">
                                     <tr >
-                                        <th class="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Profile</th>
-                                        <th class="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">ID No</th>
-                                        <th class="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Name</th>
-                                        <th class="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Mobile</th>
-                                        <th class="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Course</th>
-                                        <th class="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Batch</th>
-                                        <th class="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Status</th>
+                                        <th className="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Profile</th>
+                                        <th className="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">ID No</th>
+                                        <th className="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Name</th>
+                                        <th className="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Mobile</th>
+                                        <th className="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Course</th>
+                                        <th className="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Batch</th>
+                                        <th className="px-4 py-3 text-transparent bg-clip-text bg-gradient-to-b from-[#144196] to-[#061530] font-semibold">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {studentList.map((item) => (
-                                        <tr class="border-b border-gray-200" key={item?._id}>
-                                            <td class="px-4 py-3">
-                                                <img src={item?.profileURL} alt="Profile" class="rounded-full w-10 h-10" />                                           </td>
-                                            <td class="px-4 py-3">{item?.studentId}</td>
-                                            <td class="px-4 py-3" style={{ textTransform: 'capitalize' }}>{item?.name}</td>
-                                            <td class="px-4 py-3">{item?.mobileNo}</td>
-                                            <td class="px-4 py-3">{item?.courseDetails?.courseName}</td>
-                                            <td class="px-4 py-3">{item?.batchDetails?.batchName}</td>
-                                            <td class="px-4 py-3 text-green-500 font-medium" style={item?.inStatus === 'ongoing' ? { color: '#1D4ED8' } : ''}>{item.inStatus}</td>
+                                        <tr className="border-b border-gray-200" key={item?._id}>
+                                            <td className="px-4 py-3">
+                                                <img src={item?.profileURL} alt="Profile" className="rounded-full w-10 h-10" />                                           </td>
+                                            <td className="px-4 py-3">{item?.studentId}</td>
+                                            <td className="px-4 py-3" style={{ textTransform: 'capitalize' }}>{item?.name}</td>
+                                            <td className="px-4 py-3">{item?.mobileNo}</td>
+                                            <td className="px-4 py-3">{item?.courseDetails?.courseName}</td>
+                                            <td className="px-4 py-3">{item?.batchDetails?.batchName}</td>
+                                            <td className="px-4 py-3 text-green-500 font-medium" style={item?.inStatus === 'ongoing' ? { color: '#1D4ED8' } : ''}>{item.inStatus}</td>
                                         </tr>
                                     ))}
 

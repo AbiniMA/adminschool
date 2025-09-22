@@ -19,7 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import { BiSearchAlt } from "react-icons/bi";
 import CloseIcon from '@mui/icons-material/Close';
-import { calcfee, createFee, getBatchbyid, getBatchName, getFee, getUser, getUserFilter, updateBalanceFee } from "../../api/Serviceapi";
+import { calcfee, createFee, excelfee, getBatchbyid, getBatchName, getFee, getUser, getUserFilter, updateBalanceFee } from "../../api/Serviceapi";
 import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import nodata from '../../assets/nodata.jpg'
@@ -28,6 +28,8 @@ import Skeleton from '@mui/material/Skeleton';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IoIosCloseCircle } from "react-icons/io";
+import { MdOutlineFileDownload } from "react-icons/md";
+
 
 const theme = createTheme({
   components: {
@@ -594,10 +596,50 @@ const FeeHome = () => {
     setBatchId('');
   }
 
+
   const [feeId, setFeeID] = useState('')
+
+
+   let getExcel = async () => {
+    try {
+      let res = await excelfee(courseId, batchId, semester,searchText);
+      console.log("Axios response:", res);
+  
+      // The Base64 string is here
+      let base64String = res.data.data;
+  
+      if (!base64String) {
+        alert("No Excel file data found");
+        return;
+      }
+  
+      // Clean (just in case)
+      base64String = base64String.replace(/\s/g, "");
+  
+      // Convert Base64 → Blob
+      const byteCharacters = atob(base64String);
+      const byteNumbers = new Array(byteCharacters.length)
+        .fill()
+        .map((_, i) => byteCharacters.charCodeAt(i));
+      const byteArray = new Uint8Array(byteNumbers);
+  
+      const blob = new Blob([byteArray], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+  
+      // Trigger download
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "userFeeDetails.xlsx";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (err) {
+      console.log("Error downloading Excel:", err);
+    }
+  };
   return (
     <div className={styles.container}>
-      <ToastContainer/>
+      <ToastContainer />
       <div className={styles.feemanagement}>
         <div className={styles.feehead}>
           <div className={styles.feetitle}>
@@ -792,6 +834,10 @@ const FeeHome = () => {
             </div>
           </div>
         </div>
+        <div className='flex justify-end mt-4'>
+          <button className='bg-[gray] text-white px-1 py-1 rounded-md flex items-center flex-end gap-1 cursor-pointer' onClick={getExcel}>Export<MdOutlineFileDownload />
+          </button>
+        </div>
         {calloading ?
           <div className={styles.feeamount}>
             <div className={styles.feeamt}>
@@ -894,7 +940,7 @@ const FeeHome = () => {
                                   ? "blue"
                                   : "red",
 
-                                  cursor:item?.mailStatus === 'Sent'?'not-allowed':'pointer'
+                                cursor: item?.mailStatus === 'Sent' ? 'not-allowed' : 'pointer'
                               }}
                               onClick={() => {
                                 if (item?.mailStatus === "Sent") return;
@@ -905,7 +951,7 @@ const FeeHome = () => {
                               {item?.mailStatus === 'Sent'
                                 ? "Requested Fee"
                                 : 'Request Sent'
-                                }
+                              }
                             </p>
                           )}
 
@@ -1112,7 +1158,7 @@ const FeeHome = () => {
                           <div className={styles.nameemaildiv1}>
                             <div className={styles.namediv1}>
                               <label className={styles.updatefeeinputlabel}>
-                                Course 
+                                Course
                               </label>
                               <select
                                 className={styles.select_field}

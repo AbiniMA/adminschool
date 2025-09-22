@@ -11,7 +11,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { getUser } from '../../api/Serviceapi';
+import { excelStudents, getUser } from '../../api/Serviceapi';
 import CloseIcon from '@mui/icons-material/Close';
 import { deleteUserId, getBatchbyid, getBatchName } from '../../api/Serviceapi';
 import Addstudent from '../Addstudent/Addstudent';
@@ -22,6 +22,7 @@ import Loader from '../../component/loader/Loader';
 import { IoIosCloseCircle } from "react-icons/io";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MdOutlineFileDownload } from "react-icons/md";
 
 const theme = createTheme({
   components: {
@@ -95,7 +96,7 @@ const Studentlist = () => {
 
       // Extract imageURL from backend response
 
-      console.log(res?.data?.data, 'batchdasdasd')
+      // console.log(res?.data?.data, 'batchdasdasd')
       const course = res?.data?.data?.find(c => c._id === id);
 
       // store only the batches array
@@ -119,7 +120,7 @@ const Studentlist = () => {
 
       // Extract imageURL from backend response
 
-      console.log(res?.data?.data, 'dasdasdada')
+      // console.log(res?.data?.data, 'dasdasdada')
       setCourse(res?.data?.data)
 
 
@@ -209,19 +210,58 @@ const Studentlist = () => {
     setStatusName('')
   }
 
+  let getExcel = async () => {
+    try {
+      let res = await excelStudents(courseId, batchId, status, activestatus, searchText);
+      console.log("Axios response:", res);
+
+      // The Base64 string is here
+      let base64String = res.data.data;
+
+      if (!base64String) {
+        alert("No Excel file data found");
+        return;
+      }
+
+      // Clean (just in case)
+      base64String = base64String.replace(/\s/g, "");
+
+      // Convert Base64 → Blob
+      const byteCharacters = atob(base64String);
+      const byteNumbers = new Array(byteCharacters.length)
+        .fill()
+        .map((_, i) => byteCharacters.charCodeAt(i));
+      const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      // Trigger download
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "userDetails.xlsx";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (err) {
+      console.log("Error downloading Excel:", err);
+    }
+  };
+
+
 
   return (
 
     <>
       <ToastContainer
-       
+
       />
 
       <div style={{ paddingBottom: '100px' }}>
         <div className='p-4  Outlet' >
           <div className="flex justify-between items-center lg:flex-row md:flex-row flex-col">
             <h4 className='text-xl font-normal'>Student Management</h4>
-            <div className=' flex items-end md:justify-around  p-2 gap-1 '>
+            <div className=' flex items-end md:justify-around flex-wrap  p-2 gap-1 '>
 
               <div style={{ width: '130px', }}>
                 <FormControl
@@ -428,7 +468,11 @@ const Studentlist = () => {
             </div>
           </div>
 
-          <div className='overflow-x-auto w-full mt-5 '>
+          <div className='flex justify-end mt-4'>
+            <button className='bg-[gray] text-white px-1 py-1 rounded-md flex items-center flex-end gap-1 cursor-pointer' onClick={getExcel}>Export<MdOutlineFileDownload />
+            </button>
+          </div>
+          <div className='overflow-x-auto w-full '>
             <table className="w-full  rounded-md  text-sm  ">
               <thead className="bg-white  ">
                 <tr className="bg-[#F8F8F8] text-left ">
@@ -448,60 +492,72 @@ const Studentlist = () => {
                   <th className="px-4 py-2 bg-gradient-to-b from-[#144196] to-[#061530] bg-clip-text text-transparent font-semibold text-center" colSpan={2}>Action</th>
                 </tr>
               </thead>
-              {loading ?
-                <tr>
-                  <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold ">
-                    <Loader />
-                  </td>
-                </tr>
-                : <tbody className="bg-white text-gray-800">
-                  {users.length > 0 && users.length !== 0 ? (
-                    users.map((user) => (
-                      <tr key={user._id} className="border-b border-[#0000001A] hover:bg-gray-50">
-                        <td className="px-4 py-2 ">
-                          <img src={user.profileURL || profile} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
-                        </td>
-                        <td className="px-4 py-2">{user.studentId}</td>
-                        <td className="px-4 py-2" style={{ textTransform: 'capitalize' }}>{user.name}</td>
-                        <td className="px-4 py-2">{user.mobileNo}</td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2">{user.password}</td>
-
-                        <td className="px-4 py-2">{user?.courseDetails?.courseName}</td>
-                        <td className="px-4 py-2">{user?.batchDetails?.batchName || '-'} </td>
-                        <td className="px-4 py-2" style={{ textTransform: 'capitalize', color: user.status === 'active' ? 'green' : 'red' }}>{user?.status || '-'} </td>
-
-                        <td className={`${'px-4 py-2  font-medium'} ${user.inStatus === 'completed'
-                          && 'text-green-500'} ${user.inStatus === 'placed' && 'text-yellow-500'} ${user.inStatus === 'ongoing' && 'text-blue-700'} `}>
-                          {user.inStatus}
-                        </td>
-                        <td className="px-4 py-2 space-x-2 text-sm">
-                          <button
-                            className="text-blue-700 flex items-center gap-1 cursor-pointer"
-                            onClick={() => navigate(`/students/studentview/${user._id}`)}
-                          >
-                            <VisibilityIcon /> View
-                          </button>
-                        </td>
-                        {/* <td className="px-4 py-2 space-x-2 text-sm">
-                        <button
-                          className="text-red-600 flex items-center gap-1 cursor-pointer"
-                          onClick={() => { setDeleteOpen(true), setId(user._id) }}
-                        >
-                          <DeleteOutlineIcon /> Delete
-                        </button>
-                      </td> */}
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="10" className="text-center py-20 text-lg text-gray-500 font-semibold">
-                        <img src={nodata} alt="" width={'200px'} height={'200px'} className='m-auto' />
-                        <p>No Data Found</p>
+              <tbody className="bg-white text-gray-800">
+                {loading ? (
+                  <tr>
+                    <td colSpan="11" className="text-center py-20 text-lg text-gray-500 font-semibold">
+                      <Loader />
+                    </td>
+                  </tr>
+                ) : users.length > 0 ? (
+                  users.map((user) => (
+                    <tr key={user._id} className="border-b border-[#0000001A] hover:bg-gray-50">
+                      <td className="px-4 py-2">
+                        <img src={user.profileURL || profile} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
                       </td>
+                      <td className="px-4 py-2">{user.studentId}</td>
+                      <td className="px-4 py-2 capitalize">{user.name}</td>
+                      <td className="px-4 py-2">{user.mobileNo}</td>
+                      <td className="px-4 py-2">{user.email}</td>
+                      <td className="px-4 py-2">{user.password}</td>
+                      <td className="px-4 py-2">{user?.courseDetails?.courseName}</td>
+                      <td className="px-4 py-2">{user?.batchDetails?.batchName || '-'}</td>
+                      <td
+                        className="px-4 py-2 capitalize"
+                        style={{ color: user.status === 'active' ? 'green' : 'red' }}
+                      >
+                        {user?.status || '-'}
+                      </td>
+                      <td
+                        className={`px-4 py-2 font-medium ${user.inStatus === 'completed'
+                          ? 'text-green-500'
+                          : user.inStatus === 'placed'
+                            ? 'text-yellow-500'
+                            : user.inStatus === 'ongoing'
+                              ? 'text-blue-700'
+                              : ''
+                          }`}
+                      >
+                        {user.inStatus}
+                      </td>
+                      <td className="px-4 py-2 space-x-2 text-sm">
+                        <button
+                          className="text-blue-700 flex items-center gap-1 cursor-pointer"
+                          onClick={() => navigate(`/students/studentview/${user._id}`)}
+                        >
+                          <VisibilityIcon /> View
+                        </button>
+                      </td>
+                      
+                      {/* <td className="px-4 py-2 space-x-2 text-sm">
+            <button
+              className="text-red-600 flex items-center gap-1 cursor-pointer"
+              onClick={() => { setDeleteOpen(true); setId(user._id) }}
+            >
+              <DeleteOutlineIcon /> Delete
+            </button>
+          </td> */}
                     </tr>
-                  )}
-                </tbody>}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="11" className="text-center py-20 text-lg text-gray-500 font-semibold">
+                      <img src={nodata} alt="" width="200" height="200" className="m-auto" />
+                      <p>No Data Found</p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
 
             </table>
 

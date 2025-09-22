@@ -19,6 +19,8 @@ import { IoMdPerson } from "react-icons/io";
 import { RiFileList2Fill } from "react-icons/ri";
 import { PiFlagPennantFill } from "react-icons/pi";
 import { RiSettings5Fill } from "react-icons/ri";
+import { FaRegQuestionCircle } from "react-icons/fa";
+import { FaIdBadge } from "react-icons/fa";
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Addstudent from '../sections/Addstudent/Addstudent'
 import Modal from 'react-modal';
@@ -27,6 +29,8 @@ import LogoutModal from '../sections/Logout/LogoutModal';
 import { getNotification, updateNotification } from '../api/Serviceapi';
 import { IoMdCloseCircle } from "react-icons/io";
 import { format } from "date-fns";
+import { FaQuestionCircle } from "react-icons/fa";
+import { FaRegIdBadge } from "react-icons/fa";
 
 
 const Header = ({ setLoginUser }) => {
@@ -83,7 +87,9 @@ const Header = ({ setLoginUser }) => {
   const handleLogout = () => {
     console.log("Logout clicked");
     localStorage.removeItem('authToken');
+    sessionStorage.removeItem('authToken');
     localStorage.removeItem('userId');
+    sessionStorage.removeItem('userId');
     navigate('/login');
     setLoginUser(false);
   };
@@ -106,7 +112,7 @@ const Header = ({ setLoginUser }) => {
     try {
       const res = await getNotification();
       setNotificationlist(res?.data?.data?.data);
-      console.log(res?.data?.data?.fetchCount, 'ddd')
+      // console.log(res?.data?.data?.fetchCount, 'ddd')
       setCount(res?.data?.data?.fetchCount)
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -178,11 +184,16 @@ const Header = ({ setLoginUser }) => {
                 <div className={styles.events}>
                   <button className={`${styles.events_button} ${location.pathname == '/events' ? styles.navactive : ''}`} onClick={() => navigate('/events')}>{location.pathname == '/events' ? <PiFlagPennantFill className={styles.filled_flag_icon} /> : <PiFlagPennantLight className={styles.outline_flag_icon} />}  Events</button>
                 </div>
-                {/* <div className={styles.settings}>
-                  <button className={styles.settings_button}><RiSettings5Line className={styles.outline_settings_icon} />
-                    <RiSettings5Fill className={styles.filled_settings_icon} /> 
-                    Settings</button>
-                </div> */}
+                <div className={styles.settings}>
+                  <button className={`${styles.settings_button} ${location.pathname == '/enquiry' ? styles.navactive : ''}`} onClick={() => navigate('/enquiry')}>{location.pathname == '/enquiry' ? <FaQuestionCircle className={styles.outline_settings_icon} />:
+                    <FaRegQuestionCircle className={styles.filled_settings_icon} /> }
+                    Enquiry</button>
+                </div>
+                <div className={styles.settings}>
+                  <button className={`${styles.settings_button} ${location.pathname == '/application' ? styles.navactive : ''}`} onClick={() => navigate('/application')}>{location.pathname == '/application' ? <FaIdBadge className={styles.outline_settings_icon} />:
+                    <FaRegIdBadge  className={styles.filled_settings_icon} /> }
+                    Application</button>
+                </div>
                 <div className={styles.logout}>
                   <button className={styles.logout_button} onClick={() => setIsLogutOpen(true)}><RiLogoutCircleLine className={styles.outline_logout_icon} /> Logout</button>
                 </div>
@@ -212,7 +223,7 @@ const Header = ({ setLoginUser }) => {
                 <div className={styles.user_name}><p className={styles.admin_user} style={{ cursor: 'pointer' }} >{userName}</p></div>
 
               </div>
-              <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => notificationlist.length>0 && setNotification(!notification)}>
+              <div className={styles.notification_icon} style={{ cursor: 'pointer' }} onClick={() => (Array.isArray(notificationlist) && notificationlist.length > 0) && setNotification(!notification)}>
                 <div>
                   <GoBell />
                   <div className={`${count > 0 && styles.dot}`}>

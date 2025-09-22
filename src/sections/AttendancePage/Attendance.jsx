@@ -9,7 +9,7 @@ import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { FormControl, InputLabel, MenuItem, Select, IconButton } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { getAttendance, getAttendancerate, getBatchbyid, getBatchName } from "../../api/Serviceapi";
+import { excelAttendance, getAttendance, getAttendancerate, getBatchbyid, getBatchName } from "../../api/Serviceapi";
 import CloseIcon from '@mui/icons-material/Close';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -20,6 +20,8 @@ import Loader from "../../component/loader/Loader";
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { IoIosCloseCircle } from "react-icons/io";
+import { MdOutlineFileDownload } from "react-icons/md";
+
 
 const theme = createTheme({
   components: {
@@ -118,9 +120,9 @@ const Attandance = () => {
     getBatchnameid(selectedId);
   };
 
- useEffect(() => {
-  setDate(dayjs().format("YYYY-MM-DD"));
-}, []);
+  useEffect(() => {
+    setDate(dayjs().format("YYYY-MM-DD"));
+  }, []);
 
 
   useEffect(() => {
@@ -224,6 +226,44 @@ const Attandance = () => {
     setCourseId('');
     setBatchId('');
   }
+
+   let getExcel = async () => {
+    try {
+      let res = await excelAttendance(searchText,courseId, batchId,date,status);
+      console.log("Axios response:", res);
+  
+      // The Base64 string is here
+      let base64String = res.data.data;
+  
+      if (!base64String) {
+        alert("No Excel file data found");
+        return;
+      }
+  
+      // Clean (just in case)
+      base64String = base64String.replace(/\s/g, "");
+  
+      // Convert Base64 → Blob
+      const byteCharacters = atob(base64String);
+      const byteNumbers = new Array(byteCharacters.length)
+        .fill()
+        .map((_, i) => byteCharacters.charCodeAt(i));
+      const byteArray = new Uint8Array(byteNumbers);
+  
+      const blob = new Blob([byteArray], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+  
+      // Trigger download
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "userDetails.xlsx";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (err) {
+      console.log("Error downloading Excel:", err);
+    }
+  };
   return (
     <div className={styles.container}>
       <div className={styles.attendancetop}>
@@ -232,7 +272,7 @@ const Attandance = () => {
         </div>
         <div className={styles.attendanceright}>
           <div className={styles.attendancerightdiv}>
-            
+
             <div className={styles.selectWrapper}>
               <FormControl
                 variant="outlined"
@@ -435,7 +475,10 @@ const Attandance = () => {
           </div>
         </div>
       </div>
-
+      <div className='flex justify-end mt-4 w-[96%]'>
+        <button className='bg-[gray] text-white px-1 py-1 rounded-md flex items-center flex-end gap-1 cursor-pointer' onClick={getExcel}>Export<MdOutlineFileDownload />
+        </button>
+      </div>
       {rateLoading ?
         <div className={styles.attendancemiddle}>
           <div className={styles.attendancemiddlediv}>
@@ -546,7 +589,7 @@ const Attandance = () => {
 
 
       <div className='flex justify-between items-end px-2 ms-auto w-[50%]'>
-      
+
 
         {totalpages > 0 &&
           <ThemeProvider theme={theme}>
@@ -563,7 +606,7 @@ const Attandance = () => {
             </div>
           </ThemeProvider>
         }
-          {totalpages > 0 &&
+        {totalpages > 0 &&
           <div className="flex justify-between items-center">
             <p className="text-gray-600 text-sm">
               Showing {startIndex} – {endIndex} of {totallist} students

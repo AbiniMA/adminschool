@@ -188,7 +188,7 @@
   grid-template-columns: 30% 30% 30%;
   /* height: 100px; */
   justify-content: space-around;
-  margin-top: 26px;
+  /* margin-top: 26px; */
 }
 .attendancemiddlediv {
   border-radius: 10px;

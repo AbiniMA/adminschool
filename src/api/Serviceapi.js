@@ -310,3 +310,44 @@ export const getNotification = () => {
 export const updateNotification=(id,read) => {
   return apiService.put(`/notification/${id}`,{'isRead':read});
 }
+
+// enquiry
+
+export const getEnquiry = (limit,offset,enroll) => {
+  return apiService.get(`/aloEnroll?limit=${limit}&page=${offset}&enrollType=${enroll}`);
+};
+
+//application
+
+export const getApplication = (limit,offset ) => {
+  return apiService.get(`/student?limit=${limit}&page=${offset}`);
+};
+
+export const getApplicationByid = (id) => {
+  return apiService.get(`/student/${id}`);
+};
+
+export const excelStudents = (courseId,batchId,status,activestatus,searchText) => {
+  return apiService.get(`/user/excel?courseId=${courseId}&inStatus=${status}&batchId=${batchId}&status=${activestatus}&value=${searchText}`);
+};
+
+export const excelfee = (courseId,batchId,semester,searchText) => {
+  return apiService.get(`/fee/excel?&courseId=${courseId}&batchId=${batchId}&noOfsem=${semester}&value=${searchText}`);
+};
+
+export const excelAttendance = (
+ 
+  searchtext,
+  courseId,
+  batchId,
+  date,
+  status
+) => {
+  let url = `/attendance/excel?value=${searchtext}&courseId=${courseId}&batchId=${batchId}&date=${date}`;
+
+  if (status !== "") {
+    url += `&onLeave=${status}`;
+  }
+
+  return apiService.get(url);
+};
