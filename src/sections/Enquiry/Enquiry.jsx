@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Tabs } from 'antd';
-import '../../app.css';
 import { getEnquiry } from '../../api/Serviceapi';
 import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';

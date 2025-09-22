@@ -33,6 +33,19 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
     }
 
     return "";
+    
+  };
+
+  const CourseNamevalidate = (value) => {
+    error = "";
+    if (!value.trim()) {
+      error= "Course name required";
+    }
+    else if (!/^[A-Za-z\s/]+$/.test(value))  {
+     error= "Course name can contain only letters, spaces, and '/'";
+    }
+
+    setCourseNameError(error); 
   };
 
   const validateNumber = (value, fieldName) => {
@@ -44,7 +57,7 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
   // OnChange handlers
   const handleCourseNameChange = (e) => {
     setCourseName(e.target.value);
-    setCourseNameError("");
+    // setCourseNameError("");
     setDuplicate("");
   };
 
@@ -191,10 +204,10 @@ const AddCourseModal = ({ visible, onCancel, GetMethod, existingCourses }) => {
                 type="text"
                 placeholder="Enter Course Name"
                 value={courseName}
-                onChange={handleCourseNameChange}
+                onChange={(e) => {handleCourseNameChange(e),CourseNamevalidate(e.target.value)}}
               />
               <div className={styles.errorDiv}>
-                <p>{courseNameError}</p>
+{courseNameError && <span className="error">{courseNameError}</span>}
               </div>
             </div>
             <div className={styles.formGroup}>
