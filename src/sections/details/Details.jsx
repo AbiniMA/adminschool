@@ -260,7 +260,7 @@ const Details = () => {
                                                     <div>
 
                                                         <div className='text-[#00000080]'>Phone</div>
-                                                        <p className='font-[500]'>{details?.phoneNo}</p>
+                                                        <p className='font-[500]'>+{details?.phoneNo}</p>
                                                     </div>
                                                     <div>
                                                         <div className='text-[#00000080]'>E-Mail</div>

@@ -100,7 +100,7 @@ const Header = ({ setLoginUser }) => {
     notificationget()
     const interval = setInterval(() => {
       notificationget();
-    }, 600000);
+    }, 60000);
 
     // clear interval when component unmounts
     return () => clearInterval(interval);

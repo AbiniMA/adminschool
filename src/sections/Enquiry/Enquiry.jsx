@@ -5,7 +5,7 @@ import Pagination from '@mui/material/Pagination';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import nodata from '../../assets/nodata.jpg'
 import Loader from '../../component/loader/Loader';
-
+import '../../App.css'
 
 const theme = createTheme({
     components: {
@@ -104,7 +104,7 @@ const Enquiry = () => {
                                                 enquiry.map((item, index) => (
                                                     <tr key={item._id || index} style={{ borderBottom: '1px solid #e5e7eba4' }}>
                                                         <td className="px-4 py-4">{item?.name || "-"}</td>
-                                                        <td className="px-4 py-2">{item?.phoneNumber || "-"}</td>
+                                                        <td className="px-4 py-2">+{item?.phoneNumber || "-"}</td>
                                                         <td className="px-4 py-2">{item?.email || "-"}</td>
                                                     </tr>
                                                 ))
@@ -214,7 +214,7 @@ const Enquiry = () => {
                                                     <tr key={item._id || index} style={{ borderBottom: '1px solid #e5e7eba4' }}>
                                                         <td className="px-4 py-4">{item?.firstName} {item.lastName}</td>
                                                         <td className="px-4 py-2">{item?.email || "-"}</td>
-                                                        <td className="px-4 py-2">{item?.phoneNumber || "-"}</td>
+                                                        <td className="px-4 py-2">+{item?.phoneNumber || "-"}</td>
                                                         <td className="px-4 py-2">{item?.subject || "-"}</td>
                                                         <td className="px-4 py-2"><p className=' w-[100%] break-all'>{item?.message || "-"}</p></td>
 

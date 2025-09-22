@@ -101,7 +101,7 @@ const Application = () => {
                                     student.map((item, index) => (
                                         <tr key={item._id || index} style={{ borderBottom: '1px solid #e5e7eba4' }}>
                                             <td className="px-4 py-4">{item?.firstName || "-"}</td>
-                                            <td className="px-4 py-2">{item?.phoneNo || "-"}</td>
+                                            <td className="px-4 py-2">+{item?.phoneNo || "-"}</td>
                                             <td className="px-4 py-2">{item?.email || "-"}</td>
                                             <td className="px-4 py-2">{item?.bloodgroup || "-"}</td>
                                             <td className="px-4 py-2">{item?.gender || "-"}</td>
